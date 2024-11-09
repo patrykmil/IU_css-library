@@ -1,0 +1,5 @@
+background 1f2223
+light_background 353839
+primary 776885
+accent_green 89bd9e
+accent_orange db995a

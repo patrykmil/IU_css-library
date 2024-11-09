@@ -1,4 +1,4 @@
-FROM dpage/pgadmin4:latest
+FROM dpage/pgadmin4:2024-10-19-2
 
-ENV PGADMIN_DEFAULT_EMAIL=admin@ptrk.pp
+ENV PGADMIN_DEFAULT_EMAIL=admin@iu.pp
 ENV PGADMIN_DEFAULT_PASSWORD=admin
