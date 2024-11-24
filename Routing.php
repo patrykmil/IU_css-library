@@ -15,10 +15,14 @@ class Routing
             require_once "src/controllers/SecurityController.php";
             $controller = SecurityController::getInstance();
             $action = 'login';
-        } else {
+        } elseif (in_array($action, ["start", ""])) {
             require_once "src/controllers/StartController.php";
             $controller = StartController::getInstance();
             $action = 'start';
+        } else {
+            require_once "src/controllers/E404Controller.php";
+            $controller = E404Controller::getInstance();
+            $action = 'e404';
         }
 
         $controller->$action();
