@@ -1,8 +1,12 @@
 <?php
 require_once "src/controllers/ComponentController.php";
 require_once "src/controllers/SecurityController.php";
-class Routing {
-    public static function run ($url) {
+require_once "src/controllers/StartController.php";
+
+class Routing
+{
+    public static function run($url)
+    {
         $action = explode("/", $url)[0];
         $controller = null;
         /*
@@ -10,20 +14,17 @@ class Routing {
           die("Wrong url!");
         }
         */
-        if(in_array($action, ["component", ""])) {
-            $controller = "ComponentController";
+        if (in_array($action, ["component"])) {
+            $controller = ComponentController::getInstance();
             $action = 'component';
-        }
-        
-        if(in_array($action, ["register", "login"])) {
-            $controller = "SecurityController";
+        } elseif (in_array($action, ["register", "login"])) {
+            $controller = SecurityController::getInstance();
             $action = 'login';
+        } else {
+            $controller = StartController::getInstance();
+            $action = 'start';
         }
-        
-        
-        $object = new $controller;
-        $action = $action ?: "index";
-    
-        $object->$action();
+
+        $controller->$action();
     }
 }

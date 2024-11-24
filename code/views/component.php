@@ -12,7 +12,6 @@
 
 <body>
   <nav>
-    <h2><?= $name ?> </h2> /*Dodanie przekazanej zmiennej*/
     <div class="top_nav_left">
       <a class="nav_logo" href="../../index.html">
         <img class="logo" src="../../assets/images/logo.svg" alt="Logo" />
