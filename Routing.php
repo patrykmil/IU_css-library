@@ -2,6 +2,39 @@
 
 class Routing
 {
+    private static $routes = [
+        'component' => ['controller' => 'ComponentController', 'method' => 'component'],
+        'register' => ['controller' => 'SecurityController', 'method' => 'login'],
+        'login' => ['controller' => 'SecurityController', 'method' => 'login'],
+        'start' => ['controller' => 'StartController', 'method' => 'start'],
+        '' => ['controller' => 'StartController', 'method' => 'start']
+    ];
+
+    public static function run($url)
+    {
+        $action = explode("/", $url)[0];
+        $controller = null;
+
+        if (array_key_exists($action, self::$routes)) {
+            $route = self::$routes[$action];
+            require_once "src/controllers/{$route['controller']}.php";
+            $controller = call_user_func([$route['controller'], 'getInstance']);
+            $method = $route['method'];
+        } else {
+            require_once "src/controllers/E404Controller.php";
+            $controller = E404Controller::getInstance();
+            $method = 'e404';
+        }
+
+        $controller->$method();
+    }
+}
+
+/*
+ <?php
+
+class Routing
+{
     public static function run($url)
     {
         $action = explode("/", $url)[0];
@@ -28,3 +61,4 @@ class Routing
         $controller->$action();
     }
 }
+*/
