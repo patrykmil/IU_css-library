@@ -8,6 +8,18 @@ body {
 
 h1,
 h2 {
-  font-size: calc(var(--font-size) * 3);
+  font-size: var(--triple-font);
   color: var(--primary);
+}
+
+img {
+  width: 8rem;
+  margin-bottom: 2rem;
+  transition: transform 2s;
+}
+
+img:hover {
+  cursor: pointer;
+  transform: rotate(-135deg);
+
 }
