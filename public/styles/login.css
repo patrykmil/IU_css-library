@@ -28,7 +28,6 @@ body {
 .logo:hover {
   cursor: pointer;
   filter: drop-shadow(0 0 0.75rem var(--primary));
-  cursor: pointer;
 }
 
 .login_form {
@@ -43,12 +42,12 @@ body {
 }
 
 .login_container > label {
-  margin: 0;
   padding: 0;
   color: #fff;
-  font-size: calc(0.75 * var(--font-size));
+  font-size: var(--small-font);
+  font-weight: 300;
   align-self: flex-start;
-  margin-left: 0.625rem;
+  margin: 0 0 0 0.625rem;
 }
 
 .login_input {
@@ -69,7 +68,8 @@ body {
   display: inline-flex;
   width: 7.5em;
   height: 2em;
-  font-size: calc(2 * var(--font-size));
+  font-size: var(--double-font);
+  font-weight: 500;
   padding: 0.9375rem 1.25rem;
   justify-content: center;
   align-items: center;
@@ -95,7 +95,7 @@ body {
 
 .login_other_options > a {
   color: var(--primary);
-  font-size: var(--font-size);
+  font-size: var(--regular-font);
   text-decoration: underline;
   text-decoration-style: solid;
 }
