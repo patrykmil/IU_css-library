@@ -1,0 +1,12 @@
+zahaszować hasła funkcją przy rejestarcji
+password_hash($password, PASSWORD_BCRYPT)
+
+przy logowaniu
+password_verify
+
+w widokach dać folder z nawigacją itd / zredukkowac replikacje kodu
+wczytać ,?php include("sciezka code/views/common/nav.html") ?>
+
+zrobic autentykacje z filmiku
+
+refaktoryzacja
