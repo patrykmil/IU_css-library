@@ -5,7 +5,9 @@ class SecurityController extends AppController
 {
     private static $instance = null;
 
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     public static function getInstance()
     {
@@ -17,6 +19,13 @@ class SecurityController extends AppController
 
     public function login()
     {
-        $this->render("login");
+        if ($this->isGet()) {
+            return $this->render("login");
+        }
+
+        $login = $_POST['login_input'];
+        $password = $_POST['password_input'];
+
+        $this->render('component', ['login' => $login, 'password' => $password]);
     }
 }
