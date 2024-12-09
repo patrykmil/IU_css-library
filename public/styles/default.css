@@ -26,6 +26,6 @@
 }
 
 body {
-  background-color: var(--accent-green);
+  background-color: var(--background);
   height: 200vh;
 }
