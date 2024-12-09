@@ -4,7 +4,7 @@ class Routing
 {
     private static $routes = [
         'component' => ['controller' => 'ComponentController', 'method' => 'component'],
-        'register' => ['controller' => 'SecurityController', 'method' => 'login'],
+        'register' => ['controller' => 'SecurityController', 'method' => 'register'],
         'login' => ['controller' => 'SecurityController', 'method' => 'login'],
         'start' => ['controller' => 'StartController', 'method' => 'start'],
         '' => ['controller' => 'StartController', 'method' => 'start']

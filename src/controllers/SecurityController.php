@@ -1,12 +1,13 @@
 <?php
 require_once 'AppController.php';
-
+require_once __DIR__ . '/../models/User.php';
 class SecurityController extends AppController
 {
     private static $instance = null;
-
+    private array $users = [];
     private function __construct()
     {
+        $this->users[] = new User('p@p', 'p', password_hash('p', PASSWORD_BCRYPT));
     }
 
     public static function getInstance()
@@ -23,9 +24,28 @@ class SecurityController extends AppController
             return $this->render("login");
         }
 
-        $login = $_POST['login_input'];
+        $email = $_POST['email_input'];
+        $password = $_POST['password_input'];
+        foreach ($this->users as $user) {
+            if ($user->getEmail() === $email && password_verify($password, $user->getPassword())) {
+                return $this->render('component', ['user' => $user]);
+            }
+        }
+        return $this->render('login', ['message' => 'Wrong email or password!!!']);
+    }
+
+    public function register()
+    {
+        if ($this->isGet()) {
+            return $this->render("register");
+        }
+
+        $email = $_POST['email_input'];
+        $nickname = $_POST['nickname_input'];
         $password = $_POST['password_input'];
 
-        $this->render('component', ['login' => $login, 'password' => $password]);
+        $user = new User($email, $nickname, password_hash($password, PASSWORD_BCRYPT));
+        $this->users[] = $user;
+        return $this->render('login', ['message' => 'Successfully registered!!!']);
     }
 }
