@@ -1,13 +1,18 @@
 <?php
 require_once 'AppController.php';
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../validation/Validator.php';
+
+use validation\Validator;
+
 class SecurityController extends AppController
 {
     private static $instance = null;
     private array $users = [];
+
     private function __construct()
     {
-        $this->users[] = new User('p@p', 'p', password_hash('p', PASSWORD_BCRYPT));
+        $this->users[] = new User('iuadmin@iu.iu', 'admin', password_hash('adminadmin', PASSWORD_BCRYPT));
     }
 
     public static function getInstance()
@@ -26,12 +31,19 @@ class SecurityController extends AppController
 
         $email = $_POST['email_input'];
         $password = $_POST['password_input'];
+
+        if (!Validator::verifyEmail($email)) {
+            return $this->render('login', ['message' => '  Invalid email!!!  ']);
+        }
+        if (!Validator::verifyPassword($password)) {
+            return $this->render('login', ['message' => '  Invalid password!!!  ']);
+        }
         foreach ($this->users as $user) {
             if ($user->getEmail() === $email && password_verify($password, $user->getPassword())) {
                 return $this->render('component', ['user' => $user]);
             }
         }
-        return $this->render('login', ['message' => 'Wrong email or password!!!']);
+        return $this->render('login', ['message' => '  Invalid email or password!!!  ']);
     }
 
     public function register()
@@ -44,8 +56,18 @@ class SecurityController extends AppController
         $nickname = $_POST['nickname_input'];
         $password = $_POST['password_input'];
 
+        if (!Validator::verifyEmail($email)) {
+            return $this->render('register', ['message' => '  Invalid email!!!  ']);
+        }
+        if (!Validator::verifyPassword($password)) {
+            return $this->render('register', ['message' => '  Invalid password!!!  ']);
+        }
+        if (!Validator::verifyNickname($nickname)) {
+            return $this->render('register', ['message' => '  Invalid nickname!!!  ']);
+        }
+
         $user = new User($email, $nickname, password_hash($password, PASSWORD_BCRYPT));
         $this->users[] = $user;
-        return $this->render('login', ['message' => 'Successfully registered!!!']);
+        return $this->render('login', ['message' => '  Successfully registered!!!  ']);
     }
 }
