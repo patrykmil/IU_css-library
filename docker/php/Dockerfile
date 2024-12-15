@@ -1,4 +1,4 @@
-FROM php:8.4.1-fpm-alpine3.19
+FROM php:8.2.11-fpm-alpine3.18
 
 # Copy the application public
 COPY . /app

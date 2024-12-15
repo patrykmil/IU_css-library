@@ -7,6 +7,7 @@
   --accent-green: #89bd9e;
   --accent-orange: #db995a;
   --text-color: #ffffff;
+  --text-color-dark: hsl(195, 6%, 42%);
   --regular-font: 1rem;
   --small-font: 0.75rem;
   --big-font: 1.2rem;
@@ -27,5 +28,5 @@
 
 body {
   background-color: var(--background);
-  height: 200vh;
+  /*height: 200vh;*/
 }

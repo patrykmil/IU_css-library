@@ -138,7 +138,17 @@ nav .mobile_only_option {
     z-index: 3;
 }
 
-@media (max-width: 900px) {
+    @media (max-width: 900px) {
+        nav {
+            width: 100%;
+        }
+    body {
+        margin-top: 0;
+    }
+    nav{
+        position: relative;
+    }
+
     .nav_options_list {
         display: none;
     }

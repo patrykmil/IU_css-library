@@ -1,97 +1,125 @@
 body {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .login_form_container {
-  height: 33.75rem;
-  width: 19rem;
-  margin-top: 1.5em;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  border-radius: 0.625rem;
-  border: 1px solid #fff;
+    height: 33.75rem;
+    width: 19rem;
+    margin-top: 1.5em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    border-radius: 0.625rem;
+    border: 1px solid #fff;
 }
 
 .logo {
-  margin-top: 5em;
-  height: 6.25em;
+    margin-top: 5em;
+    height: 6.25em;
 }
 
 .logo:hover {
-  cursor: pointer;
-  filter: drop-shadow(0 0 0.75rem var(--primary));
+    cursor: pointer;
+    filter: drop-shadow(0 0 0.75rem var(--primary));
 }
 
 .login_form {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .login_container {
-  margin-top: 2em;
+    margin-top: 2em;
 }
 
 .login_container > label {
-  padding: 0;
-  color: #fff;
-  font-size: var(--small-font);
-  font-weight: 300;
-  align-self: flex-start;
-  margin: 0 0 0 0.625rem;
+    padding: 0;
+    color: #fff;
+    font-size: var(--small-font);
+    font-weight: 300;
+    align-self: flex-start;
+    margin: 0 0 0 0.625rem;
 }
 
 .login_input {
-  display: flex;
-  width: 13.5rem;
-  height: 2rem;
-  padding: 0.625rem;
-  align-items: center;
-  gap: 0.625rem;
-  flex-shrink: 0;
-  border-radius: 0.625rem;
-  border: 1px solid #fff;
-  background-color: inherit;
+    display: flex;
+    width: 13.5rem;
+    height: 2rem;
+    padding: 0.625rem;
+    align-items: center;
+    gap: 0.625rem;
+    flex-shrink: 0;
+    border-radius: 0.625rem;
+    border: 1px solid #fff;
+    background-color: inherit;
 }
 
 .login_button {
-  margin-top: 1.5em;
-  display: inline-flex;
-  width: 7.5em;
-  height: 2em;
-  font-size: var(--double-font);
-  font-weight: 500;
-  padding: 0.9375rem 1.25rem;
-  justify-content: center;
-  align-items: center;
-  gap: 0.625rem;
-  border-radius: 0.8125rem;
-  border: 3px solid var(--primary);
-  background-color: inherit;
+    margin-top: 1.5em;
+    display: inline-flex;
+    width: 7.5em;
+    height: 2em;
+    font-size: var(--double-font);
+    font-weight: 500;
+    padding: 0.9375rem 1.25rem;
+    justify-content: center;
+    align-items: center;
+    gap: 0.625rem;
+    border-radius: 0.8125rem;
+    border: 3px solid var(--primary);
+    background-color: inherit;
 }
 
 .login_button:hover {
-  background-color: var(--primary);
-  color: #fff;
-  cursor: pointer;
+    background-color: var(--primary);
+    color: #fff;
+    cursor: pointer;
 }
 
 .login_other_options {
-  display: flex;
-  width: 100%;
-  justify-content: space-evenly;
-  align-items: center;
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+    align-items: center;
 }
 
 .login_other_options > a {
-  color: var(--primary);
-  font-size: var(--regular-font);
-  text-decoration: underline;
-  text-decoration-style: solid;
+    color: var(--primary);
+    font-size: var(--regular-font);
+    text-decoration: underline;
+    text-decoration-style: solid;
+}
+
+.validity_message, .registered_message {
+    position: fixed;
+    height: 5rem;
+    width: auto;
+    top: 3rem;
+    right: 5rem;
+    background-color: var(--light-background);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.625rem;
+    padding: 0.5rem 1rem;
+}
+
+.validity_message, .registered_message > p {
+    font-size: var(--big-font);
+    font-weight: 500;
+}
+
+.validity_message > p {
+    color: var(--accent-orange);
+}
+
+.registered_message > p{
+    color:var(--primary);
 }
