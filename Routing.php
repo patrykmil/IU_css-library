@@ -3,6 +3,7 @@
 class Routing
 {
     private static $routes = [
+        'create' => ['controller' => 'CreateController', 'method' => 'component'],
         'component' => ['controller' => 'ComponentController', 'method' => 'component'],
         'register' => ['controller' => 'SecurityController', 'method' => 'register'],
         'login' => ['controller' => 'SecurityController', 'method' => 'login'],

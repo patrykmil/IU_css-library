@@ -43,6 +43,7 @@ class SecurityController extends AppController
                 return $this->render('component', ['user' => $user]);
             }
         }
+        header('Location: /login');
         return $this->render('login', ['message' => '  Invalid email or password!!!  ']);
     }
 
@@ -51,7 +52,6 @@ class SecurityController extends AppController
         if ($this->isGet()) {
             return $this->render("register");
         }
-
         $email = $_POST['email_input'];
         $nickname = $_POST['nickname_input'];
         $password = $_POST['password_input'];
