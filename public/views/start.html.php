@@ -12,7 +12,6 @@
   <div class="second_layer">
     <img src="../assets/images/logo.svg" alt="Logo" width="50" height="50" />
     <p>IU</p>
-    <p><?php echo $name; ?></p>
   </div>
 </body>
 

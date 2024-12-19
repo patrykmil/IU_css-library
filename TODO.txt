@@ -1,9 +1,0 @@
-zahaszować hasła funkcją przy rejestarcji
-password_hash($password, PASSWORD_BCRYPT)
-
-przy logowaniu
-password_verify
-
-zrobic autentykacje z filmiku
-
-refaktoryzacja
