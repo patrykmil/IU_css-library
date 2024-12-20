@@ -1,5 +1,16 @@
 services:
+  db:
+    container_name: postgresSQL
+    build:
+      context: .
+      dockerfile: docker/db/Dockerfile
+    ports:
+      - "5432:5432"
+#    networks:
+#      - pg-network
+
   web:
+    container_name: webServer
     build:
       context: .
       dockerfile: docker/nginx/Dockerfile
@@ -9,8 +20,10 @@ services:
       - .:/app/
     links:
       - php
+      - db
 
   php:
+    container_name: php
     build:
       context: .
       dockerfile: docker/php/Dockerfile
@@ -19,23 +32,15 @@ services:
       - ./docker/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
       - ./docker/php/conf.d/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
 
-  db:
-    build:
-      context: .
-      dockerfile: docker/db/Dockerfile
-    ports:
-      - "5432:5432"
-    networks:
-      - pg-network
-
   pgadmin:
+    container_name: pgAdmin
     build:
       context: .
       dockerfile: docker/pgadmin/Dockerfile
     ports:
       - "5050:80"
-    networks:
-      - pg-network
+#    networks:
+#      - pg-network
 
-networks:
-  pg-network:
+#networks:
+#  pg-network:

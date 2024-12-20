@@ -33,10 +33,10 @@ class SecurityController extends AppController
         $password = $_POST['password_input'];
 
         if (!Validator::verifyEmail($email)) {
-            return $this->render('login', ['message' => '  Invalid email!!!  ']);
+            return $this->render('login', ['message' => 'Invalid email!!!']);
         }
         if (!Validator::verifyPassword($password)) {
-            return $this->render('login', ['message' => '  Invalid password!!!  ']);
+            return $this->render('login', ['message' => 'Invalid password!!!']);
         }
         foreach ($this->users as $user) {
             if ($user->getEmail() === $email && password_verify($password, $user->getPassword())) {
@@ -44,7 +44,7 @@ class SecurityController extends AppController
             }
         }
         header('Location: /login');
-        return $this->render('login', ['message' => '  Invalid email or password!!!  ']);
+        return $this->render('login', ['message' => 'Invalid email or password!!!']);
     }
 
     public function register()
@@ -57,17 +57,17 @@ class SecurityController extends AppController
         $password = $_POST['password_input'];
 
         if (!Validator::verifyEmail($email)) {
-            return $this->render('register', ['message' => '  Invalid email!!!  ']);
+            return $this->render('register', ['message' => 'Invalid email!!!']);
         }
         if (!Validator::verifyPassword($password)) {
-            return $this->render('register', ['message' => '  Invalid password!!!  ']);
+            return $this->render('register', ['message' => 'Invalid password!!!']);
         }
         if (!Validator::verifyNickname($nickname)) {
-            return $this->render('register', ['message' => '  Invalid nickname!!!  ']);
+            return $this->render('register', ['message' => 'Invalid nickname!!!']);
         }
 
         $user = new User($email, $nickname, password_hash($password, PASSWORD_BCRYPT));
         $this->users[] = $user;
-        return $this->render('login', ['message' => '  Successfully registered!!!  ']);
+        return $this->render('login', ['message' => 'Successfully registered!!!']);
     }
 }

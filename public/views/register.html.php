@@ -33,7 +33,7 @@
         <button type='submit' class="login_button">REGISTER</button>
     </form>
     <div class="login_other_options">
-        <a href="login" class="login_option">LOG IN?</a>
+        <a href="login" class="login_option">Log in?</a>
     </div>
 </div>
 <?php if (isset($message) && $message !== "Successfully registered!!!") : ?>
