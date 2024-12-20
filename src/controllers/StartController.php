@@ -1,6 +1,7 @@
 <?php
-require_once 'AppController.php';
 
+require_once 'AppController.php';
+require_once __DIR__.'/../repositories/UserRepository.php';
 class StartController extends AppController
 {
   private static $instance = null;
@@ -17,6 +18,10 @@ class StartController extends AppController
 
   public function start()
   {
-    $this->render("start", ['name' => "Patryk"]);
+      if ($this->isGet()) {
+          $userRepository = new UserRepository();
+          $users = $userRepository->getUsers();
+          return $this->render("start", ['message' => sizeof($users)]);
+      }
   }
 }

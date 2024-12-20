@@ -5,11 +5,6 @@ class User {
     private string $nickname;
     private string $password;
 
-    /**
-     * @param string $email
-     * @param string $password
-     * @param string $nickname
-     */
     public function __construct(string $email, string $nickname, string $password)
     {
         $this->email = $email;
@@ -46,6 +41,4 @@ class User {
     {
         $this->password = $password;
     }
-
-
 }

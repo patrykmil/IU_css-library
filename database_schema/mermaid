@@ -1,0 +1,83 @@
+---
+config:
+  theme: base
+---
+erDiagram
+
+User {
+    int userID PK
+    string email
+    string nickName
+    string password
+    int avatarID FK
+}
+
+Avatar {
+    int avatarID PK
+    string avatarPath
+}
+
+User }o--|| Avatar : "has one"
+
+Component {
+    int componentID PK
+    string name
+    int setID FK
+    int typeID FK
+    string color
+    text css
+    text html
+    int authorID FK
+    string date
+}
+
+Component }o--|| User : "made"
+Component }o--o| Set : "has one or zero"
+Component }|--|| Type : "has one"
+
+Set {
+    int setID PK
+    string name
+}
+
+Type {
+    int typeID PK
+    string name
+}
+
+Tag {
+    int tagID PK
+    string name
+}
+
+ComponentTag {
+    int componentID FK
+    int tagID FK
+}
+
+Component }o--o| ComponentTag : "has"
+Tag }o--o| ComponentTag : "associated with"
+
+Likes {
+    int userID FK
+    int componentID FK
+    date likedAt
+}
+
+User }o--|| Likes : "liked"
+Component }o--|| Likes : "liked by"
+
+Bookmark {
+    int bookmarkID PK
+    int userID FK
+    string name
+}
+
+BookmarkComponent {
+    int bookmarkID FK
+    int componentID FK
+}
+
+User }o--|| Bookmark : "owns"
+BookmarkComponent }o--o{ Component : "contains"
+Bookmark }o--o{ BookmarkComponent : "included in"

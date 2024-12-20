@@ -1,6 +1,7 @@
 <?php
 
 namespace models;
+use User;
 
 class Component
 {
@@ -13,10 +14,9 @@ class Component
     private array $interactions;
     private string $css;
     private string $html;
-    private string $authorName;
-    private string $authorAvatarPath;
+    private User $author;
 
-    public function __construct(string $name, string $set, string $type, string $color, array $tags, array $interactions, string $css, string $html, string $authorName, string$authorAvatarPath ,int $id = -1)
+    public function __construct(string $name, string $set, string $type, string $color, array $tags, array $interactions, string $css, string $html, User $author ,int $id = -1)
     {
         $this->id = $id;
         $this->name = $name;
@@ -27,6 +27,7 @@ class Component
         $this->interactions = $interactions;
         $this->css = $css;
         $this->html = $html;
+        $this->author = $author;
     }
     public function getId(): int
     {
@@ -72,13 +73,9 @@ class Component
         return $this->html;
     }
 
-    public function getAuthorName(): string
+    public function getAuthor(): User
     {
-        return $this->authorName;
+        return $this->author;
     }
 
-    public function getAuthorAvatarPath(): string
-    {
-        return $this->authorAvatarPath;
-    }
 }
