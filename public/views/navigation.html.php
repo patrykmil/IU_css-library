@@ -20,12 +20,18 @@
             <li>
                 <a href="#" class="menu_item"><img src="../../assets/icons/create.svg" alt="Create Icon"/> CREATE</a>
             </li>
-            <li class="mobile_only_option">
-                <a href="#" class="menu_item">PROFILE</a>
-            </li>
-            <li class="mobile_only_option">
-                <a href="#" class="menu_item">LOG OUT</a>
-            </li>
+            <?php if (isset($_COOKIE['user_session'])): ?>
+                <li class="mobile_only_option">
+                    <a href="#" class="menu_item">PROFILE</a>
+                </li>
+                <li class="mobile_only_option">
+                    <a href="#" class="menu_item">LOG OUT</a>
+                </li>
+            <?php else: ?>
+                <li class="mobile_only_option">
+                    <a href="#" class="menu_item">LOG IN</a>
+                </li>
+            <?php endif; ?>
         </ul>
 
         <a href="#" class="mobile_menu_icon menu_item menu_show"><img src="../../assets/icons/menu.svg"
@@ -33,8 +39,12 @@
     </div>
 
     <div class="top_nav_right">
-        <img class="right_menu_item" src="../../assets/avatars/av0.svg" alt="My Avatar"/>
-        <div class="right_menu_text">LOG OUT</div>
+        <?php if (isset($_COOKIE['user_session'])): ?>
+            <img class="right_menu_item" src="../../assets/avatars/hair_green.svg" alt="My Avatar"/>
+            <div class="right_menu_text">LOG OUT</div>
+        <?php else: ?>
+            <div class="right_menu_text">LOG IN</div>
+        <?php endif; ?>
     </div>
 </nav>
 </body>
