@@ -48,6 +48,10 @@ class SecurityController extends AppController
         if (!password_verify($password, $user->getPassword())) {
             return $this->render('login', ['message' => 'Wrong password!!!']);
         }
+
+        $cookieValue = base64_encode(json_encode(['email' => $user->getEmail(), 'nickname' => $user->getNickname()]));
+        setcookie('user_session', $cookieValue, time() + (60 * 60 * 24 * 30), "/", "", true, true);
+
         return $this->render('component');
     }
 
