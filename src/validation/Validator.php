@@ -4,28 +4,28 @@ namespace validation;
 
 class Validator
 {
-    public static function verifyEmail(string $email): bool
+    public static function verifyEmail(string $email): ?string
     {
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);
         return filter_var($email, FILTER_VALIDATE_EMAIL);
     }
 
-    public static function verifyPassword(string $password): bool
+    public static function verifyPassword(string $password): ?string
     {
         $password = self::check_input($password);
         if (!preg_match('/^[A-Za-z0-9-?!%&$_]*$/', $password) || strlen($password) < 8) {
             return false;
         }
-        return true;
+        return $password;
     }
 
-    public static function verifyNickname(string $nickname): bool
+    public static function verifyNickname(string $nickname): ?string
     {
         $nickname = self::check_input($nickname);
         if (!preg_match('/^[A-Za-z0-9-?_]*$/', $nickname) || strlen($nickname) < 3) {
             return false;
         }
-        return true;
+        return $nickname;
     }
 
     private static function check_input($data)

@@ -22,9 +22,9 @@ class Routing
             $controller = call_user_func([$route['controller'], 'getInstance']);
             $method = $route['method'];
         } else {
-            require_once "src/controllers/E404Controller.php";
-            $controller = E404Controller::getInstance();
-            $method = 'e404';
+            require_once "src/controllers/ErrorController.php";
+            $controller = ErrorController::getInstance();
+            $method = 'error404';
         }
 
         $controller->$method();
@@ -54,8 +54,8 @@ class Routing
             $controller = StartController::getInstance();
             $action = 'start';
         } else {
-            require_once "src/controllers/E404Controller.php";
-            $controller = E404Controller::getInstance();
+            require_once "src/controllers/ErrorController.php";
+            $controller = ErrorController::getInstance();
             $action = 'e404';
         }
 

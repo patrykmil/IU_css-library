@@ -34,13 +34,12 @@ class DatabaseConnector
                 $this->password
             );
 
-            // set the PDO error mode to exception
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $conn;
         }
         catch(PDOException $e) {
-            //return error page
-            die("Connection failed: " . $e->getMessage());
+            $errorController = ErrorController::getInstance();
+            $errorController->error500();
         }
     }
 

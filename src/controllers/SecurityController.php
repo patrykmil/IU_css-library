@@ -2,20 +2,20 @@
 require_once 'AppController.php';
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../validation/Validator.php';
-
+require_once __DIR__ . '/../repositories/UserRepository.php';
 use validation\Validator;
 
 class SecurityController extends AppController
 {
     private static $instance = null;
-    private array $users = [];
+    private Repository $repository;
 
     private function __construct()
     {
-        $this->users[] = new User('iuadmin@iu.iu', 'admin', password_hash('adminadmin', PASSWORD_BCRYPT));
+        $this->repository = UserRepository::getInstance();
     }
 
-    public static function getInstance()
+    public static function getInstance(): ?SecurityController
     {
         if (self::$instance == null) {
             self::$instance = new SecurityController();
@@ -32,19 +32,23 @@ class SecurityController extends AppController
         $email = $_POST['email_input'];
         $password = $_POST['password_input'];
 
-        if (!Validator::verifyEmail($email)) {
+        $email = Validator::verifyEmail($email);
+        if (!$email) {
             return $this->render('login', ['message' => 'Invalid email!!!']);
         }
-        if (!Validator::verifyPassword($password)) {
+        $password = Validator::verifyPassword($password);
+        if (!$password) {
             return $this->render('login', ['message' => 'Invalid password!!!']);
         }
-        foreach ($this->users as $user) {
-            if ($user->getEmail() === $email && password_verify($password, $user->getPassword())) {
-                return $this->render('component', ['user' => $user]);
-            }
+
+        $user = $this->repository->getUserByEmail($email);
+        if ($user == null) {
+            return $this->render('login', ['message' => 'Wrong email!!!']);
         }
-        header('Location: /login');
-        return $this->render('login', ['message' => 'Invalid email or password!!!']);
+        if (!password_verify($password, $user->getPassword())) {
+            return $this->render('login', ['message' => 'Wrong password!!!']);
+        }
+        return $this->render('component');
     }
 
     public function register()
@@ -52,22 +56,30 @@ class SecurityController extends AppController
         if ($this->isGet()) {
             return $this->render("register");
         }
+
         $email = $_POST['email_input'];
         $nickname = $_POST['nickname_input'];
         $password = $_POST['password_input'];
 
-        if (!Validator::verifyEmail($email)) {
+        $email = Validator::verifyEmail($email);
+        if (!$email) {
             return $this->render('register', ['message' => 'Invalid email!!!']);
         }
-        if (!Validator::verifyPassword($password)) {
+
+        $password = Validator::verifyPassword($password);
+        if (!$password) {
             return $this->render('register', ['message' => 'Invalid password!!!']);
         }
-        if (!Validator::verifyNickname($nickname)) {
+
+        $nickname = Validator::verifyNickname($nickname);
+        if (!$nickname) {
             return $this->render('register', ['message' => 'Invalid nickname!!!']);
         }
 
         $user = new User($email, $nickname, password_hash($password, PASSWORD_BCRYPT));
-        $this->users[] = $user;
-        return $this->render('login', ['message' => 'Successfully registered!!!']);
+        if ($this->repository->addUser($user)) {
+            return $this->render('login', ['message' => 'Successfully registered!!!']);
+        }
+        return $this->render('register', ['message' => 'User with this email already exists!!!']);
     }
 }
