@@ -1,15 +1,19 @@
 <?php
 
-class User {
+class User
+{
     private string $email;
     private string $nickname;
     private string $password;
+    private int $avatarId;
     private int $id;
 
-    public function __construct(string $email, string $nickname, string $password, ?int $id = -1) {
+    public function __construct(string $email, string $nickname, string $password, ?int $avatarId = -1, ?int $id = -1)
+    {
         $this->email = $email;
         $this->nickname = $nickname;
         $this->password = $password;
+        $this->avatarId = $avatarId;
         $this->id = $id;
     }
 
@@ -51,5 +55,10 @@ class User {
     public function setId(int $id): void
     {
         $this->id = $id;
+    }
+
+    public function getAvatarId(): int
+    {
+        return $this->avatarId;
     }
 }

@@ -36,8 +36,9 @@ class UserRepository extends Repository
         return new User(
             $user['email'],
             $user['nickname'],
-            $user['password'],
-            $user['id']
+            $user['passwordhash'],
+            $user['avatarid'],
+            $user['userid']
         );
     }
 
@@ -55,7 +56,8 @@ class UserRepository extends Repository
             $user['email'],
             $user['nickname'],
             $user['passwordhash'],
-            $user['avatarid']
+            $user['avatarid'],
+            $user['userid']
         );
     }
 
@@ -72,7 +74,7 @@ class UserRepository extends Repository
             $user->getEmail(),
             $user->getNickname(),
             $user->getPassword(),
-            random_int(0,5)
+            random_int(1, 9)
         ]);
     }
 }
