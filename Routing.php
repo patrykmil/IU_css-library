@@ -7,6 +7,7 @@ class Routing
         'component' => ['controller' => 'ComponentController', 'method' => 'component'],
         'register' => ['controller' => 'SecurityController', 'method' => 'register'],
         'login' => ['controller' => 'SecurityController', 'method' => 'login'],
+        'logout' => ['controller' => 'SecurityController', 'method' => 'logout'],
         'start' => ['controller' => 'StartController', 'method' => 'start'],
         '' => ['controller' => 'StartController', 'method' => 'start']
     ];

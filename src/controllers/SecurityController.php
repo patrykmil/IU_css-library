@@ -3,6 +3,7 @@ require_once 'AppController.php';
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../validation/Validator.php';
 require_once __DIR__ . '/../repositories/UserRepository.php';
+
 use validation\Validator;
 
 class SecurityController extends AppController
@@ -51,8 +52,16 @@ class SecurityController extends AppController
 
         $cookieValue = base64_encode(json_encode(['email' => $user->getEmail(), 'nickname' => $user->getNickname()]));
         setcookie('user_session', $cookieValue, time() + (60 * 60 * 24 * 30), "/", "", true, true);
-
+        header("Location: /component");
         return $this->render('component');
+    }
+
+    public function logout()
+    {
+        setcookie('user_session', '', time() - 3600, "/");
+        $previousPage = $_SERVER['HTTP_REFERER'] ?? '/';
+        header("Location: $previousPage");
+        exit();
     }
 
     public function register()

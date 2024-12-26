@@ -91,12 +91,16 @@ nav .logo:hover {
     cursor: pointer;
 }
 
+.mobile_only_option button, .right_menu_text {
+    background: none;
+    border: none;
+}
+
 .right_menu_text {
     transition: all 0.1s;
 }
 .right_menu_text:hover {
     color: var(--primary);
-    text-decoration: line-through;
     cursor: pointer;
 }
 
