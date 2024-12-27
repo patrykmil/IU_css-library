@@ -9,6 +9,7 @@ class Routing
         'login' => ['controller' => 'SecurityController', 'method' => 'login'],
         'logout' => ['controller' => 'SecurityController', 'method' => 'logout'],
         'start' => ['controller' => 'StartController', 'method' => 'start'],
+        'browse' => ['controller' => 'BrowseController', 'method' => 'browse'],
         '' => ['controller' => 'StartController', 'method' => 'start']
     ];
 

@@ -11,14 +11,25 @@
         <img class="logo" src="../../assets/images/logo.svg" alt="Logo"/>
         <ul class="nav_options_list">
             <li>
-                <a class="menu_item"><img src="../../assets/icons/search_thick.svg" alt="Browse Icon"/>BROWSE</a>
+                <form action="/browse" method="get">
+                    <button type="submit" class="menu_item">
+                        <img src="../../assets/icons/search_thick.svg" alt="Browse Icon"/>BROWSE
+                    </button>
+                </form>
             </li>
             <li>
-                <a class="menu_item"><img src="../../assets/icons/bookmark_fill.svg"
-                                          alt="Collection Icon"/>COLLECTION</a>
+                <form action="/collection" method="get">
+                    <button type="submit" class="menu_item">
+                        <img src="../../assets/icons/bookmark_fill.svg" alt="Collection Icon"/>COLLECTION
+                    </button>
+                </form>
             </li>
             <li>
-                <a class="menu_item"><img src="../../assets/icons/create.svg" alt="Create Icon"/>CREATE</a>
+                <form action="/create" method="get">
+                    <button type="submit" class="menu_item">
+                        <img src="../../assets/icons/create.svg" alt="Create Icon"/>CREATE
+                    </button>
+                </form>
             </li>
             <?php if (isset($_COOKIE['user_session'])): ?>
                 <li class="mobile_only_option">

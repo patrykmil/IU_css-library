@@ -91,7 +91,7 @@ nav .logo:hover {
     cursor: pointer;
 }
 
-.mobile_only_option button, .right_menu_text {
+nav button {
     background: none;
     border: none;
 }

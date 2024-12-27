@@ -17,11 +17,11 @@ class ErrorController extends AppController
 
   public function error404()
   {
-    $this->render("errors/e404");
+    return $this->render("errors/e404");
   }
 
   public function error500()
   {
-    $this->render("errors/e500");
+    return $this->render("errors/e500");
   }
 }
