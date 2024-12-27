@@ -8,7 +8,7 @@ use validation\Validator;
 
 class SecurityController extends AppController
 {
-    private static $instance = null;
+    private static ?SecurityController $instance = null;
     private Repository $repository;
 
     private function __construct()

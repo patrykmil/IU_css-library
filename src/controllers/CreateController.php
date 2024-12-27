@@ -17,6 +17,6 @@ class CreateController extends AppController
 
     public function component()
     {
-        $this->render("create");
+        return $this->render("create");
     }
 }

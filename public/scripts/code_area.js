@@ -8,6 +8,10 @@ function autoExpand(textarea) {
     textarea.style.height = textarea.scrollHeight + 'px';
 }
 
+function highlightCode(element) {
+    Prism.highlightElement(element.querySelector('code'));
+}
+
 css_button.addEventListener('click', () => {
     css_textarea.classList.add('active');
     css_button.classList.add('active');
@@ -22,5 +26,12 @@ html_button.addEventListener('click', () => {
     css_button.classList.remove('active');
 });
 
-css_textarea.addEventListener('input', () => autoExpand(css_textarea));
-html_textarea.addEventListener('input', () => autoExpand(html_textarea));
+css_textarea.addEventListener('input', () => {
+    autoExpand(css_textarea);
+    highlightCode(css_textarea);
+});
+
+html_textarea.addEventListener('input', () => {
+    autoExpand(html_textarea);
+    highlightCode(html_textarea);
+});

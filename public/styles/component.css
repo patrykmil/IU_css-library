@@ -125,7 +125,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 0.3125rem 0.3125rem 0 0;
-    border: 3px solid #353839;
+    border: 3px solid var(--light-background);
 }
 
 .change_code.active {
@@ -144,7 +144,7 @@
     align-items: center;
     gap: 0.625rem;
     border-radius: 0 1.4375rem 0 0;
-    background: #353839;
+    background: var(--light-background);
     overflow: hidden;
     resize: none;
     border: none;

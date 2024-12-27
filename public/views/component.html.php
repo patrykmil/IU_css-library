@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="public/styles/component.css">
     <script src="public/scripts/mobile_menu.js" defer></script>
     <script src="public/scripts/code_area.js" defer></script>
+    <link rel="stylesheet" href="public/prism/prism.css">
+    <script src="public/prism/prism.js" defer></script>
 </head>
 
 <body>
@@ -44,8 +46,19 @@
                 <button class="change_code" id="html_button" type="button">HTML</button>
                 <button class="change_code active" id="css_button" type="button">CSS</button>
             </div>
-            <textarea class="code auto_expand" id="html_textarea" name="html" readonly>html text</textarea>
-            <textarea class="code active auto_expand" id="css_textarea" name="css" readonly>css text</textarea>
+            <pre class="code auto_expand" id="html_textarea">
+                <code class="language-html match-braces">
+                    &lt;div class="container"&gt;
+                        &lt;p&gt;This is a paragraph inside a container.&lt;/p&gt;
+                    &lt;/div&gt;
+                </code>
+            </pre>
+            <pre class="code active auto_expand" id="css_textarea" >
+                <code class="language-css match-braces">
+                    .container { display: flex; }
+                    .container &gt; p { color: red }
+                </code>
+            </pre>
         </div>
     </div>
 </div>
