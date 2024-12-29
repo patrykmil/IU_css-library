@@ -5,14 +5,12 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Login page</title>
-    <link rel="stylesheet" href="public/styles/default.css"/>
-    <link rel="stylesheet" href="public/styles/login.css"/>
+    <link rel="stylesheet" href="/public/styles/default.css"/>
+    <link rel="stylesheet" href="/public/styles/login.css"/>
 </head>
 
 <body>
-<a href="../../index.html">
-    <img class="logo" src="../../assets/images/logo.svg" alt="Logo"/>
-</a>
+<img class="logo" src="../../assets/images/logo.svg" alt="Logo"/>
 <div class="login_form_container">
     <form class="login_form" action="/login" method="POST">
         <div class="login_container">

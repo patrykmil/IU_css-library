@@ -1,5 +1,6 @@
 config.php
 TODO.txt
+public/views/component_repository_test.html.php
 
 # Default ignored files
 /shelf/

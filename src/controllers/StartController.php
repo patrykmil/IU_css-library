@@ -24,4 +24,11 @@ class StartController extends AppController
           return $this->render("start", ['message' => sizeof($users)]);
       }
   }
+
+    public function test()
+    {
+        if ($this->isGet()) {
+            return $this->render("component_repository_test");
+        }
+    }
 }

@@ -1,3 +1,11 @@
+<?php
+if (!isset($component)) {
+    require_once 'src/controllers/ErrorController.php';
+    ErrorController::getInstance()->error404();
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,12 +13,17 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Component page</title>
-    <link rel="stylesheet" href="public/styles/default.css"/>
-    <link rel="stylesheet" href="public/styles/component.css">
-    <script src="public/scripts/mobile_menu.js" defer></script>
-    <script src="public/scripts/code_area.js" defer></script>
-    <link rel="stylesheet" href="public/prism/prism.css">
-    <script src="public/prism/prism.js" defer></script>
+    <link rel="stylesheet" href="/public/styles/default.css"/>
+    <link rel="stylesheet" href="/public/styles/component.css">
+    <script src="/public/scripts/mobile_menu.js" defer></script>
+    <script src="/public/scripts/code_area.js" defer></script>
+    <link rel="stylesheet" href="/public/prism/prism.css">
+    <script src="/public/prism/prism.js" defer></script>
+    <style>
+        .component_preview {
+        <?php echo htmlspecialchars_decode($component->getCss()); ?>
+        }
+    </style>
 </head>
 
 <body>
@@ -19,26 +32,18 @@
     <div class="left_side">
         <div class="preview_container">
             <p>preview</p>
+            <div class="component_preview">
+                <?php echo htmlspecialchars_decode($component->getHtml()); ?>
+            </div>
         </div>
         <?php include 'interaction_buttons.html.php'; ?>
         <div class="tags_container">
             <div class="tags">
-                <button>
-                    simple
-                </button>
-                <button>
-                    self-made
-                </button>
-                <button>
-                    colorless
-                </button>
+                <?php foreach ($component->getTags() as $tag): ?>
+                    <button style="background-color: #<?php echo $tag->getColor(); ?>;"><?php echo $tag->getName(); ?></button>
+                <?php endforeach; ?>
             </div>
         </div>
-        <datalist id="tags">
-            <option value="simple">
-            <option value="self-made">
-            <option value="colorless">
-        </datalist>
     </div>
     <div class="right_side">
         <div class="code_container">
@@ -48,15 +53,12 @@
             </div>
             <pre class="code auto_expand" id="html_textarea">
                 <code class="language-html match-braces">
-                    &lt;div class="container"&gt;
-                        &lt;p&gt;This is a paragraph inside a container.&lt;/p&gt;
-                    &lt;/div&gt;
+                    <?php echo $component->getHtml(); ?>
                 </code>
             </pre>
-            <pre class="code active auto_expand" id="css_textarea" >
+            <pre class="code active auto_expand" id="css_textarea">
                 <code class="language-css match-braces">
-                    .container { display: flex; }
-                    .container &gt; p { color: red }
+                    <?php echo $component->getCss(); ?>
                 </code>
             </pre>
         </div>

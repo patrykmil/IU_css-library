@@ -10,12 +10,15 @@ class Routing
         'logout' => ['controller' => 'SecurityController', 'method' => 'logout'],
         'start' => ['controller' => 'StartController', 'method' => 'start'],
         'browse' => ['controller' => 'BrowseController', 'method' => 'browse'],
+        'test' => ['controller' => 'StartController', 'method' => 'test'],
         '' => ['controller' => 'StartController', 'method' => 'start']
     ];
 
     public static function run($url)
     {
-        $action = explode("/", $url)[0];
+        $urlParts = explode("/", $url);
+        $action = $urlParts[0];
+        $id = isset($urlParts[1]) ? (int)$urlParts[1] : null;
         $controller = null;
 
         if (array_key_exists($action, self::$routes)) {
@@ -28,40 +31,10 @@ class Routing
             $controller = ErrorController::getInstance();
             $method = 'error404';
         }
-
-        $controller->$method();
-    }
-}
-
-/*
- <?php
-
-class Routing
-{
-    public static function run($url)
-    {
-        $action = explode("/", $url)[0];
-        $controller = null;
-
-        if (in_array($action, ["component"])) {
-            require_once "src/controllers/ComponentController.php";
-            $controller = ComponentController::getInstance();
-            $action = 'component';
-        } elseif (in_array($action, ["register", "login"])) {
-            require_once "src/controllers/SecurityController.php";
-            $controller = SecurityController::getInstance();
-            $action = 'login';
-        } elseif (in_array($action, ["start", ""])) {
-            require_once "src/controllers/StartController.php";
-            $controller = StartController::getInstance();
-            $action = 'start';
+        if ($id !== null) {
+            $controller->$method($id);
         } else {
-            require_once "src/controllers/ErrorController.php";
-            $controller = ErrorController::getInstance();
-            $action = 'e404';
+            $controller->$method();
         }
-
-        $controller->$action();
     }
 }
-*/

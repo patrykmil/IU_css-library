@@ -5,8 +5,8 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Browse components</title>
-    <link rel="stylesheet" href="public/styles/default.css"/>
-    <link rel="stylesheet" href="public/styles/browse.css"/>
+    <link rel="stylesheet" href="/public/styles/default.css"/>
+    <link rel="stylesheet" href="/public/styles/browse.css"/>
 </head>
 
 <body>
@@ -17,7 +17,7 @@
             <p>Browse all elements</p>
         </div>
         <div id="search">
-            <img class="search_icon" src="assets/icons/search_thick_grey.svg" alt="Search icon">
+            <img class="search_icon" src="/assets/icons/search_thick_grey.svg" alt="Search icon">
             <input class="search_bar" type="text" placeholder="Search using names or tags">
         </div>
     </div>

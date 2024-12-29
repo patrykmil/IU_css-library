@@ -18,6 +18,9 @@
     aspect-ratio: 5/3;
     border-radius: 0.5rem;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .preview_container > p {
@@ -69,7 +72,6 @@
     gap: 0.625rem;
     border: none;
     border-radius: 0.8rem;
-    background-color: #89bd9e;
     font-size: var(--big-font);
 }
 

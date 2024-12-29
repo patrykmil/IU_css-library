@@ -50,10 +50,10 @@ class SecurityController extends AppController
             return $this->render('login', ['message' => 'Wrong password!!!']);
         }
 
-        $cookieValue = base64_encode(json_encode(['email' => $user->getEmail(), 'nickname' => $user->getNickname()]));
+        $cookieValue = base64_encode(json_encode(['email' => $user->getEmail(), 'nickname' => $user->getNickname(), 'admin' => $user->isAdminstrator(), 'avatar' => $user->getAvatar()]));
         setcookie('user_session', $cookieValue, time() + (60 * 60 * 24 * 30), "/", "", true, true);
-        header("Location: /component");
-        return $this->render('component');
+        header("Location: /browse");
+        exit();
     }
 
     public function logout()
@@ -89,7 +89,9 @@ class SecurityController extends AppController
             return $this->render('register', ['message' => 'Invalid nickname!!!']);
         }
 
-        $user = new User($email, $nickname, password_hash($password, PASSWORD_BCRYPT));
+        $user = new User($nickname);
+        $user->setEmail($email);
+        $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
         if ($this->repository->addUser($user)) {
             return $this->render('login', ['message' => 'Successfully registered!!!']);
         }

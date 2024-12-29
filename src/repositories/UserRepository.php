@@ -33,13 +33,12 @@ class UserRepository extends Repository
         if (!$user) {
             return null;
         }
-        return new User(
-            $user['email'],
-            $user['nickname'],
-            $user['passwordhash'],
-            $user['avatarid'],
-            $user['userid']
-        );
+        $userObject = new User($user['nickname']);
+        $userObject->setEmail($user['email']);
+        $userObject->setId($user['userid']);
+        $avatar = $this->getUserAvatar($user['avatarid']);
+        $userObject->setAvatar($avatar);
+        return $userObject;
     }
 
     public function getUserByEmail(string $email): ?User
@@ -52,13 +51,26 @@ class UserRepository extends Repository
         if (!$user) {
             return null;
         }
-        return new User(
-            $user['email'],
-            $user['nickname'],
-            $user['passwordhash'],
-            $user['avatarid'],
-            $user['userid']
-        );
+        $userObject = new User($user['nickname']);
+        $userObject->setEmail($user['email']);
+        $userObject->setId($user['userid']);
+        $userObject->setPassword($user['passwordhash']);
+        $avatar = $this->getUserAvatar($user['avatarid']);
+        $userObject->setAvatar($avatar);
+        return $userObject;
+    }
+
+    public function getUserAvatar(int $avatarId): ?string
+    {
+        $stmt = $this->database->connect()->prepare('
+            SELECT avatarpath FROM public."Avatar" WHERE avatarid = :avatarId');
+        $stmt->bindParam(':avatarId', $avatarId, PDO::PARAM_INT);
+        $stmt->execute();
+        $avatar = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$avatar) {
+            return null;
+        }
+        return $avatar['avatarpath'];
     }
 
     public function addUser(User $user): bool
@@ -67,9 +79,9 @@ class UserRepository extends Repository
             return false;
         }
         $stmt = $this->database->connect()->prepare('
-            INSERT INTO public."User" (email, nickname, passwordhash, avatarid)
-            VALUES (?, ?, ?, ?)
-        ');
+        INSERT INTO public."User" (email, nickname, passwordhash, avatarid)
+        VALUES (?, ?, ?, ?)
+    ');
         return $stmt->execute([
             $user->getEmail(),
             $user->getNickname(),

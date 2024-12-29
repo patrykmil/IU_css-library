@@ -5,16 +5,15 @@ class User
     private string $email;
     private string $nickname;
     private string $password;
-    private int $avatarId;
+    private string $avatar;
     private int $id;
 
-    public function __construct(string $email, string $nickname, string $password, ?int $avatarId = -1, ?int $id = -1)
+    private bool $isAdministrator;
+
+    public function __construct(string $nickname, bool $isAdministrator = false)
     {
-        $this->email = $email;
         $this->nickname = $nickname;
-        $this->password = $password;
-        $this->avatarId = $avatarId;
-        $this->id = $id;
+        $this->isAdministrator = $isAdministrator;
     }
 
     public function getEmail(): string
@@ -57,8 +56,28 @@ class User
         $this->id = $id;
     }
 
-    public function getAvatarId(): int
+    public function getAvatar(): string
     {
-        return $this->avatarId;
+        return $this->avatar;
+    }
+
+    public function setAvatar(string $avatar): void
+    {
+        $this->avatar = $avatar;
+    }
+
+    public function getEveythingJSON()
+    {
+        return json_encode([
+            'email' => $this->email,
+            'nickname' => $this->nickname,
+            'avatar' => $this->avatar,
+            'id' => $this->id
+        ]);
+    }
+
+    public function isAdminstrator()
+    {
+        return $this->isAdministrator;
     }
 }

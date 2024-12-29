@@ -1,8 +1,16 @@
+<?php
+$avatarUrl = null;
+if (isset($_COOKIE['user_session'])) {
+    $cookieData = json_decode(base64_decode($_COOKIE['user_session']), true);
+    $avatarUrl = $cookieData['avatar'] ?? null;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" href="public/styles/navigation.css">
+    <link rel="stylesheet" href="/public/styles/navigation.css">
 </head>
 
 <body>
@@ -55,7 +63,9 @@
 
     <div class="top_nav_right">
         <?php if (isset($_COOKIE['user_session'])): ?>
-            <img class="right_menu_item" src="../../assets/avatars/hair_green.svg" alt="My Avatar"/>
+            <img class="right_menu_item"
+                 src="../../assets/avatars/<?php echo $avatarUrl; ?>"
+                 alt="My Avatar"/>
             <form action="/logout" method="post">
                 <button type="submit" class="right_menu_text">LOG OUT</button>
             </form>

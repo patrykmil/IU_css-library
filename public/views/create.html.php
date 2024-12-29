@@ -5,10 +5,10 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Component page</title>
-    <link rel="stylesheet" href="public/styles/default.css"/>
-    <link rel="stylesheet" href="public/styles/component.css">
-    <script src="public/scripts/mobile_menu.js" defer></script>
-    <script src="public/scripts/code_area.js" defer></script>
+    <link rel="stylesheet" href="/public/styles/default.css"/>
+    <link rel="stylesheet" href="/public/styles/component.css">
+    <script src="/public/scripts/mobile_menu.js" defer></script>
+    <script src="/public/scripts/code_area.js" defer></script>
 </head>
 
 <body>

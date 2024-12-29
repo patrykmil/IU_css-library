@@ -1,7 +1,6 @@
 <?php
 
-namespace models;
-use User;
+require_once 'User.php';
 
 class Component
 {
@@ -11,12 +10,12 @@ class Component
     private string $type;
     private string $color;
     private array $tags;
-    private array $interactions;
+    private int $likes;
     private string $css;
     private string $html;
     private User $author;
 
-    public function __construct(string $name, string $set, string $type, string $color, array $tags, array $interactions, string $css, string $html, User $author ,int $id = -1)
+    public function __construct(string $name, string $set, string $type, string $color, array $tags, int $likes, string $css, string $html, User $author ,int $id = -1)
     {
         $this->id = $id;
         $this->name = $name;
@@ -24,7 +23,7 @@ class Component
         $this->type = $type;
         $this->color = $color;
         $this->tags = $tags;
-        $this->interactions = $interactions;
+        $this->likes = $likes;
         $this->css = $css;
         $this->html = $html;
         $this->author = $author;
@@ -58,9 +57,9 @@ class Component
         return $this->tags;
     }
 
-    public function getInteractions(): array
+    public function getLikes(): int
     {
-        return $this->interactions;
+        return $this->likes;
     }
 
     public function getCss(): string
@@ -78,4 +77,24 @@ class Component
         return $this->author;
     }
 
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getEveythingJSON(): false|string
+    {
+        return json_encode([
+            'id' => $this->id,
+            'name' => $this->name,
+            'set' => $this->set,
+            'type' => $this->type,
+            'color' => $this->color,
+            'tag1' => $this->tags[0]->getEveythingJSON(),
+            'likes' => $this->likes,
+            'css' => $this->css,
+            'html' => $this->html,
+            'author' => $this->author->getEveythingJSON()
+        ]);
+    }
 }

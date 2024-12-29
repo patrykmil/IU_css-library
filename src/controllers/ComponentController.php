@@ -15,8 +15,16 @@ class ComponentController extends AppController
         return self::$instance;
     }
 
-    public function component()
+    public function component(int $id)
     {
-        $this->render("component");
+        require_once 'src/models/Component.php';
+        require_once 'src/models/User.php';
+        require_once 'src/repositories/ComponentRepository.php';
+        require_once 'src/repositories/UserRepository.php';
+
+        $repository = ComponentRepository::getInstance();
+        $component = $repository->getComponentById($id);
+
+        $this->render("component", ['component' => $component]);
     }
 }

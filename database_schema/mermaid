@@ -1,15 +1,12 @@
----
-config:
-  theme: base
----
 erDiagram
 
 User {
     int userID PK
     string email
-    string nickName
-    string password
+    string nickname
+    string passwordHash
     int avatarID FK
+    boolean isAdmin
 }
 
 Avatar {
@@ -17,27 +14,10 @@ Avatar {
     string avatarPath
 }
 
-User }o--|| Avatar : "has one"
-
-Component {
-    int componentID PK
-    string name
-    int setID FK
-    int typeID FK
-    string color
-    text css
-    text html
-    int authorID FK
-    string date
-}
-
-Component }o--|| User : "made"
-Component }o--o| Set : "has one or zero"
-Component }|--|| Type : "has one"
-
 Set {
     int setID PK
     string name
+    int ownerID FK
 }
 
 Type {
@@ -45,9 +25,27 @@ Type {
     string name
 }
 
+Color {
+    int colorID PK
+    string hex
+}
+
+Component {
+    int componentID PK
+    string name
+    int setID FK
+    int typeID FK
+    int colorID FK
+    text css
+    text html
+    int authorID FK
+    timestamp createdAt
+}
+
 Tag {
     int tagID PK
     string name
+    int colorID FK
 }
 
 ComponentTag {
@@ -55,17 +53,11 @@ ComponentTag {
     int tagID FK
 }
 
-Component }o--o| ComponentTag : "has"
-Tag }o--o| ComponentTag : "associated with"
-
 Likes {
     int userID FK
     int componentID FK
-    date likedAt
+    timestamp likedAt
 }
-
-User }o--|| Likes : "liked"
-Component }o--|| Likes : "liked by"
 
 Bookmark {
     int bookmarkID PK
@@ -78,6 +70,18 @@ BookmarkComponent {
     int componentID FK
 }
 
+User }o--|| Avatar : "has one"
+User }o--|| Set : "owns"
+User }o--|| Component : "authored"
+User }o--|| Likes : "liked"
 User }o--|| Bookmark : "owns"
-BookmarkComponent }o--o{ Component : "contains"
-Bookmark }o--o{ BookmarkComponent : "included in"
+
+Set }o--|| Component : "contains"
+Type }o--|| Component : "typed"
+Color }o--|| Component : "colored"
+Color }o--|| Tag : "colored"
+Component }o--|| Likes : "liked by"
+Component }o--o| ComponentTag : "tagged with"
+Tag }o--o| ComponentTag : "tags"
+Bookmark }o--o| BookmarkComponent : "contains"
+BookmarkComponent }o--|| Component : "includes"

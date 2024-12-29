@@ -76,6 +76,7 @@ main {
     display: block flex;
     flex-flow: row nowrap;
     gap: 0.5rem;
+    align-items: center;
 }
 
 .filter > p {
