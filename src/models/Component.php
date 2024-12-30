@@ -1,6 +1,7 @@
 <?php
 
 require_once 'User.php';
+require_once 'Tag.php';
 
 class Component
 {
@@ -15,7 +16,18 @@ class Component
     private string $html;
     private User $author;
 
-    public function __construct(string $name, string $set, string $type, string $color, array $tags, int $likes, string $css, string $html, User $author ,int $id = -1)
+    public function __construct(
+        string $name,
+        string $set,
+        string $type,
+        string $color,
+        array  $tags,
+        int    $likes,
+        string $css,
+        string $html,
+        User   $author,
+        int    $id = -1
+    )
     {
         $this->id = $id;
         $this->name = $name;
@@ -28,6 +40,7 @@ class Component
         $this->html = $html;
         $this->author = $author;
     }
+
     public function getId(): int
     {
         return $this->id;
@@ -52,6 +65,7 @@ class Component
     {
         return $this->color;
     }
+
     public function getTags(): array
     {
         return $this->tags;
@@ -82,7 +96,7 @@ class Component
         $this->id = $id;
     }
 
-    public function getEveythingJSON(): false|string
+    public function toJson(): string
     {
         return json_encode([
             'id' => $this->id,
@@ -90,11 +104,11 @@ class Component
             'set' => $this->set,
             'type' => $this->type,
             'color' => $this->color,
-            'tag1' => $this->tags[0]->getEveythingJSON(),
+            'tags' => array_map(fn($tag) => $tag->toJson(), $this->tags),
             'likes' => $this->likes,
             'css' => $this->css,
             'html' => $this->html,
-            'author' => $this->author->getEveythingJSON()
+            'author' => $this->author->toJson()
         ]);
     }
 }

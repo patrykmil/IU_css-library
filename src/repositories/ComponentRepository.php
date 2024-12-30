@@ -6,14 +6,13 @@ require_once 'src/models/Component.php';
 require_once 'src/models/User.php';
 require_once 'src/models/Tag.php';
 
-
 class ComponentRepository extends Repository
 {
-    private static $instance = null;
+    private static ?ComponentRepository $instance = null;
 
-    public static function getInstance()
+    public static function getInstance(): ComponentRepository
     {
-        if (self::$instance == null) {
+        if (self::$instance === null) {
             self::$instance = new ComponentRepository();
         }
         return self::$instance;
@@ -21,15 +20,20 @@ class ComponentRepository extends Repository
 
     public function getTags(int $componentID): array
     {
-        $stmt = $this->database->connect()->prepare('
-            SELECT tagid FROM public."ComponentTag" WHERE componentid = :id');
+        $query = 'SELECT tagid FROM public."ComponentTag" WHERE componentid = :id';
+        $stmt = $this->database->connect()->prepare($query);
         $stmt->bindParam(':id', $componentID, PDO::PARAM_INT);
         $stmt->execute();
-        $tagIdList = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+        $tagsIdList = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+
         $tags = [];
-        foreach ($tagIdList as $tagId) {
-            $stmt = $this->database->connect()->prepare('
-                SELECT * FROM public."Tag" JOIN public."Color" USING (colorid) WHERE tagid = :id');
+        if (!$tagsIdList) {
+            return $tags;
+        }
+
+        $query = 'SELECT * FROM public."Tag" JOIN public."Color" USING (colorid) WHERE tagid = :id';
+        foreach ($tagsIdList as $tagId) {
+            $stmt = $this->database->connect()->prepare($query);
             $stmt->bindParam(':id', $tagId, PDO::PARAM_INT);
             $stmt->execute();
             $tag = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -40,8 +44,8 @@ class ComponentRepository extends Repository
 
     public function getComponents(): array
     {
-        $stmt = $this->database->connect()->prepare('
-            SELECT 
+        $query = '
+            SELECT
                 "Component".componentid,
                 "Component".name,
                 "Component".css,
@@ -51,21 +55,17 @@ class ComponentRepository extends Repository
                 "Type".name as typename,
                 "Set".name as setname
             FROM public."Component"
-                left join public."Color" using (colorid) 
-                left join public."Set" using (setid) 
-                left join public."Type" using (typeid)
-                ');
+                LEFT JOIN public."Color" USING (colorid)
+                LEFT JOIN public."Set" USING (setid)
+                LEFT JOIN public."Type" USING (typeid)
+        ';
+        $stmt = $this->database->connect()->prepare($query);
         $stmt->execute();
         $componentList = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         $components = [];
         foreach ($componentList as $component) {
-            $likes = 0;
-            $stmt = $this->database->connect()->prepare('
-            SELECT count(*) FROM public."Likes" WHERE componentid = :id
-            ');
-            $stmt->bindParam(':id', $component['componentid'], PDO::PARAM_INT);
-            $stmt->execute();
-            $likes = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+            $likes = $this->getComponentLikes($component['componentid']);
             $components[] = new Component(
                 $component['name'],
                 $component['setname'],
@@ -84,8 +84,8 @@ class ComponentRepository extends Repository
 
     public function getComponentById(int $id): ?Component
     {
-        $stmt = $this->database->connect()->prepare('
-            SELECT 
+        $query = '
+            SELECT
                 "Component".componentid,
                 "Component".name,
                 "Component".css,
@@ -95,35 +95,40 @@ class ComponentRepository extends Repository
                 "Type".name as typename,
                 "Set".name as setname
             FROM public."Component"
-                left join public."Color" using (colorid) 
-                left join public."Set" using (setid) 
-                left join public."Type" using (typeid)
+                LEFT JOIN public."Color" USING (colorid)
+                LEFT JOIN public."Set" USING (setid)
+                LEFT JOIN public."Type" USING (typeid)
             WHERE componentid = :id
-            ');
+        ';
+        $stmt = $this->database->connect()->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $component = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($component == false) {
+
+        if (!$component) {
             return null;
         }
-        $likes = 0;
-        $stmt = $this->database->connect()->prepare('
-            SELECT count(*) FROM public."Likes" WHERE componentid = :id
-            ');
-        $stmt->bindParam(':id', $component['componentid'], PDO::PARAM_INT);
-        $stmt->execute();
-        $likes = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+
         return new Component(
             $component['name'],
             $component['setname'],
             $component['typename'],
             $component['hex'],
             $this->getTags($component['componentid']),
-            $likes,
+            $this->getComponentLikes($component['componentid']),
             $component['css'],
             $component['html'],
             UserRepository::getInstance()->getUserById($component['authorid']),
             $component['componentid']
         );
+    }
+
+    private function getComponentLikes(int $componentId): int
+    {
+        $query = 'SELECT count(*) FROM public."Likes" WHERE componentid = :id';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':id', $componentId, PDO::PARAM_INT);
+        $stmt->execute();
+        return (int)$stmt->fetch(PDO::FETCH_ASSOC)['count'];
     }
 }

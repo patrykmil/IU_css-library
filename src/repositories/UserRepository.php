@@ -5,9 +5,9 @@ require_once 'Repository.php';
 
 class UserRepository extends Repository
 {
-    private static $instance = null;
+    private static ?UserRepository $instance = null;
 
-    public static function getInstance()
+    public static function getInstance(): UserRepository
     {
         if (self::$instance == null) {
             self::$instance = new UserRepository();
@@ -17,16 +17,16 @@ class UserRepository extends Repository
 
     public function getUsers(): array
     {
-        $stmt = $this->database->connect()->prepare('
-            SELECT * FROM public."User"');
+        $query = 'SELECT * FROM public."User"';
+        $stmt = $this->database->connect()->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getUserById(int $id): ?User
     {
-        $stmt = $this->database->connect()->prepare('
-            SELECT * FROM public."User" WHERE userid = :id');
+        $query = 'SELECT * FROM public."User" WHERE userid = :id';
+        $stmt = $this->database->connect()->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -43,8 +43,8 @@ class UserRepository extends Repository
 
     public function getUserByEmail(string $email): ?User
     {
-        $stmt = $this->database->connect()->prepare('
-            SELECT * FROM public."User" WHERE email = :email');
+        $query = 'SELECT * FROM public."User" WHERE email = :email';
+        $stmt = $this->database->connect()->prepare($query);
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -62,8 +62,8 @@ class UserRepository extends Repository
 
     public function getUserAvatar(int $avatarId): ?string
     {
-        $stmt = $this->database->connect()->prepare('
-            SELECT avatarpath FROM public."Avatar" WHERE avatarid = :avatarId');
+        $query = 'SELECT avatarpath FROM public."Avatar" WHERE avatarid = :avatarId';
+        $stmt = $this->database->connect()->prepare($query);
         $stmt->bindParam(':avatarId', $avatarId, PDO::PARAM_INT);
         $stmt->execute();
         $avatar = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -78,10 +78,8 @@ class UserRepository extends Repository
         if ($this->getUserByEmail($user->getEmail())) {
             return false;
         }
-        $stmt = $this->database->connect()->prepare('
-        INSERT INTO public."User" (email, nickname, passwordhash, avatarid)
-        VALUES (?, ?, ?, ?)
-    ');
+        $query = 'INSERT INTO public."User" (email, nickname, passwordhash, avatarid) VALUES (?, ?, ?, ?)';
+        $stmt = $this->database->connect()->prepare($query);
         return $stmt->execute([
             $user->getEmail(),
             $user->getNickname(),

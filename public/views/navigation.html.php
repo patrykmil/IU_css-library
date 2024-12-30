@@ -1,7 +1,9 @@
 <?php
+require_once __DIR__ . '/../../src/utilities/Decoder.php';
+
 $avatarUrl = null;
-if (isset($_COOKIE['user_session'])) {
-    $cookieData = json_decode(base64_decode($_COOKIE['user_session']), true);
+$cookieData = Decoder::decodeUserSession();
+if ($cookieData) {
     $avatarUrl = $cookieData['avatar'] ?? null;
 }
 ?>
@@ -11,6 +13,7 @@ if (isset($_COOKIE['user_session'])) {
 
 <head>
     <link rel="stylesheet" href="/public/styles/navigation.css">
+    <script src="/public/scripts/mobile_menu.js" defer></script>
 </head>
 
 <body>

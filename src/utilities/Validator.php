@@ -1,6 +1,6 @@
 <?php
 
-namespace validation;
+namespace utilities;
 
 class Validator
 {
@@ -28,7 +28,7 @@ class Validator
         return $nickname;
     }
 
-    private static function check_input($data)
+    private static function check_input($data): ?string
     {
         $data = trim($data);
         $data = stripslashes($data);

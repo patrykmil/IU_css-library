@@ -2,8 +2,8 @@
 
 class Routing
 {
-    private static $routes = [
-        'create' => ['controller' => 'CreateController', 'method' => 'component'],
+    private static array $routes = [
+        'create' => ['controller' => 'CreateController', 'method' => 'create'],
         'component' => ['controller' => 'ComponentController', 'method' => 'component'],
         'register' => ['controller' => 'SecurityController', 'method' => 'register'],
         'login' => ['controller' => 'SecurityController', 'method' => 'login'],
@@ -14,7 +14,7 @@ class Routing
         '' => ['controller' => 'StartController', 'method' => 'start']
     ];
 
-    public static function run($url)
+    public static function run($url): void
     {
         $urlParts = explode("/", $url);
         $action = $urlParts[0];

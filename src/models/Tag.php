@@ -28,7 +28,7 @@ class Tag
         return $this->color;
     }
 
-    public function getEveythingJSON()
+    public function toJson(): string
     {
         return json_encode([
             'id' => $this->id,

@@ -26,14 +26,11 @@ main {
     margin-left: 3rem;
 }
 
-.top_search > #search {
-    flex: 3;
-}
-
 #search {
     position: relative;
     display: flex;
     align-items: center;
+    flex: 3;
 }
 
 .search_icon {
@@ -64,22 +61,52 @@ main {
     flex-flow: row wrap;
 }
 
-.filter {
+.sort {
+    margin-left: 3rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 4px;
+}
+
+.sort > select {
+    font-size: var(--big-font);
+    background-color: inherit;
+    border: var(--primary) 2px solid;
+    border-radius: 0.5rem;
+    padding: 0.3rem 0;
+}
+
+.sort > select:focus {
+    outline: none;
+}
+
+.sort > select:hover {
+    cursor: pointer;
+}
+
+.sort > select > option {
+    font-size: var(--big-font);
+    color: var(--primary);
+    background-color: var(--background);
+}
+
+.types {
     display: flex;
     flex-flow: column nowrap;
     width: 10rem;
-    padding-left: 3rem;
+    margin-left: 3rem;
     gap: 0.5rem;
 }
 
-.filter > div {
+.types > div {
     display: block flex;
     flex-flow: row nowrap;
     gap: 0.5rem;
     align-items: center;
 }
 
-.filter > p {
+.filter p {
     display: inline;
 }
 
@@ -124,13 +151,53 @@ main {
     border-color: var(--primary);
 }
 
+.filter_mobile_only {
+    display: none;
+}
+
+.content {
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
 
 @media (max-width: 900px) {
-    .top_search > #text > p {
+    .top_search > #text {
         display: none;
     }
 
     .top_search {
-        gap: unset;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+
+    #search {
+        flex: unset;
+        width: 80%;
+    }
+
+    .bottom {
+        flex-flow: column nowrap;
+    }
+
+    main {
+        margin-top: 60px;
+    }
+
+
+    .filter {
+        display: none;
+    }
+
+    .filter_mobile_only {
+        background-color: inherit;
+        color: var(--primary);
+        font-size: var(--big-font);
+        display: inline flex;
+        justify-content: center;
+        border: var(--light-background) 2px solid;
+        padding: 0.5rem 1rem;
+        max-width: 100px;
+        border-radius: 0.5rem;
     }
 }

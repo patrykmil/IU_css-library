@@ -7,7 +7,6 @@ class User
     private string $password;
     private string $avatar;
     private int $id;
-
     private bool $isAdministrator;
 
     public function __construct(string $nickname, bool $isAdministrator = false)
@@ -66,7 +65,12 @@ class User
         $this->avatar = $avatar;
     }
 
-    public function getEveythingJSON()
+    public function isAdministrator(): bool
+    {
+        return $this->isAdministrator;
+    }
+
+    public function toJson(): string
     {
         return json_encode([
             'email' => $this->email,
@@ -76,8 +80,4 @@ class User
         ]);
     }
 
-    public function isAdminstrator()
-    {
-        return $this->isAdministrator;
-    }
 }

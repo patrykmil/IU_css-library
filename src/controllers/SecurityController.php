@@ -1,10 +1,10 @@
 <?php
 require_once 'AppController.php';
 require_once __DIR__ . '/../models/User.php';
-require_once __DIR__ . '/../validation/Validator.php';
+require_once __DIR__ . '/../utilities/Validator.php';
 require_once __DIR__ . '/../repositories/UserRepository.php';
 
-use validation\Validator;
+use utilities\Validator;
 
 class SecurityController extends AppController
 {
@@ -50,7 +50,12 @@ class SecurityController extends AppController
             return $this->render('login', ['message' => 'Wrong password!!!']);
         }
 
-        $cookieValue = base64_encode(json_encode(['email' => $user->getEmail(), 'nickname' => $user->getNickname(), 'admin' => $user->isAdminstrator(), 'avatar' => $user->getAvatar()]));
+        $cookieValue = base64_encode(json_encode([
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'nickname' => $user->getNickname(),
+            'admin' => $user->isAdministrator(),
+            'avatar' => $user->getAvatar()]));
         setcookie('user_session', $cookieValue, time() + (60 * 60 * 24 * 30), "/", "", true, true);
         header("Location: /browse");
         exit();
@@ -92,6 +97,7 @@ class SecurityController extends AppController
         $user = new User($nickname);
         $user->setEmail($email);
         $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
+
         if ($this->repository->addUser($user)) {
             return $this->render('login', ['message' => 'Successfully registered!!!']);
         }

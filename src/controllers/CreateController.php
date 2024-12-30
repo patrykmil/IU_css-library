@@ -1,11 +1,14 @@
 <?php
 require_once 'AppController.php';
+require_once __DIR__ . '/../utilities/Decoder.php';
 
 class CreateController extends AppController
 {
     private static $instance = null;
 
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     public static function getInstance()
     {
@@ -15,8 +18,14 @@ class CreateController extends AppController
         return self::$instance;
     }
 
-    public function component()
+    public function create()
     {
-        return $this->render("create");
+        $sessionInfo = Decoder::decodeUserSession();
+        if ($this->isGet()) {
+            if (!$sessionInfo) {
+                return $this->render('login', ['message' => 'You need to log in first!']);
+            }
+            return $this->render('create', ['userID' => $sessionInfo['id']]);
+        }
     }
 }

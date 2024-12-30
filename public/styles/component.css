@@ -107,7 +107,7 @@
     gap: 3rem;
 }
 
-.left_side > p {
+.right_side > p {
     font-size: var(--double-font);
     font-weight: 500;
     color: var(--text-color-dark);
@@ -150,6 +150,12 @@
     overflow: hidden;
     resize: none;
     border: none;
+}
+
+.code::placeholder {
+    color: var(--text-color-dark);
+    font-size: var(--big-font);
+    font-weight: 400;
 }
 
 .code.active {
