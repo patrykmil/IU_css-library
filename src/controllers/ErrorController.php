@@ -3,11 +3,11 @@ require_once 'AppController.php';
 
 class ErrorController extends AppController
 {
-  private static $instance = null;
+  private static ?ErrorController $instance = null;
 
   private function __construct() {}
 
-  public static function getInstance()
+  public static function getInstance(): ErrorController
   {
     if (self::$instance == null) {
       self::$instance = new ErrorController();

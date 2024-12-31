@@ -15,7 +15,7 @@ if (!isset($component)) {
     <title>Component page</title>
     <link rel="stylesheet" href="/public/styles/default.css"/>
     <link rel="stylesheet" href="/public/styles/component.css">
-    <script src="/public/scripts/code_area.js" defer></script>
+    <script src="/public/scripts/change_code.js" defer></script>
     <link rel="stylesheet" href="/public/prism/prism.css">
     <script src="/public/prism/prism.js" defer></script>
     <style>

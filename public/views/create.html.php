@@ -18,25 +18,33 @@ $tags = $repo->getTagNames();
     <title>Component page</title>
     <link rel="stylesheet" href="/public/styles/default.css"/>
     <link rel="stylesheet" href="/public/styles/component.css">
+    <link rel="stylesheet" href="/public/styles/create.css">
+    <script src="/public/scripts/change_code.js" defer></script>
     <script src="/public/scripts/code_area.js" defer></script>
+    <script src="/public/scripts/update_preview.js" defer></script>
+    <script src="/public/scripts/choose_tags.js" defer></script>
+    <script src="/public/scripts/inputs_validation.js" defer></script>
+    <script src="/public/scripts/send_new_tag.js" defer></script>
 </head>
 
 <body>
 <?php include 'navigation.html.php'; ?>
-<form class="new_component_form" action="create_component" method="post">
+<form class="new_component_form" action="create" method="post">
     <div class="main">
         <div class="left_side">
             <div class="preview_container">
                 <p>preview</p>
+                <div class="content">
+
+                </div>
             </div>
             <div class="inputs_container">
                 <input class="info_input" type="text" placeholder="Name" name="name">
                 <input class="info_input" list="types" placeholder="Type" name="type">
                 <input class="info_input" list="sets" placeholder="Set" name="set">
                 <input class="info_input" type="text" placeholder="Color" name="color">
-                <input class="info_input" list="tags" placeholder="Tags" name="tags">
+                <input class="info_input" list="tags" placeholder="Tags" id="tags_input">
                 <div class="tags">
-                    <!--                add js-->
                 </div>
                 <datalist id="types">
                     <?php
@@ -71,7 +79,8 @@ $tags = $repo->getTagNames();
                     <button class="change_code active" id="css_button" type="button">CSS</button>
                 </div>
                 <textarea class="code auto_expand" id="html_textarea" name="html" placeholder="Enter HTML"></textarea>
-                <textarea class="code active auto_expand" id="css_textarea" name="css" placeholder="Enter CSS"></textarea>
+                <textarea class="code active auto_expand" id="css_textarea" name="css"
+                          placeholder="Enter CSS"></textarea>
             </div>
         </div>
     </div>

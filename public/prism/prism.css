@@ -49,7 +49,7 @@ pre[class*=language-] {
 }
 
 .token.deleted, .token.namespace, .token.tag {
-    color: var(--accent-orange);
+    color: var(--accent-green);
 }
 
 .token.function-name {

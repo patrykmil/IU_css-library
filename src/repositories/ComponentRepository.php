@@ -1,10 +1,13 @@
 <?php
 
+use utilities\Validator;
+
 require_once 'Repository.php';
 require_once 'UserRepository.php';
 require_once 'src/models/Component.php';
 require_once 'src/models/User.php';
 require_once 'src/models/Tag.php';
+require_once 'src/utilities/Validator.php';
 
 class ComponentRepository extends Repository
 {
@@ -130,5 +133,89 @@ class ComponentRepository extends Repository
         $stmt->bindParam(':id', $componentId, PDO::PARAM_INT);
         $stmt->execute();
         return (int)$stmt->fetch(PDO::FETCH_ASSOC)['count'];
+    }
+
+    public function createComponent(string $name, string $type, string $set, string $color, array $tags, int $userID, string $css, string $html): void
+    {
+        $name = Validator::check_input($name);
+        $type = Validator::check_input($type);
+        $set = Validator::check_input($set);
+        $color = Validator::check_input($color);
+        $css = Validator::check_input($css);
+        $html = Validator::check_input($html);
+
+        if (
+            !$name || !$type || !$set || !$color || !$css || !$html) {
+            ErrorController::getInstance()->error404();
+        }
+
+        $query = 'SELECT typeid FROM public."Type" WHERE name = :type';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':type', $type, PDO::PARAM_STR);
+        $stmt->execute();
+        $typeId = $stmt->fetch(PDO::FETCH_ASSOC)['typeid'];
+        if (!$typeId) {
+            throw new Exception('Type not found');
+        }
+
+        $query = 'SELECT setid FROM public."Set" WHERE name = :set';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':set', $set, PDO::PARAM_STR);
+        $stmt->execute();
+        $setId = $stmt->fetch(PDO::FETCH_ASSOC)['setid'];
+        if (!$setId) {
+            throw new Exception('Set not found');
+        }
+
+        $query = 'SELECT colorid FROM public."Color" WHERE hex = :color';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':color', $color, PDO::PARAM_STR);
+        $stmt->execute();
+        $colorId = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$colorId) {
+            $query = 'INSERT INTO public."Color" (hex) VALUES (:color) RETURNING colorid';
+            $stmt = $this->database->connect()->prepare($query);
+            $stmt->bindParam(':color', $color, PDO::PARAM_STR);
+            $stmt->execute();
+            $colorId = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        $colorId = $colorId['colorid'];
+        if (!$colorId) {
+            throw new Exception('Color not found');
+        }
+
+        $query = 'INSERT INTO public."Component" (name, typeid, setid, colorid, authorid, css, html) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING componentid';
+        $stmt = $this->database->connect()->prepare($query);
+        if (
+            $stmt->execute([$name, $typeId, $setId, $colorId, $userID, $css, $html])
+        ) {
+            $componentID = $stmt->fetch(PDO::FETCH_ASSOC)['componentid'];
+            $this->addTags($tags, $componentID);
+        } else {
+            throw new Exception('Failed to create component');
+        }
+    }
+
+    private function addTags(array $tags, int $componentID): void
+    {
+        $queryTagID = 'SELECT tagid FROM public."Tag" WHERE name = :name';
+        $queryInsertComponentTag = 'INSERT INTO public."ComponentTag" (componentid, tagid) VALUES (:component, :tag)';
+        foreach ($tags as $tag) {
+            $tag = Validator::check_input($tag);
+            if (!$tag) {
+                ErrorController::getInstance()->error404();
+            }
+            $stmt = $this->database->connect()->prepare($queryTagID);
+            $stmt->bindParam(':name', $tag, PDO::PARAM_STR);
+            $stmt->execute();
+            $tagID = $stmt->fetch(PDO::FETCH_ASSOC)['tagid'];
+            if ($tagID) {
+                $stmt = $this->database->connect()->prepare($queryInsertComponentTag);
+                $stmt->bindParam(':component', $componentID, PDO::PARAM_INT);
+                $stmt->bindParam(':tag', $tagID, PDO::PARAM_INT);
+                $stmt->execute();
+            }
+        }
     }
 }
