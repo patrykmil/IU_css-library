@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<?php if (!isset($components)) {
+    $components = [];
+} ?>
+
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Browse components</title>
     <link rel="stylesheet" href="/public/styles/default.css"/>
     <link rel="stylesheet" href="/public/styles/browse.css"/>
+    <script src="/public/scripts/stop_redirecting.js" defer></script>
 </head>
 
 <body>
@@ -23,7 +28,7 @@
         </div>
     </div>
     <div class="bottom">
-        <div class="filter">
+        <form class="filter">
             <div class="sort">
                 <p>Sort by</p>
                 <select id="sorting">
@@ -55,11 +60,37 @@
                     <p>Radio buttons</p>
                 </div>
             </div>
-        </div>
+            <button class="filter_button">Apply</button>
+        </form>
         <div class="content">
-            <?php for ($i = 0; $i < 1000; $i++) {
-                echo "<button class='select'>click</button>";
-            }?>
+            <?php foreach ($components as $component): ?>
+                <a href="/component/<?php echo $component->getId(); ?>" class="browse_item">
+                    <div class="component no-redirect" id="component-<?php echo $component->getId(); ?>">
+                        <style>
+                            #component-<?php echo $component->getId(); ?> {
+                            <?php echo htmlspecialchars_decode($component->getCss()); ?>
+                            }
+                        </style>
+                        <?php echo htmlspecialchars_decode($component->getHtml()); ?>
+                    </div>
+                    <div class="description">
+                        <?php
+                        $color = '#' . $component->getColor();
+                        echo '<p class="title" style="color:' . $color . ';">' . $component->getName() . '</p>';
+                        echo '<p class="no-redirect">from <span style="color:' . $color . '; text-decoration: underline;">' . $component->getSet() . '</span> set</p>';
+                        echo '<p class="no-redirect">by: ' . $component->getAuthor()->getNickname() . '</p>';
+                        ?>
+                    </div>
+                    <div class="buttons">
+                        <button class="like no-redirect">
+                            <img src="/assets/icons/heart_nofill.svg" alt="Like icon">
+                        </button>
+                        <button class="copy no-redirect">
+                            <img src="/assets/icons/copy.svg" alt="Copy icon">
+                        </button>
+                    </div>
+                </a>
+            <?php endforeach; ?>
         </div>
     </div>
 </main>

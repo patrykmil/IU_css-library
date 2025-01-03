@@ -1,15 +1,15 @@
 <?php
 require_once 'AppController.php';
-
+require_once __DIR__ . '/../repositories/ComponentRepository.php';
 class BrowseController extends AppController
 {
-    private static $instance = null;
+    private static ?BrowseController $instance = null;
 
     private function __construct()
     {
     }
 
-    public static function getInstance()
+    public static function getInstance(): BrowseController
     {
         if (self::$instance == null) {
             self::$instance = new BrowseController();
@@ -20,7 +20,9 @@ class BrowseController extends AppController
     public function browse()
     {
         if ($this->isGet()) {
-            return $this->render('browse');
+            $repo = ComponentRepository::getInstance();
+            $all = $repo->getComponents();
+            return $this->render('browse', ['components' => $all]);
         }
     }
 }
