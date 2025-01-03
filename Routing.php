@@ -10,6 +10,7 @@ class Routing
         'logout' => ['controller' => 'SecurityController', 'method' => 'logout'],
         'start' => ['controller' => 'StartController', 'method' => 'start'],
         'browse' => ['controller' => 'BrowseController', 'method' => 'browse'],
+        'createSet' => ['controller' => 'CreateController', 'method' => 'createSet'],
         'test' => ['controller' => 'StartController', 'method' => 'test'],
         '' => ['controller' => 'StartController', 'method' => 'start']
     ];

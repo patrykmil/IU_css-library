@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.classList.remove('invalid');
             }
         });
+        return allValid;
     };
-
     window.validateInputs = validateInputs;
 });

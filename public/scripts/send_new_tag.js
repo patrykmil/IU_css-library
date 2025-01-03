@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', (event) => {
         event.preventDefault();
 
-        if (!window.validateInputs()) {
+        if (!validateInputs()) {
             console.error('Form submission prevented due to invalid inputs.');
             return;
         }

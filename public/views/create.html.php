@@ -1,12 +1,9 @@
 <?php
-require_once __DIR__ . '/../../src/repositories/DefaultRepository.php';
-if (!isset($userID)) {
-    exit('No userid');
+
+if (!isset($userID) || !isset($types) || !isset($sets) || !isset($tags)) {
+    require_once __DIR__ . '/../../src/controllers/ErrorController.php';
+    ErrorController::getInstance()->error500();
 }
-$repo = DefaultRepository::getInstance();
-$types = $repo->getTypes();
-$sets = $repo->getUserSets($userID);
-$tags = $repo->getTagNames();
 ?>
 
 <!DOCTYPE html>
@@ -21,23 +18,29 @@ $tags = $repo->getTagNames();
     <link rel="stylesheet" href="/public/styles/create.css">
     <script src="/public/scripts/change_code.js" defer></script>
     <script src="/public/scripts/code_area.js" defer></script>
-    <script src="/public/scripts/update_preview.js" defer></script>
     <script src="/public/scripts/choose_tags.js" defer></script>
     <script src="/public/scripts/inputs_validation.js" defer></script>
     <script src="/public/scripts/send_new_tag.js" defer></script>
+    <script src="/public/scripts/add_set.js" defer></script>
+    <style>
+        .content * {
+            all: revert;
+        }
+    </style>
+    <script src="/public/scripts/update_preview.js" defer></script>
 </head>
 
 <body>
 <?php include 'navigation.html.php'; ?>
-<form class="new_component_form" action="create" method="post">
-    <div class="main">
-        <div class="left_side">
-            <div class="preview_container">
-                <p>preview</p>
-                <div class="content">
+<div class="main">
+    <div class="left_side">
+        <div class="preview_container">
+            <p>preview</p>
+            <div class="content">
 
-                </div>
             </div>
+        </div>
+        <form class="new_component_form" action="create" method="post">
             <div class="inputs_container">
                 <input class="info_input" type="text" placeholder="Name" name="name">
                 <input class="info_input" list="types" placeholder="Type" name="type">
@@ -59,7 +62,7 @@ $tags = $repo->getTagNames();
                         echo '<option value="' . $set . '">';
                     }
                     ?>
-                    <option value="+crete new">
+                    <option value="+create new">
                 </datalist>
                 <datalist id="tags">
                     <?php
@@ -70,21 +73,29 @@ $tags = $repo->getTagNames();
                 </datalist>
             </div>
             <button class="submit_button" type="submit">Submit</button>
-        </div>
-        <div class="right_side">
-            <p>Create new element</p>
-            <div class="code_container">
-                <div>
-                    <button class="change_code" id="html_button" type="button">HTML</button>
-                    <button class="change_code active" id="css_button" type="button">CSS</button>
-                </div>
-                <textarea class="code auto_expand" id="html_textarea" name="html" placeholder="Enter HTML"></textarea>
-                <textarea class="code active auto_expand" id="css_textarea" name="css"
-                          placeholder="Enter CSS"></textarea>
+        </form>
+    </div>
+    <div class="right_side">
+        <p>Create new element</p>
+        <div class="code_container">
+            <div>
+                <button class="change_code" id="html_button" type="button">HTML</button>
+                <button class="change_code active" id="css_button" type="button">CSS</button>
             </div>
+            <textarea class="code auto_expand" id="html_textarea" name="html" placeholder="Enter HTML"></textarea>
+            <textarea class="code active auto_expand" id="css_textarea" name="css"
+                      placeholder="Enter CSS"></textarea>
         </div>
     </div>
-</form>
+</div>
+<div id="popup" class="popup">
+    <div class="popup-content">
+        <span class="close">&times;</span>
+        <h2>Create New Set</h2>
+        <input type="text" id="newSetName" placeholder="Enter new set name">
+        <button id="createSetButton">Create</button>
+    </div>
+</div>
 </body>
 
 </html>

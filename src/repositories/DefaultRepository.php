@@ -36,4 +36,14 @@ class DefaultRepository extends Repository
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
+
+    public function addSet($authorID, $setName): array
+    {
+        $query = 'INSERT INTO public."Set" (name, ownerid) VALUES (:name, :ownerid)';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':name', $setName, PDO::PARAM_STR);
+        $stmt->bindParam(':ownerid', $authorID, PDO::PARAM_INT);
+        $stmt->execute();
+        return $this->getUserSets($authorID);
+    }
 }

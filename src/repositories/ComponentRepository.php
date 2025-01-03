@@ -140,10 +140,9 @@ class ComponentRepository extends Repository
         $name = Validator::check_input($name);
         $type = Validator::check_input($type);
         $set = Validator::check_input($set);
-        $color = Validator::check_input($color);
+        $color = Validator::check_input(substr($color, 1));
         $css = Validator::check_input($css);
         $html = Validator::check_input($html);
-
         if (
             !$name || !$type || !$set || !$color || !$css || !$html) {
             ErrorController::getInstance()->error404();

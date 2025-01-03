@@ -19,8 +19,11 @@ if (!isset($component)) {
     <link rel="stylesheet" href="/public/prism/prism.css">
     <script src="/public/prism/prism.js" defer></script>
     <style>
+        .component_preview * {
+            all: revert;
+        }
         .component_preview {
-        <?php echo htmlspecialchars_decode($component->getCss()); ?>
+            <?php echo htmlspecialchars_decode($component->getCss()); ?>
         }
     </style>
 </head>
