@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/public/styles/default.css"/>
     <link rel="stylesheet" href="/public/styles/browse.css"/>
     <script src="/public/scripts/stop_redirecting.js" defer></script>
+    <script src="/public/scripts/select_filters.js" defer></script>
 </head>
 
 <body>
@@ -28,10 +29,10 @@
         </div>
     </div>
     <div class="bottom">
-        <form class="filter">
+        <form class="filter" id="filter_form" method="get" action="/browse">
             <div class="sort">
                 <p>Sort by</p>
-                <select id="sorting">
+                <select id="sorting" name="sorting">
                     <option value="Most likes">Most likes</option>
                     <option value="Newest">Newest</option>
                     <option value="Oldest">Oldest</option>
@@ -40,27 +41,27 @@
             <div class="types">
                 <p>Show</p>
                 <div>
-                    <button class="select">All</button>
-                    <button class="select">None</button>
+                    <button class="select" id="select_all" type="button">All</button>
+                    <button class="select" id="deselect_all" type="button">None</button>
                 </div>
                 <div class="search_options">
-                    <input type="checkbox">
+                    <input type="checkbox" class="filter_checkbox" name="filters[]" value="Buttons">
                     <p>Buttons</p>
                 </div>
                 <div class="search_options">
-                    <input type="checkbox">
+                    <input type="checkbox" class="filter_checkbox" name="filters[]" value="Inputs">
                     <p>Inputs</p>
                 </div>
                 <div class="search_options">
-                    <input type="checkbox">
+                    <input type="checkbox" class="filter_checkbox" name="filters[]" value="Checkboxes">
                     <p>Checkboxes</p>
                 </div>
                 <div class="search_options">
-                    <input type="checkbox">
+                    <input type="checkbox" class="filter_checkbox" name="filters[]" value="Radio buttons">
                     <p>Radio buttons</p>
                 </div>
             </div>
-            <button class="filter_button">Apply</button>
+            <button class="filter_button" type="submit">Apply</button>
         </form>
         <div class="content">
             <?php foreach ($components as $component): ?>

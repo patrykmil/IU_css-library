@@ -44,5 +44,10 @@ class DatabaseConnector
         }
     }
 
+    public function disconnect($conn)
+    {
+        $conn = null;
+    }
+
 
 }

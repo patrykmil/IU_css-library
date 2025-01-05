@@ -54,7 +54,6 @@ class SecurityController extends AppController
             'id' => $user->getId(),
             'email' => $user->getEmail(),
             'nickname' => $user->getNickname(),
-            'admin' => $user->isAdministrator(),
             'avatar' => $user->getAvatar()]));
         setcookie('user_session', $cookieValue, time() + (60 * 60 * 24 * 30), "/", "", true, true);
         header("Location: /browse");

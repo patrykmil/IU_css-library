@@ -137,16 +137,16 @@ main {
     border: var(--primary) 2px solid;
     padding: 0.3rem 0.5rem;
     border-radius: 0.5rem;
-    transition: background-color 0.2s, color 0.2s;
 }
 
 .select:hover {
+    background-color: var(--primary);
+    color: var(--background);
     cursor: pointer;
 }
 
 .select:active {
-    background-color: var(--primary);
-    color: var(--background);
+    cursor: crosshair;
 }
 
 .search_options > p {
@@ -184,7 +184,7 @@ main {
 .browse_item {
     display: grid;
     grid-template-columns: 180px 80px;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 80px 80px;
     gap: 10px;
     border: 1px solid var(--light-background);
     padding: 1rem;
@@ -192,6 +192,7 @@ main {
     border-radius: 10px;
     text-decoration: none;
     color: inherit;
+    height: fit-content;
 }
 
 .browse_item:hover {

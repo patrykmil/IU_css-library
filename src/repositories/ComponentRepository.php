@@ -45,24 +45,61 @@ class ComponentRepository extends Repository
         return $tags;
     }
 
-    public function getComponents(): array
+    public function getComponents(string $sorting = 'Newest', array $filters = ['Buttons', 'Inputs', 'Checkboxes', 'Radio buttons']): array
     {
+        $sortingQuery = '';
+        switch ($sorting) {
+            case 'Newest':
+                $sortingQuery = 'ORDER BY "Component".createdat DESC';
+                break;
+            case 'Oldest':
+                $sortingQuery = 'ORDER BY "Component".createdat ASC';
+                break;
+            case 'Most likes':
+            default:
+                $sortingQuery = 'ORDER BY (SELECT count(*) FROM public."Likes" WHERE componentid = "Component".componentid) DESC';
+                break;
+        }
+
+        $filterMap = [
+            'Buttons' => 'button',
+            'Inputs' => 'input',
+            'Checkboxes' => 'checkbox',
+            'Radio buttons' => 'radio button'
+        ];
+
+        $mappedFilters = array_map(function ($filter) use ($filterMap) {
+            return $filterMap[$filter] ?? $filter;
+        }, $filters);
+
+        $filters = $mappedFilters;
+
+        $filterQuery = '';
+        if (!empty($filters)) {
+            $filterPlaceholders = implode(',', array_fill(0, count($filters), '?'));
+            $filterQuery = 'AND "Type".name IN (' . $filterPlaceholders . ')';
+        }
+
         $query = '
-            SELECT
-                "Component".componentid,
-                "Component".name,
-                "Component".css,
-                "Component".html,
-                "Component".authorid,
-                "Color".hex,
-                "Type".name as typename,
-                "Set".name as setname
-            FROM public."Component"
-                LEFT JOIN public."Color" USING (colorid)
-                LEFT JOIN public."Set" USING (setid)
-                LEFT JOIN public."Type" USING (typeid)
-        ';
+        SELECT
+            "Component".componentid,
+            "Component".name,
+            "Component".css,
+            "Component".html,
+            "Component".authorid,
+            "Color".hex,
+            "Type".name as typename,
+            "Set".name as setname
+        FROM public."Component"
+            LEFT JOIN public."Color" USING (colorid)
+            LEFT JOIN public."Set" USING (setid)
+            LEFT JOIN public."Type" USING (typeid)
+        WHERE 1=1 ' . $filterQuery . ' ' . $sortingQuery;
+
         $stmt = $this->database->connect()->prepare($query);
+        foreach ($filters as $index => $filter) {
+            $stmt->bindValue($index + 1, $filter);
+        }
         $stmt->execute();
         $componentList = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
