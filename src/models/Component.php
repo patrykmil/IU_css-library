@@ -15,6 +15,7 @@ class Component
     private string $css;
     private string $html;
     private User $author;
+    private bool $isLiked;
 
     public function __construct(
         string $name,
@@ -94,6 +95,22 @@ class Component
     public function setId(int $id): void
     {
         $this->id = $id;
+    }
+
+    public function setLiked(bool $isLiked): void
+    {
+        $this->isLiked = $isLiked;
+    }
+
+    public function isLiked(): bool
+    {
+        return $this->isLiked;
+    }
+
+    public function changeLiked(): bool
+    {
+        $this->isLiked = !$this->isLiked;
+        return $this->isLiked;
     }
 
     public function toJson(): string

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/public/styles/browse.css"/>
     <script src="/public/scripts/stop_redirecting.js" defer></script>
     <script src="/public/scripts/select_filters.js" defer></script>
+    <script src="/public/scripts/copy.js" defer></script>
 </head>
 
 <body>
@@ -88,7 +89,9 @@
                     <button class="like no-redirect">
                         <img src="/assets/icons/heart_nofill.svg" alt="Like icon">
                     </button>
-                    <button class="copy no-redirect">
+                    <button class="copy no-redirect"
+                            onclick="copy(encodeURIComponent('<?php echo htmlspecialchars(json_encode($component->getHtml()), ENT_QUOTES, 'UTF-8'); ?>'),
+                                    encodeURIComponent('<?php echo htmlspecialchars(json_encode($component->getCss()), ENT_QUOTES, 'UTF-8'); ?>'))">
                         <img src="/assets/icons/copy.svg" alt="Copy icon">
                     </button>
                 </div>
