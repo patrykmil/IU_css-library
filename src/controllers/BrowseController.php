@@ -21,12 +21,13 @@ class BrowseController extends AppController
     {
         if ($this->isGet()) {
             $repo = ComponentRepository::getInstance();
+            $search = $_GET['search'] ?? '';
             $sorting = $_GET['sorting'] ?? 'Newest';
             $filters = $_GET['filters'] ?? ['Buttons', 'Inputs', 'Checkboxes', 'Radio buttons'];
             if (!is_array($filters)) {
                 $filters = [$filters];
             }
-            $components = $repo->getComponents($sorting, $filters);
+            $components = $repo->getComponents($sorting, $filters, $search);
             return $this->render('browse', ['components' => $components]);
         }
     }

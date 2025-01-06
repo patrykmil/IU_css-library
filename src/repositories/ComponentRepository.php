@@ -1,6 +1,5 @@
 <?php
 
-use utilities\Validator;
 
 require_once 'Repository.php';
 require_once 'UserRepository.php';
@@ -45,7 +44,7 @@ class ComponentRepository extends Repository
         return $tags;
     }
 
-    public function getComponents(string $sorting = 'Newest', array $filters = ['Buttons', 'Inputs', 'Checkboxes', 'Radio buttons']): array
+    public function getComponents(string $sorting = 'Newest', array $filters = ['Buttons', 'Inputs', 'Checkboxes', 'Radio buttons'], string $search = ''): array
     {
         $sortingQuery = '';
         switch ($sorting) {
@@ -80,6 +79,11 @@ class ComponentRepository extends Repository
             $filterQuery = 'AND "Type".name IN (' . $filterPlaceholders . ')';
         }
 
+        $searchQuery = '';
+        if (!empty($search)) {
+            $searchQuery = 'AND "Component".name ILIKE ? OR "Set".name ILIKE ? or "User".nickname ILIKE ?';
+        }
+
         $query = '
         SELECT
             "Component".componentid,
@@ -87,6 +91,7 @@ class ComponentRepository extends Repository
             "Component".css,
             "Component".html,
             "Component".authorid,
+            "User".nickname,
             "Color".hex,
             "Type".name as typename,
             "Set".name as setname
@@ -94,11 +99,18 @@ class ComponentRepository extends Repository
             LEFT JOIN public."Color" USING (colorid)
             LEFT JOIN public."Set" USING (setid)
             LEFT JOIN public."Type" USING (typeid)
-        WHERE 1=1 ' . $filterQuery . ' ' . $sortingQuery;
+            LEFT JOIN public."User" ON "Component".authorid = "User".userid
+        WHERE 1=1 ' . $filterQuery . ' ' . $searchQuery . ' ' . $sortingQuery;
 
         $stmt = $this->database->connect()->prepare($query);
-        foreach ($filters as $index => $filter) {
-            $stmt->bindValue($index + 1, $filter);
+        $paramIndex = 1;
+        foreach ($filters as $filter) {
+            $stmt->bindValue($paramIndex++, $filter);
+        }
+        if (!empty($search)) {
+            $stmt->bindValue($paramIndex++, '%' . $search . '%');
+            $stmt->bindValue($paramIndex++, '%' . $search . '%');
+            $stmt->bindValue($paramIndex, '%' . $search . '%');
         }
         $stmt->execute();
         $componentList = $stmt->fetchAll(PDO::FETCH_ASSOC);

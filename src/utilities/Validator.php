@@ -1,7 +1,5 @@
 <?php
 
-namespace utilities;
-
 class Validator
 {
     public static function verifyEmail(string $email): ?string

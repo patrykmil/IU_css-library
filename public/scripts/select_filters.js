@@ -22,8 +22,7 @@ window.addEventListener('load', function () {
     const params = new URLSearchParams(window.location.search);
     const filters = params.getAll('filters[]');
     const sorting = params.get('sorting');
-    console.log(1);
-    console.log(filters);
+    const search = params.get('search');
 
     if (filters.length === 0) {
         document.querySelectorAll('.filter_checkbox').forEach(function (checkbox) {
@@ -42,4 +41,15 @@ window.addEventListener('load', function () {
     } else {
         document.getElementById('sorting').value = 'Newest';
     }
+
+    if (search) {
+        document.querySelector('.search_bar').value = search;
+    }
+});
+
+const toggle_mobile_filters = document.getElementById('toggle_mobile_filters');
+const mobile_filters = document.querySelector('.filter');
+
+toggle_mobile_filters.addEventListener('click', function () {
+    mobile_filters.classList.toggle('active');
 });
