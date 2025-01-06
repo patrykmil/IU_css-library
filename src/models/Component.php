@@ -15,7 +15,7 @@ class Component
     private string $css;
     private string $html;
     private User $author;
-    private bool $isLiked;
+    private ?bool $isLiked = null;
 
     public function __construct(
         string $name,
@@ -102,7 +102,7 @@ class Component
         $this->isLiked = $isLiked;
     }
 
-    public function isLiked(): bool
+    public function isLiked(): ?bool
     {
         return $this->isLiked;
     }

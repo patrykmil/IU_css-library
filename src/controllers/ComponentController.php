@@ -1,13 +1,15 @@
 <?php
 require_once 'AppController.php';
+require_once 'src/repositories/ComponentRepository.php';
+require_once __DIR__ . '/../utilities/Decoder.php';
 
 class ComponentController extends AppController
 {
-    private static $instance = null;
+    private static ?ComponentController $instance = null;
 
     private function __construct() {}
 
-    public static function getInstance()
+    public static function getInstance(): ComponentController
     {
         if (self::$instance == null) {
             self::$instance = new ComponentController();
@@ -24,7 +26,28 @@ class ComponentController extends AppController
 
         $repository = ComponentRepository::getInstance();
         $component = $repository->getComponentById($id);
-
+        $sessionInfo = Decoder::decodeUserSession();
+        if($sessionInfo) {
+            $component->setLiked($repository->isLikedComponent($component->getId(), $sessionInfo['id']));
+        }
         $this->render("component", ['component' => $component]);
+    }
+
+    public function toggleLike(): void
+    {
+        $sessionInfo = Decoder::decodeUserSession();
+
+        $data = json_decode(file_get_contents('php://input'), true);
+        $componentID = $data['componentID'];
+        $userID = $sessionInfo['id'];
+
+        $componentRepository = ComponentRepository::getInstance();
+        if ($componentRepository->isLikedComponent($componentID, $userID)) {
+            $componentRepository->unlikeComponent($componentID, $userID);
+            echo json_encode(['liked' => false]);
+        } else {
+            $componentRepository->likeComponent($componentID, $userID);
+            echo json_encode(['liked' => true]);
+        }
     }
 }

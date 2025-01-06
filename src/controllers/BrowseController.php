@@ -1,6 +1,8 @@
 <?php
 require_once 'AppController.php';
 require_once __DIR__ . '/../repositories/ComponentRepository.php';
+require_once __DIR__ . '/../models/Component.php';
+require_once __DIR__ . '/../utilities/Decoder.php';
 class BrowseController extends AppController
 {
     private static ?BrowseController $instance = null;
@@ -28,6 +30,12 @@ class BrowseController extends AppController
                 $filters = [$filters];
             }
             $components = $repo->getComponents($sorting, $filters, $search);
+            $sessionInfo = Decoder::decodeUserSession();
+            if($sessionInfo) {
+                foreach ($components as $component) {
+                    $component->setLiked($repo->isLikedComponent($component->getId(), $sessionInfo['id']));
+                }
+            }
             return $this->render('browse', ['components' => $components]);
         }
     }

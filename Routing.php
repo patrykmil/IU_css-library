@@ -1,5 +1,5 @@
 <?php
-
+require_once "src/controllers/ErrorController.php";
 class Routing
 {
     private static array $routes = [
@@ -11,6 +11,7 @@ class Routing
         'start' => ['controller' => 'StartController', 'method' => 'start'],
         'browse' => ['controller' => 'BrowseController', 'method' => 'browse'],
         'createSet' => ['controller' => 'CreateController', 'method' => 'createSet'],
+        'toggleLike' => ['controller' => 'ComponentController', 'method' => 'toggleLike'],
         'test' => ['controller' => 'StartController', 'method' => 'test'],
         '' => ['controller' => 'StartController', 'method' => 'start']
     ];
@@ -28,14 +29,20 @@ class Routing
             $controller = call_user_func([$route['controller'], 'getInstance']);
             $method = $route['method'];
         } else {
-            require_once "src/controllers/ErrorController.php";
             $controller = ErrorController::getInstance();
             $method = 'error404';
         }
-        if ($id !== null) {
-            $controller->$method($id);
-        } else {
+        $reflection = new ReflectionMethod($controller, $method);
+        if ($reflection->getNumberOfParameters() > 0 && $id === null) {
+            $controller = ErrorController::getInstance();
+            $method = 'error404';
             $controller->$method();
+        } else {
+            if ($id !== null) {
+                $controller->$method($id);
+            } else {
+                $controller->$method();
+            }
         }
     }
 }

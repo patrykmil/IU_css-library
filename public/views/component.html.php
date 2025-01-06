@@ -12,6 +12,7 @@ if (!isset($component)) {
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="csrf-token" content="<?php echo isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : ''; ?>" />
     <title>Component page</title>
     <link rel="stylesheet" href="/public/styles/default.css"/>
     <link rel="stylesheet" href="/public/styles/component.css">
@@ -19,12 +20,15 @@ if (!isset($component)) {
     <script src="/public/scripts/copy.js" defer></script>
     <link rel="stylesheet" href="/public/prism/prism.css">
     <script src="/public/prism/prism.js" defer></script>
+    <link rel="stylesheet" href="/public/styles/interaction_buttons.css">
+    <script src="/public/scripts/toggle_like.js" defer></script>
     <style>
         .component_preview * {
             all: revert;
         }
+
         .component_preview {
-            <?php echo htmlspecialchars_decode($component->getCss()); ?>
+        <?php echo htmlspecialchars_decode($component->getCss()); ?>
         }
     </style>
 </head>
@@ -39,7 +43,22 @@ if (!isset($component)) {
                 <?php echo htmlspecialchars_decode($component->getHtml()); ?>
             </div>
         </div>
-        <?php include 'interaction_buttons.html.php'; ?>
+        <div class="interaction_buttons_container">
+            <button class="interaction_button"
+                    onclick="copy(encodeURIComponent('<?php echo htmlspecialchars(json_encode($component->getHtml()), ENT_QUOTES, 'UTF-8'); ?>'),
+                            encodeURIComponent('<?php echo htmlspecialchars(json_encode($component->getCss()), ENT_QUOTES, 'UTF-8'); ?>'))">
+                <img src="/assets/icons/copy.svg" alt="Copy Icon"/>
+            </button>
+            <?php if ($component->isLiked() !== null): ?>
+            <?php $likeIcon = $component->isLiked() ? 'heart_fill.svg' : 'heart_nofill.svg'; ?>
+            <button class="interaction_button like" data-component-id="<?php echo $component->getId(); ?>">
+                <img src="/assets/icons/<?php echo $likeIcon; ?>" alt="Like icon">
+            </button>
+            <button class="interaction_button">
+                <img src="/assets/icons/bookmark_fill_purple.svg" alt="Bookmark Icon"/>
+            </button>
+            <?php endif; ?>
+        </div>
         <div class="tags_container">
             <div class="tags">
                 <?php foreach ($component->getTags() as $tag): ?>

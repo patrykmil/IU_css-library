@@ -44,6 +44,34 @@ class ComponentRepository extends Repository
         return $tags;
     }
 
+    public function likeComponent($componentID, $userID): void
+    {
+        $query = 'INSERT INTO public."Likes" (componentid, userid) VALUES (:componentid, :userid)';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':componentid', $componentID, PDO::PARAM_INT);
+        $stmt->bindParam(':userid', $userID, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function unlikeComponent($componentID, $userID): void
+    {
+        $query = 'DELETE FROM public."Likes" WHERE componentid = :componentid AND userid = :userid';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':componentid', $componentID, PDO::PARAM_INT);
+        $stmt->bindParam(':userid', $userID, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function isLikedComponent($componentID, $userID): bool
+    {
+        $query = 'SELECT * FROM public."Likes" WHERE componentid = :componentid AND userid = :userid';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':componentid', $componentID, PDO::PARAM_INT);
+        $stmt->bindParam(':userid', $userID, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
+    }
+
     public function getComponents(string $sorting = 'Newest', array $filters = ['Buttons', 'Inputs', 'Checkboxes', 'Radio buttons'], string $search = ''): array
     {
         $sortingQuery = '';

@@ -246,6 +246,10 @@ main {
     border: none;
 }
 
+.browse_item > .buttons > button:hover {
+    cursor: pointer;
+}
+
 .browse_item > .buttons > button > img {
     width: 2.5rem;
     height: 2.5rem;

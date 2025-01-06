@@ -40,7 +40,7 @@ if (!isset($userID) || !isset($types) || !isset($sets) || !isset($tags)) {
 
             </div>
         </div>
-        <form class="new_component_form" action="create" method="post">
+        <form class="new_component_form" action="/create" method="post">
             <div class="inputs_container">
                 <input class="info_input" type="text" placeholder="Name" name="name">
                 <input class="info_input" list="types" placeholder="Type" name="type">
