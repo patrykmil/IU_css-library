@@ -34,6 +34,9 @@ class CreateController extends AppController
         }
 
         if ($this->isPost()) {
+            if (headers_sent()) {
+                throw new Exception("Headers already sent.");
+            }
             $name = $_POST['name'];
             $type = $_POST['type'];
             $set = $_POST['set'];
@@ -43,8 +46,9 @@ class CreateController extends AppController
             $css = $_POST['css'];
             $html = $_POST['html'];
             $repo = ComponentRepository::getInstance();
-            $repo->createComponent($name, $type, $set, $color, $tags, $userID, $css, $html);
-            $this->render('create', ['userID' => $userID]);
+            $componentID = $repo->createComponent($name, $type, $set, $color, $tags, $userID, $css, $html);
+            header('Content-Type: application/json');
+            echo json_encode(['url' => "/component/{$componentID}"]);
         }
     }
 

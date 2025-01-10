@@ -19,7 +19,9 @@ if ($cookieData) {
 <body>
 <nav>
     <div class="top_nav_left">
+        <a href="/start">
         <img class="logo" src="../../assets/images/logo.svg" alt="Logo"/>
+        </a>
         <ul class="nav_options_list">
             <li>
                 <form action="/browse" method="get">

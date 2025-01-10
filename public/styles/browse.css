@@ -169,6 +169,11 @@ main {
     border-color: var(--primary);
 }
 
+.search_options:hover {
+    cursor: pointer;
+    scale: 110%;
+}
+
 .filter_mobile_only {
     display: none;
 }
@@ -253,6 +258,12 @@ main {
 .browse_item > .buttons > button > img {
     width: 2.5rem;
     height: 2.5rem;
+    transition: all 0.2s;
+}
+
+.browse_item > .buttons > button > img:hover {
+    filter: drop-shadow(0 0 8px var(--primary));
+    scale: 120%;
 }
 
 @media (max-width: 900px) {

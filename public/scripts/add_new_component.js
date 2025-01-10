@@ -25,7 +25,19 @@ document.addEventListener('DOMContentLoaded', () => {
             body: formData
         })
             .then(response => {
-                console.log('Fetch response:', response);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response:', data);
+                if (data.url) {
+                    window.location.href = data.url;
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
             });
     });
 });

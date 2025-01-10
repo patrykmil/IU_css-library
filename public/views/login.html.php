@@ -10,7 +10,9 @@
 </head>
 
 <body>
-<img class="logo" src="../../assets/images/logo.svg" alt="Logo"/>
+<a href="/start">
+    <img class="logo" src="../../assets/images/logo.svg" alt="Logo"/>
+</a>
 <div class="login_form_container">
     <form class="login_form" action="/login" method="POST">
         <div class="login_container">

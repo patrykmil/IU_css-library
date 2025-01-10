@@ -212,7 +212,7 @@ class ComponentRepository extends Repository
         return (int)$stmt->fetch(PDO::FETCH_ASSOC)['count'];
     }
 
-    public function createComponent(string $name, string $type, string $set, string $color, array $tags, int $userID, string $css, string $html): void
+    public function createComponent(string $name, string $type, string $set, string $color, array $tags, int $userID, string $css, string $html): int
     {
         $name = Validator::check_input($name);
         $type = Validator::check_input($type);
@@ -271,6 +271,7 @@ class ComponentRepository extends Repository
         } else {
             throw new Exception('Failed to create component');
         }
+        return $componentID;
     }
 
     private function addTags(array $tags, int $componentID): void

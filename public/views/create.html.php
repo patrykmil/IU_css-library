@@ -20,7 +20,7 @@ if (!isset($userID) || !isset($types) || !isset($sets) || !isset($tags)) {
     <script src="/public/scripts/code_area.js" defer></script>
     <script src="/public/scripts/choose_tags.js" defer></script>
     <script src="/public/scripts/inputs_validation.js" defer></script>
-    <script src="/public/scripts/send_new_tag.js" defer></script>
+    <script src="/public/scripts/add_new_component.js" defer></script>
     <script src="/public/scripts/add_set.js" defer></script>
     <style>
         .content * {
