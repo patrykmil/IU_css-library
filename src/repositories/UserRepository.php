@@ -87,4 +87,47 @@ class UserRepository extends Repository
             random_int(1, 9)
         ]);
     }
+
+    public function addUserSession(int $userId): string
+    {
+        do {
+            $token = bin2hex(random_bytes(16));
+            $query = 'SELECT COUNT(*) FROM public."UserSession" WHERE token = :token';
+            $stmt = $this->database->connect()->prepare($query);
+            $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+            $stmt->execute();
+            $count = $stmt->fetchColumn();
+        } while ($count > 0);
+
+        $query = 'INSERT INTO public."UserSession" (token, userID, expiresAt) VALUES (:token, :userID, CURRENT_TIMESTAMP + INTERVAL \'30 days\')';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+        $stmt->bindParam(':userID', $userId, PDO::PARAM_INT);
+        if ($stmt->execute()) {
+            return $token;
+        }
+        return '';
+    }
+
+    public function deleteUserSession(string $token): bool
+    {
+        $query = 'DELETE FROM public."UserSession" WHERE token = :token';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+        return $stmt->execute();
+    }
+
+    public function getUserBySession(string $token): ?User
+    {
+        $query = 'SELECT * FROM public."UserSession" WHERE token = :token';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':token', $token, PDO::PARAM_STR);
+        $stmt->execute();
+        $session = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$session) {
+            return null;
+        }
+        $user = $this->getUserById($session['userid']);
+        return $user;
+    }
 }

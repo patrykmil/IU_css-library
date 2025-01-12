@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../src/utilities/Decoder.php';
 $avatarUrl = null;
 $cookieData = Decoder::decodeUserSession();
 if ($cookieData) {
-    $avatarUrl = $cookieData['avatar'] ?? null;
+    $avatarUrl = $cookieData->getAvatar() ?? null;
 }
 ?>
 

@@ -3,15 +3,20 @@ require_once 'AppController.php';
 require_once __DIR__ . '/../utilities/Decoder.php';
 require_once __DIR__ . '/../repositories/ComponentRepository.php';
 require_once __DIR__ . '/../repositories/DefaultRepository.php';
+
 class CreateController extends AppController
 {
     private static ?CreateController $instance = null;
+    private ComponentRepository $componentRepository;
+    private DefaultRepository $defaultRepository;
 
     private function __construct()
     {
+        $this->componentRepository = ComponentRepository::getInstance();
+        $this->defaultRepository = DefaultRepository::getInstance();
     }
 
-    public static function getInstance()
+    public static function getInstance(): CreateController
     {
         if (self::$instance == null) {
             self::$instance = new CreateController();
@@ -21,16 +26,15 @@ class CreateController extends AppController
 
     public function create()
     {
-        $sessionInfo = Decoder::decodeUserSession();
+        $userSession = Decoder::decodeUserSession();
         if ($this->isGet()) {
-            if (!$sessionInfo) {
+            if (!$userSession) {
                 return $this->render('login', ['message' => 'You need to log in first!']);
             }
-            $repo = DefaultRepository::getInstance();
-            $types = $repo->getTypes();
-            $sets = $repo->getUserSets($sessionInfo['id']);
-            $tags = $repo->getTagNames();
-            return $this->render('create', ['userID' => $sessionInfo['id'], 'types' => $types, 'sets' => $sets, 'tags' => $tags]);
+            $types = $this->defaultRepository->getTypes();
+            $sets = $this->defaultRepository->getUserSets($userSession->getId());
+            $tags = $this->defaultRepository->getTagNames();
+            return $this->render('create', ['userID' => $userSession->getId(), 'types' => $types, 'sets' => $sets, 'tags' => $tags]);
         }
 
         if ($this->isPost()) {
@@ -42,11 +46,10 @@ class CreateController extends AppController
             $set = $_POST['set'];
             $color = $_POST['color'];
             $tags = json_decode($_POST['tags'], true);
-            $userID = $sessionInfo['id'];
+            $userID = $userSession->getId();
             $css = $_POST['css'];
             $html = $_POST['html'];
-            $repo = ComponentRepository::getInstance();
-            $componentID = $repo->createComponent($name, $type, $set, $color, $tags, $userID, $css, $html);
+            $componentID = $this->componentRepository->createComponent($name, $type, $set, $color, $tags, $userID, $css, $html);
             header('Content-Type: application/json');
             echo json_encode(['url' => "/component/{$componentID}"]);
         }
@@ -54,14 +57,12 @@ class CreateController extends AppController
 
     public function createSet()
     {
-        $sessionInfo = Decoder::decodeUserSession();
-        if (!$sessionInfo) {
+        $userSession = Decoder::decodeUserSession();
+        if (!$userSession) {
             return ErrorController::getInstance()->error500();
-//            zmienić na error 401
         }
         $setName = $_POST['setName'];
-        $repo = DefaultRepository::getInstance();
-        $sets = $repo->addSet(Decoder::decodeUserSession()['id'], $setName);
+        $sets = $this->defaultRepository->addSet($userSession->getId(), $setName);
         echo json_encode($sets);
     }
 }

@@ -6,8 +6,12 @@ require_once __DIR__ . '/../utilities/Decoder.php';
 class ComponentController extends AppController
 {
     private static ?ComponentController $instance = null;
+    private ComponentRepository $componentRepository;
 
-    private function __construct() {}
+    private function __construct()
+    {
+        $this->componentRepository = ComponentRepository::getInstance();
+    }
 
     public static function getInstance(): ComponentController
     {
@@ -21,32 +25,29 @@ class ComponentController extends AppController
     {
         require_once 'src/models/Component.php';
         require_once 'src/models/User.php';
-        require_once 'src/repositories/ComponentRepository.php';
         require_once 'src/repositories/UserRepository.php';
 
-        $repository = ComponentRepository::getInstance();
-        $component = $repository->getComponentById($id);
-        $sessionInfo = Decoder::decodeUserSession();
-        if($sessionInfo) {
-            $component->setLiked($repository->isLikedComponent($component->getId(), $sessionInfo['id']));
+        $component = $this->componentRepository->getComponentById($id);
+        $userSession = Decoder::decodeUserSession();
+        if($userSession) {
+            $component->setLiked($this->componentRepository->isLikedComponent($component->getId(), $userSession->getId()));
         }
         $this->render("component", ['component' => $component]);
     }
 
     public function toggleLike(): void
     {
-        $sessionInfo = Decoder::decodeUserSession();
+        $userSession = Decoder::decodeUserSession();
 
         $data = json_decode(file_get_contents('php://input'), true);
         $componentID = $data['componentID'];
-        $userID = $sessionInfo['id'];
+        $userID = $userSession->getId();
 
-        $componentRepository = ComponentRepository::getInstance();
-        if ($componentRepository->isLikedComponent($componentID, $userID)) {
-            $componentRepository->unlikeComponent($componentID, $userID);
+        if ($this->componentRepository->isLikedComponent($componentID, $userID)) {
+            $this->componentRepository->unlikeComponent($componentID, $userID);
             echo json_encode(['liked' => false]);
         } else {
-            $componentRepository->likeComponent($componentID, $userID);
+            $this->componentRepository->likeComponent($componentID, $userID);
             echo json_encode(['liked' => true]);
         }
     }

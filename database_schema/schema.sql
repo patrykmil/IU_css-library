@@ -100,3 +100,10 @@ CREATE TABLE "BookmarkComponent"
     componentID INT REFERENCES "Component" (componentID) ON DELETE CASCADE,
     PRIMARY KEY (bookmarkID, componentID)
 );
+
+CREATE TABLE "UserSession"
+(
+    token     VARCHAR(255) PRIMARY KEY,
+    userID    INT REFERENCES "User" (userID) ON DELETE CASCADE,
+    expiresAt TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL '30 days')
+);

@@ -1,12 +1,17 @@
 <?php
-
+require_once __DIR__ . '/../repositories/UserRepository.php';
 class Decoder
 {
-    public static function decodeUserSession()
+    public static function decodeUserSession(): ?User
     {
-        if (isset($_COOKIE['user_session'])) {
-            return json_decode(base64_decode($_COOKIE['user_session']), true);
+        if(!isset($_COOKIE['user_session'])) {
+            return null;
         }
-        return null;
+        $userSession = $_COOKIE['user_session'];
+        $user = UserRepository::getInstance()->getUserBySession($userSession);
+        if($user == null) {
+            return null;
+        }
+        return $user;
     }
 }

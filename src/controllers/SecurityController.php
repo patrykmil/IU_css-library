@@ -7,7 +7,7 @@ require_once __DIR__ . '/../repositories/UserRepository.php';
 class SecurityController extends AppController
 {
     private static ?SecurityController $instance = null;
-    private Repository $repository;
+    private UserRepository $repository;
 
     private function __construct()
     {
@@ -48,11 +48,7 @@ class SecurityController extends AppController
             return $this->render('login', ['message' => 'Wrong password!!!']);
         }
 
-        $cookieValue = base64_encode(json_encode([
-            'id' => $user->getId(),
-            'email' => $user->getEmail(),
-            'nickname' => $user->getNickname(),
-            'avatar' => $user->getAvatar()]));
+        $cookieValue = $this->repository->addUserSession($user->getId());
         setcookie('user_session', $cookieValue, time() + (60 * 60 * 24 * 30), "/", "", true, true);
         header("Location: /browse");
         exit();
@@ -60,10 +56,12 @@ class SecurityController extends AppController
 
     public function logout()
     {
-        setcookie('user_session', '', time() - 3600, "/");
-        $previousPage = $_SERVER['HTTP_REFERER'] ?? '/';
-        header("Location: $previousPage");
-        exit();
+        if ($this->repository->deleteUserSession($_COOKIE['user_session'])) {
+            setcookie('user_session', '', time() - 3600, "/");
+            $previousPage = $_SERVER['HTTP_REFERER'] ?? '/';
+            header("Location: $previousPage");
+            exit();
+        }
     }
 
     public function register()
