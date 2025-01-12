@@ -38,9 +38,6 @@ class CreateController extends AppController
         }
 
         if ($this->isPost()) {
-            if (headers_sent()) {
-                throw new Exception("Headers already sent.");
-            }
             $name = $_POST['name'];
             $type = $_POST['type'];
             $set = $_POST['set'];
@@ -49,7 +46,11 @@ class CreateController extends AppController
             $userID = $userSession->getId();
             $css = $_POST['css'];
             $html = $_POST['html'];
-            $componentID = $this->componentRepository->createComponent($name, $type, $set, $color, $tags, $userID, $css, $html);
+            try {
+                $componentID = $this->componentRepository->createComponent($name, $type, $set, $color, $tags, $userID, $css, $html);
+            } catch (Exception) {
+                return ErrorController::getInstance()->error500();
+            }
             header('Content-Type: application/json');
             echo json_encode(['url' => "/component/{$componentID}"]);
         }

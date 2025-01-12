@@ -12,7 +12,7 @@ class AppController
     return $_SERVER['REQUEST_METHOD'] === 'POST';
   }
 
-  protected function render(?string $template = null, array $variables = [])
+  protected function render(?string $template = null, array $variables = []): void
   {
     $templatePath = 'public/views/' . $template . '.html.php';
     $output = 'File not found';

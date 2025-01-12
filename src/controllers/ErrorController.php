@@ -15,13 +15,14 @@ class ErrorController extends AppController
     return self::$instance;
   }
 
-  public function error404()
+  public function error404(): null
   {
-    return $this->render("errors/e404");
+    return $this->render("error", ["code" => 404, "message" => "Page not found"]);
   }
 
-  public function error500()
+  public function error500(): null
   {
-    return $this->render("errors/e500");
+    return $this->render("error", ["code" => 500, "message" => "Internal server error"]);
   }
+
 }

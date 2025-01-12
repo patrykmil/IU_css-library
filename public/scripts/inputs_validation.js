@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return [input, /^#[0-9A-F]{6}$/i.test(value)];
     }
 
-    const validateInputs = () => {
+    window.validateInputs = () => {
         let allValid = true;
         const results = [validateName(nameInput), validateList(typeInput), validateList(setInput), validateColor(colorInput)];
         results.forEach(([input, isValid]) => {
@@ -42,5 +42,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         return allValid;
     };
-    window.validateInputs = validateInputs;
 });

@@ -74,19 +74,11 @@ class ComponentRepository extends Repository
 
     public function getComponents(string $sorting = 'Newest', array $filters = ['Buttons', 'Inputs', 'Checkboxes', 'Radio buttons'], string $search = ''): array
     {
-        $sortingQuery = '';
-        switch ($sorting) {
-            case 'Newest':
-                $sortingQuery = 'ORDER BY "Component".createdat DESC';
-                break;
-            case 'Oldest':
-                $sortingQuery = 'ORDER BY "Component".createdat ASC';
-                break;
-            case 'Most likes':
-            default:
-                $sortingQuery = 'ORDER BY (SELECT count(*) FROM public."Likes" WHERE componentid = "Component".componentid) DESC';
-                break;
-        }
+        $sortingQuery = match ($sorting) {
+            'Newest' => 'ORDER BY "Component".createdat DESC',
+            'Oldest' => 'ORDER BY "Component".createdat ASC',
+            default => 'ORDER BY (SELECT count(*) FROM public."Likes" WHERE componentid = "Component".componentid) DESC',
+        };
 
         $filterMap = [
             'Buttons' => 'button',
@@ -227,7 +219,7 @@ class ComponentRepository extends Repository
 
         $query = 'SELECT typeid FROM public."Type" WHERE name = :type';
         $stmt = $this->database->connect()->prepare($query);
-        $stmt->bindParam(':type', $type, PDO::PARAM_STR);
+        $stmt->bindParam(':type', $type);
         $stmt->execute();
         $typeId = $stmt->fetch(PDO::FETCH_ASSOC)['typeid'];
         if (!$typeId) {
@@ -236,7 +228,7 @@ class ComponentRepository extends Repository
 
         $query = 'SELECT setid FROM public."Set" WHERE name = :set';
         $stmt = $this->database->connect()->prepare($query);
-        $stmt->bindParam(':set', $set, PDO::PARAM_STR);
+        $stmt->bindParam(':set', $set);
         $stmt->execute();
         $setId = $stmt->fetch(PDO::FETCH_ASSOC)['setid'];
         if (!$setId) {
@@ -245,13 +237,13 @@ class ComponentRepository extends Repository
 
         $query = 'SELECT colorid FROM public."Color" WHERE hex = :color';
         $stmt = $this->database->connect()->prepare($query);
-        $stmt->bindParam(':color', $color, PDO::PARAM_STR);
+        $stmt->bindParam(':color', $color);
         $stmt->execute();
         $colorId = $stmt->fetch(PDO::FETCH_ASSOC);
         if (!$colorId) {
             $query = 'INSERT INTO public."Color" (hex) VALUES (:color) RETURNING colorid';
             $stmt = $this->database->connect()->prepare($query);
-            $stmt->bindParam(':color', $color, PDO::PARAM_STR);
+            $stmt->bindParam(':color', $color);
             $stmt->execute();
             $colorId = $stmt->fetch(PDO::FETCH_ASSOC);
         }
@@ -284,7 +276,7 @@ class ComponentRepository extends Repository
                 ErrorController::getInstance()->error404();
             }
             $stmt = $this->database->connect()->prepare($queryTagID);
-            $stmt->bindParam(':name', $tag, PDO::PARAM_STR);
+            $stmt->bindParam(':name', $tag);
             $stmt->execute();
             $tagID = $stmt->fetch(PDO::FETCH_ASSOC)['tagid'];
             if ($tagID) {
