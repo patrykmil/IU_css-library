@@ -75,6 +75,8 @@
 .code_container {
     display: flex;
     flex-flow: column nowrap;
+    width: 50vw;
+    margin-right: 10px;
 }
 
 .change_code {
@@ -99,14 +101,13 @@
 
 .code {
     display: none;
-    max-width: 95%;
+    max-width: 800px;
     min-height: 4.375rem;
     padding: 0.625rem;
     align-items: center;
     gap: 0.625rem;
     border-radius: 0 1.4375rem 0 0;
     background: var(--light-background);
-    overflow: hidden;
     resize: none;
     border: none;
 }
@@ -129,8 +130,32 @@
     .right_side {
         width: 90%;
     }
-
     .submit_button {
         align-self: center;
     }
+    .code_container {
+        width: 90%;
+    }
+}
+
+.code {
+    overflow: auto;
+}
+
+.code::-webkit-scrollbar {
+    width: 12px;
+}
+
+.code::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.code::-webkit-scrollbar-thumb {
+    background: var(--light-background);
+    border-radius: 10px;
+}
+
+.code::-webkit-scrollbar-thumb:hover {
+    background: #969696;
 }
