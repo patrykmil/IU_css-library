@@ -21,6 +21,7 @@ if (!isset($component)) {
     <script src="/public/prism/prism.js" defer></script>
     <link rel="stylesheet" href="/public/styles/interaction_buttons.css">
     <script src="/public/scripts/toggle_like.js" defer></script>
+    <script src="/public/scripts/deleteFromComponentPage.js" type="module" defer></script>
     <style>
         .component_preview * {
             all: revert;
@@ -49,13 +50,18 @@ if (!isset($component)) {
                 <img src="/assets/icons/copy.svg" alt="Copy Icon"/>
             </button>
             <?php if ($component->isLiked() !== null): ?>
-            <?php $likeIcon = $component->isLiked() ? 'heart_fill.svg' : 'heart_nofill.svg'; ?>
-            <button class="interaction_button like" data-component-id="<?php echo $component->getId(); ?>">
-                <img src="/assets/icons/<?php echo $likeIcon; ?>" alt="Like icon">
-            </button>
+                <?php $likeIcon = $component->isLiked() ? 'heart_fill.svg' : 'heart_nofill.svg'; ?>
+                <button class="interaction_button like" data-component-id="<?php echo $component->getId(); ?>">
+                    <img src="/assets/icons/<?php echo $likeIcon; ?>" alt="Like icon">
+                </button>
+            <?php endif; ?>
             <button class="interaction_button">
-                <img src="/assets/icons/bookmark_fill_purple.svg" alt="Bookmark Icon"/>
+                <img src="/assets/icons/share.svg" alt="Share Icon"/>
             </button>
+            <?php if (isset($user) and $user->getId() === $component->getAuthor()->getID()): ?>
+                <button class="interaction_button delete" data-component-id="<?php echo $component->getId(); ?>">
+                    <img src="/assets/icons/delete.svg" alt="Delete Icon"/>
+                </button>
             <?php endif; ?>
         </div>
         <div class="tags_container">

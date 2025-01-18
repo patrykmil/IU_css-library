@@ -60,6 +60,24 @@ class UserRepository extends Repository
         return $userObject;
     }
 
+    public function getUserByName(string $name): ?User
+    {
+        $query = 'SELECT * FROM public."User" WHERE nickname = :name';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':name', $name);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$user) {
+            return null;
+        }
+        $userObject = new User($user['nickname']);
+        $userObject->setEmail($user['email']);
+        $userObject->setId($user['userid']);
+        $avatar = $this->getUserAvatar($user['avatarid']);
+        $userObject->setAvatar($avatar);
+        return $userObject;
+    }
+
     public function getUserAvatar(int $avatarId): ?string
     {
         $query = 'SELECT avatarpath FROM public."Avatar" WHERE avatarid = :avatarId';

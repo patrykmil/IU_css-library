@@ -147,12 +147,12 @@
 }
 
 .code::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--light-background);
     border-radius: 10px;
 }
 
 .code::-webkit-scrollbar-thumb {
-    background: var(--light-background);
+    background: #a6a6a6;
     border-radius: 10px;
 }
 

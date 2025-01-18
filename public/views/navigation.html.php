@@ -5,6 +5,7 @@ $avatarUrl = null;
 $cookieData = Decoder::decodeUserSession();
 if ($cookieData) {
     $avatarUrl = $cookieData->getAvatar() ?? null;
+    $nickname = $cookieData->getNickname() ?? null;
 }
 ?>
 
@@ -31,7 +32,7 @@ if ($cookieData) {
                 </form>
             </li>
             <li>
-                <form action="/collection" method="get">
+                <form action="<?php echo isset($nickname) ? '/collection/' . $nickname : '/login'; ?>" method="get">
                     <button type="submit" class="menu_item">
                         <img src="../../assets/icons/bookmark_fill.svg" alt="Collection Icon"/>COLLECTION
                     </button>

@@ -32,7 +32,7 @@ class ComponentController extends AppController
         if($userSession) {
             $component->setLiked($this->componentRepository->isLikedComponent($component->getId(), $userSession->getId()));
         }
-        $this->render("component", ['component' => $component]);
+        $this->render("component", ['component' => $component, 'user' => $userSession]);
     }
 
     public function toggleLike(): void

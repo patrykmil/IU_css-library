@@ -287,4 +287,72 @@ class ComponentRepository extends Repository
             }
         }
     }
+
+    public function getLikedComponents($userID): array
+    {
+        $query = 'SELECT componentid FROM public."Likes" WHERE userid = :id';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':id', $userID, PDO::PARAM_INT);
+        $stmt->execute();
+        $componentIDs = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+        $components = [];
+        foreach ($componentIDs as $componentID) {
+            $components[] = $this->getComponentById($componentID);
+        }
+        return $components;
+    }
+
+    public function getBookmarkedComponents($userID): array
+    {
+        $query = 'SELECT bookmarkid, name FROM public."Bookmark" WHERE userid = :id';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':id', $userID, PDO::PARAM_INT);
+        $stmt->execute();
+        $bookmarks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $components = [];
+        foreach ($bookmarks as $bookmark) {
+            $query = 'SELECT componentid FROM public."ComponentBookmark" WHERE bookmarkid = :id';
+            $stmt = $this->database->connect()->prepare($query);
+            $stmt->bindParam(':id', $bookmark['bookmarkid'], PDO::PARAM_INT);
+            $stmt->execute();
+            $componentIDs = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+            $tempComp = [];
+            foreach ($componentIDs as $componentID) {
+                $tempComp[] = $this->getComponentById($componentID);
+            }
+            $components[] = ['name' => $bookmark['name'], 'components' => $tempComp];
+        }
+        return $components;
+    }
+
+    public function getOwnedComponents($userID): array
+    {
+        $query = 'SELECT setid, name FROM public."Set" WHERE ownerid = :id';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':id', $userID, PDO::PARAM_INT);
+        $stmt->execute();
+        $sets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $components = [];
+        foreach ($sets as $set) {
+            $query = 'SELECT componentid FROM public."Component" WHERE setid = :id';
+            $stmt = $this->database->connect()->prepare($query);
+            $stmt->bindParam(':id', $set['setid'], PDO::PARAM_INT);
+            $stmt->execute();
+            $componentIDs = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+            $tempComp = [];
+            foreach ($componentIDs as $componentID) {
+                $tempComp[] = $this->getComponentById($componentID);
+            }
+            $components[] = ['name' => $set['name'], 'components' => $tempComp];
+        }
+        return $components;
+    }
+
+    public function deleteComponent($componentID): void
+    {
+        $query = 'DELETE FROM public."Component" WHERE componentid = :id';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':id', $componentID, PDO::PARAM_INT);
+        $stmt->execute();
+    }
 }

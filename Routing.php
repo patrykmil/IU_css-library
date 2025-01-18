@@ -12,7 +12,8 @@ class Routing
         'browse' => ['controller' => 'BrowseController', 'method' => 'browse'],
         'createSet' => ['controller' => 'CreateController', 'method' => 'createSet'],
         'toggleLike' => ['controller' => 'ComponentController', 'method' => 'toggleLike'],
-        'test' => ['controller' => 'StartController', 'method' => 'test'],
+        'collection' => ['controller' => 'CollectionController', 'method' => 'collection'],
+        'deleteComponent' => ['controller' => 'CollectionController', 'method' => 'deleteComponent'],
         '' => ['controller' => 'StartController', 'method' => 'start']
     ];
 
@@ -20,7 +21,7 @@ class Routing
     {
         $urlParts = explode("/", $url);
         $action = $urlParts[0];
-        $id = isset($urlParts[1]) ? (int)$urlParts[1] : null;
+        $param = $urlParts[1] ?? null;
         $controller = null;
 
         if (array_key_exists($action, self::$routes)) {
@@ -31,18 +32,13 @@ class Routing
         } else {
             $controller = ErrorController::getInstance();
             $method = 'error404';
+            $controller->$method();
         }
         $reflection = new ReflectionMethod($controller, $method);
-        if ($reflection->getNumberOfParameters() > 0 && $id === null) {
-            $controller = ErrorController::getInstance();
-            $method = 'error404';
-            $controller->$method();
+        if ($reflection->getNumberOfRequiredParameters() > 0) {
+            $controller->$method($param);
         } else {
-            if ($id !== null) {
-                $controller->$method($id);
-            } else {
-                $controller->$method();
-            }
+            $controller->$method();
         }
     }
 }

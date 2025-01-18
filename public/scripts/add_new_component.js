@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const htmlTextarea = document.querySelector('#html_textarea');
     const cssTextarea = document.querySelector('#css_textarea');
 
-    form.addEventListener('submit', (event) => {
+    form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
         if (!validateInputs()) {
@@ -20,24 +20,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log('Submitting form data:', formData);
 
-        fetch(form.action, {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Response:', data);
-                if (data.url) {
-                    window.location.href = data.url;
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: formData
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('Response:', data);
+
+            if (data.url) {
+                window.location.href = data.url;
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
     });
 });
