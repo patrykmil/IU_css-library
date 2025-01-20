@@ -1,6 +1,8 @@
 config.php
 TODO.txt
 public/views/component_repository_test.html.php
+desing_patterns
+
 .idea/
 # Default ignored files
 /shelf/

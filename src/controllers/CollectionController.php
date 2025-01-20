@@ -27,12 +27,9 @@ class CollectionController extends AppController
         return self::$instance;
     }
 
-    public function collection(?string $nickname)
+    public function collection(string $nickname)
     {
         if ($this->isGet()) {
-            if ($nickname == null) {
-                $nickname = Decoder::decodeUserSession()->getNickname();
-            }
             $user = $this->userRepository->getUserByName($nickname);
             $liked = $this->componentRepository->getLikedComponents($user->getId());
             $bookmarked = $this->componentRepository->getBookmarkedComponents($user->getId());

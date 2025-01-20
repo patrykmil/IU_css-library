@@ -19,26 +19,38 @@ class Routing
 
     public static function run($url): void
     {
+        $strategy = self::setRoute($url);
+        $controller = $strategy['controller'];
+        $method = $strategy['method'];
+        $param = $strategy['param'] ?? null;
+        $controller->$method($param);
+    }
+
+    public static function setRoute($url): array
+    {
         $urlParts = explode("/", $url);
         $action = $urlParts[0];
         $param = $urlParts[1] ?? null;
-        $controller = null;
-
+        $strategy = [];
         if (array_key_exists($action, self::$routes)) {
             $route = self::$routes[$action];
             require_once "src/controllers/{$route['controller']}.php";
-            $controller = call_user_func([$route['controller'], 'getInstance']);
-            $method = $route['method'];
+            $strategy['controller'] = call_user_func([$route['controller'], 'getInstance']);
+            $strategy['method'] = $route['method'];
         } else {
-            $controller = ErrorController::getInstance();
-            $method = 'error404';
-            $controller->$method();
+            $strategy['controller'] = ErrorController::getInstance();
+            $strategy['method'] = 'error404';
         }
-        $reflection = new ReflectionMethod($controller, $method);
+        $reflection = new ReflectionMethod($strategy['controller'], $strategy['method']);
         if ($reflection->getNumberOfRequiredParameters() > 0) {
-            $controller->$method($param);
-        } else {
-            $controller->$method();
+            if($param !== null) {
+                $strategy['param'] = $param;
+            }
+            else {
+                $strategy['controller'] = ErrorController::getInstance();
+                $strategy['method'] = 'error404';
+            }
         }
+        return $strategy;
     }
 }
