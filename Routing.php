@@ -8,12 +8,12 @@ class Routing
         'register' => ['controller' => 'SecurityController', 'method' => 'register'],
         'login' => ['controller' => 'SecurityController', 'method' => 'login'],
         'logout' => ['controller' => 'SecurityController', 'method' => 'logout'],
-        'start' => ['controller' => 'StartController', 'method' => 'start'],
         'browse' => ['controller' => 'BrowseController', 'method' => 'browse'],
         'createSet' => ['controller' => 'CreateController', 'method' => 'createSet'],
         'toggleLike' => ['controller' => 'ComponentController', 'method' => 'toggleLike'],
         'collection' => ['controller' => 'CollectionController', 'method' => 'collection'],
         'deleteComponent' => ['controller' => 'CollectionController', 'method' => 'deleteComponent'],
+        'start' => ['controller' => 'StartController', 'method' => 'start'],
         '' => ['controller' => 'StartController', 'method' => 'start']
     ];
 

@@ -1,14 +1,14 @@
 <?php
 
 require_once 'AppController.php';
-require_once __DIR__.'/../repositories/UserRepository.php';
+require_once __DIR__.'/../utilities/Decoder.php';
 class StartController extends AppController
 {
-  private static $instance = null;
+  private static ?StartController $instance = null;
 
   private function __construct() {}
 
-  public static function getInstance()
+  public static function getInstance(): StartController
   {
     if (self::$instance == null) {
       self::$instance = new StartController();
@@ -18,17 +18,9 @@ class StartController extends AppController
 
   public function start()
   {
+      $userSession = Decoder::decodeUserSession();
       if ($this->isGet()) {
-          $userRepository = new UserRepository();
-          $users = $userRepository->getUsers();
-          return $this->render("start", ['message' => sizeof($users)]);
+          return $this->render("start", ['user' => $userSession]);
       }
   }
-
-    public function test()
-    {
-        if ($this->isGet()) {
-            return $this->render("component_repository_test");
-        }
-    }
 }
