@@ -32,17 +32,11 @@ class CollectionController extends AppController
         if ($this->isGet()) {
             $user = $this->userRepository->getUserByName($nickname);
             $liked = $this->componentRepository->getLikedComponents($user->getId());
-            $bookmarked = $this->componentRepository->getBookmarkedComponents($user->getId());
             $owned = $this->componentRepository->getOwnedComponents($user->getId());
             $userSession = Decoder::decodeUserSession();
             if ($userSession) {
                 foreach ($liked as $component) {
                     $component->setLiked($this->componentRepository->isLikedComponent($component->getId(), $userSession->getId()));
-                }
-                foreach ($bookmarked as $bookmark) {
-                    foreach ($bookmark['components'] as $component) {
-                        $component->setLiked($this->componentRepository->isLikedComponent($component->getId(), $userSession->getId()));
-                    }
                 }
                 if ($user->getId() !== $userSession->getId()) {
                     foreach ($owned as $set) {
@@ -52,7 +46,7 @@ class CollectionController extends AppController
                     }
                 }
             }
-            return $this->render('collection', ['user' => $user, 'liked' => $liked, 'bookmarked' => $bookmarked, 'owned' => $owned]);
+            return $this->render('collection', ['user' => $user, 'liked' => $liked, 'owned' => $owned]);
         }
     }
 

@@ -127,6 +127,10 @@ a {
     font-size: var(--big-font);
 }
 
+.logout:hover {
+    scale: 1.2;
+}
+
 @media (max-width: 1100px) {
     main {
         flex-flow: column nowrap;

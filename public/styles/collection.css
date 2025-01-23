@@ -73,7 +73,7 @@ main {
     margin-bottom: 1.5rem;
 }
 
-.owned > .list, .bookmarked > .list {
+.owned > .list {
     border: dashed 3px var(--light-background);
     border-radius: 10px;
 }

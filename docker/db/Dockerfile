@@ -6,5 +6,4 @@ ENV POSTGRES_USER docker
  
 COPY . /app/database
 
-COPY database_schema/schema.sql /docker-entrypoint-initdb.d/
-COPY database_schema/data.sql /docker-entrypoint-initdb.d/
+COPY database_schema/database_init.sql /docker-entrypoint-initdb.d/

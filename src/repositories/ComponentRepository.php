@@ -302,29 +302,6 @@ class ComponentRepository extends Repository
         return $components;
     }
 
-    public function getBookmarkedComponents($userID): array
-    {
-        $query = 'SELECT bookmarkid, name FROM public."Bookmark" WHERE userid = :id';
-        $stmt = $this->database->connect()->prepare($query);
-        $stmt->bindParam(':id', $userID, PDO::PARAM_INT);
-        $stmt->execute();
-        $bookmarks = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $components = [];
-        foreach ($bookmarks as $bookmark) {
-            $query = 'SELECT componentid FROM public."ComponentBookmark" WHERE bookmarkid = :id';
-            $stmt = $this->database->connect()->prepare($query);
-            $stmt->bindParam(':id', $bookmark['bookmarkid'], PDO::PARAM_INT);
-            $stmt->execute();
-            $componentIDs = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
-            $tempComp = [];
-            foreach ($componentIDs as $componentID) {
-                $tempComp[] = $this->getComponentById($componentID);
-            }
-            $components[] = ['name' => $bookmark['name'], 'components' => $tempComp];
-        }
-        return $components;
-    }
-
     public function getOwnedComponents($userID): array
     {
         $query = 'SELECT setid, name FROM public."Set" WHERE ownerid = :id';

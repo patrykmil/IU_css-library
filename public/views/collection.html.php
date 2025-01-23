@@ -5,9 +5,6 @@
 if (!isset($liked)) {
     $liked = [];
 }
-if (!isset($bookmarked)) {
-    $bookmarked = [];
-}
 if (!isset($owned)) {
     $owned = [];
 }
@@ -56,16 +53,6 @@ if (!isset($user)) {
                             <?php include 'component_preview.html.php'; ?>
                         <?php endforeach; ?>
                     </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-        <div class="components bookmarked">
-            <?php foreach ($bookmarked as $bookmark): ?>
-                <p class="title"><?php echo $bookmark['name']; ?></p>
-                <div class="group_container">
-                    <?php foreach ($bookmark['components'] as $component): ?>
-                        <?php include 'component_preview.html.php'; ?>
-                    <?php endforeach; ?>
                 </div>
             <?php endforeach; ?>
         </div>
