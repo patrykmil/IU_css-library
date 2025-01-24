@@ -22,64 +22,36 @@ class ComponentRepository extends Repository
 
     public function getTags(int $componentID): array
     {
-        $query = 'SELECT tagid FROM public."ComponentTag" WHERE componentid = :id';
+        $query = '
+        SELECT t.tagid, t.name, c.hex
+        FROM public."ComponentTag" ct
+        JOIN public."Tag" t USING (tagid)
+        JOIN public."Color" c USING (colorid)
+        WHERE ct.componentid = :id
+    ';
         $stmt = $this->database->connect()->prepare($query);
         $stmt->bindParam(':id', $componentID, PDO::PARAM_INT);
         $stmt->execute();
-        $tagsIdList = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+        $tagsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $tags = [];
-        if (!$tagsIdList) {
-            return $tags;
-        }
-
-        $query = 'SELECT * FROM public."Tag" JOIN public."Color" USING (colorid) WHERE tagid = :id';
-        foreach ($tagsIdList as $tagId) {
-            $stmt = $this->database->connect()->prepare($query);
-            $stmt->bindParam(':id', $tagId, PDO::PARAM_INT);
-            $stmt->execute();
-            $tag = $stmt->fetch(PDO::FETCH_ASSOC);
+        foreach ($tagsData as $tag) {
             $tags[] = new Tag($tag['tagid'], $tag['name'], $tag['hex']);
         }
         return $tags;
     }
 
-    public function likeComponent($componentID, $userID): void
+    private function generateSortingQuery(string $sorting): string
     {
-        $query = 'INSERT INTO public."Likes" (componentid, userid) VALUES (:componentid, :userid)';
-        $stmt = $this->database->connect()->prepare($query);
-        $stmt->bindParam(':componentid', $componentID, PDO::PARAM_INT);
-        $stmt->bindParam(':userid', $userID, PDO::PARAM_INT);
-        $stmt->execute();
-    }
-
-    public function unlikeComponent($componentID, $userID): void
-    {
-        $query = 'DELETE FROM public."Likes" WHERE componentid = :componentid AND userid = :userid';
-        $stmt = $this->database->connect()->prepare($query);
-        $stmt->bindParam(':componentid', $componentID, PDO::PARAM_INT);
-        $stmt->bindParam(':userid', $userID, PDO::PARAM_INT);
-        $stmt->execute();
-    }
-
-    public function isLikedComponent($componentID, $userID): bool
-    {
-        $query = 'SELECT * FROM public."Likes" WHERE componentid = :componentid AND userid = :userid';
-        $stmt = $this->database->connect()->prepare($query);
-        $stmt->bindParam(':componentid', $componentID, PDO::PARAM_INT);
-        $stmt->bindParam(':userid', $userID, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->rowCount() > 0;
-    }
-
-    public function getComponents(string $sorting = 'Newest', array $filters = ['Buttons', 'Inputs', 'Checkboxes', 'Radio buttons'], string $search = ''): array
-    {
-        $sortingQuery = match ($sorting) {
+        return match ($sorting) {
             'Newest' => 'ORDER BY "Component".createdat DESC',
             'Oldest' => 'ORDER BY "Component".createdat ASC',
             default => 'ORDER BY (SELECT count(*) FROM public."Likes" WHERE componentid = "Component".componentid) DESC',
         };
+    }
 
+    private function generateFilterQuery(array $filters): array
+    {
         $filterMap = [
             'Buttons' => 'button',
             'Inputs' => 'input',
@@ -91,18 +63,44 @@ class ComponentRepository extends Repository
             return $filterMap[$filter] ?? $filter;
         }, $filters);
 
-        $filters = $mappedFilters;
-
         $filterQuery = '';
-        if (!empty($filters)) {
-            $filterPlaceholders = implode(',', array_fill(0, count($filters), '?'));
+        if (!empty($mappedFilters)) {
+            $filterPlaceholders = implode(',', array_fill(0, count($mappedFilters), '?'));
             $filterQuery = 'AND "Type".name IN (' . $filterPlaceholders . ')';
         }
 
-        $searchQuery = '';
+        return [$filterQuery, $mappedFilters];
+    }
+
+    private function generateSearchQuery(string $search): string
+    {
         if (!empty($search)) {
-            $searchQuery = 'AND "Component".name ILIKE ? OR "Set".name ILIKE ? or "User".nickname ILIKE ?';
+            return 'AND ("Component".name ILIKE ? OR "Set".name ILIKE ? OR "User".nickname ILIKE ?)';
         }
+        return '';
+    }
+
+    private function fetchComponents(string $query, array $filters, string $search): array
+    {
+        $stmt = $this->database->connect()->prepare($query);
+        $paramIndex = 1;
+        foreach ($filters as $filter) {
+            $stmt->bindValue($paramIndex++, $filter);
+        }
+        if (!empty($search)) {
+            $stmt->bindValue($paramIndex++, '%' . $search . '%');
+            $stmt->bindValue($paramIndex++, '%' . $search . '%');
+            $stmt->bindValue($paramIndex, '%' . $search . '%');
+        }
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getComponents(string $sorting = 'Most likes', array $filters = ['Buttons', 'Inputs', 'Checkboxes', 'Radio buttons'], string $search = ''): array
+    {
+        $sortingQuery = $this->generateSortingQuery($sorting);
+        $searchQuery = $this->generateSearchQuery($search);
+        list($filterQuery, $filters) = $this->generateFilterQuery($filters);
 
         $query = '
         SELECT
@@ -122,18 +120,7 @@ class ComponentRepository extends Repository
             LEFT JOIN public."User" ON "Component".authorid = "User".userid
         WHERE 1=1 ' . $filterQuery . ' ' . $searchQuery . ' ' . $sortingQuery;
 
-        $stmt = $this->database->connect()->prepare($query);
-        $paramIndex = 1;
-        foreach ($filters as $filter) {
-            $stmt->bindValue($paramIndex++, $filter);
-        }
-        if (!empty($search)) {
-            $stmt->bindValue($paramIndex++, '%' . $search . '%');
-            $stmt->bindValue($paramIndex++, '%' . $search . '%');
-            $stmt->bindValue($paramIndex, '%' . $search . '%');
-        }
-        $stmt->execute();
-        $componentList = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $componentList = $this->fetchComponents($query, $filters, $search);
 
         $components = [];
         foreach ($componentList as $component) {
@@ -195,28 +182,11 @@ class ComponentRepository extends Repository
         );
     }
 
-    private function getComponentLikes(int $componentId): int
+    /**
+     * @throws Exception
+     */
+    private function getTypeId(string $type): int
     {
-        $query = 'SELECT count(*) FROM public."Likes" WHERE componentid = :id';
-        $stmt = $this->database->connect()->prepare($query);
-        $stmt->bindParam(':id', $componentId, PDO::PARAM_INT);
-        $stmt->execute();
-        return (int)$stmt->fetch(PDO::FETCH_ASSOC)['count'];
-    }
-
-    public function createComponent(string $name, string $type, string $set, string $color, array $tags, int $userID, string $css, string $html): int
-    {
-        $name = Validator::check_input($name);
-        $type = Validator::check_input($type);
-        $set = Validator::check_input($set);
-        $color = Validator::check_input(substr($color, 1));
-        $css = Validator::check_input($css);
-        $html = Validator::check_input($html);
-        if (
-            !$name || !$type || !$set || !$color || !$css || !$html) {
-            ErrorController::getInstance()->error404();
-        }
-
         $query = 'SELECT typeid FROM public."Type" WHERE name = :type';
         $stmt = $this->database->connect()->prepare($query);
         $stmt->bindParam(':type', $type);
@@ -225,7 +195,14 @@ class ComponentRepository extends Repository
         if (!$typeId) {
             throw new Exception('Type not found');
         }
+        return $typeId;
+    }
 
+    /**
+     * @throws Exception
+     */
+    private function getSetId(string $set): int
+    {
         $query = 'SELECT setid FROM public."Set" WHERE name = :set';
         $stmt = $this->database->connect()->prepare($query);
         $stmt->bindParam(':set', $set);
@@ -234,7 +211,14 @@ class ComponentRepository extends Repository
         if (!$setId) {
             throw new Exception('Set not found');
         }
+        return $setId;
+    }
 
+    /**
+     * @throws Exception
+     */
+    private function getColorId(string $color): int
+    {
         $query = 'SELECT colorid FROM public."Color" WHERE hex = :color';
         $stmt = $this->database->connect()->prepare($query);
         $stmt->bindParam(':color', $color);
@@ -251,13 +235,33 @@ class ComponentRepository extends Repository
         if (!$colorId) {
             throw new Exception('Color not found');
         }
+        return $colorId;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function createComponent(string $name, string $type, string $set, string $color, array $tags, int $userID, string $css, string $html): int
+    {
+        $name = Validator::check_input($name);
+        $type = Validator::check_input($type);
+        $set = Validator::check_input($set);
+        $color = strtoupper(Validator::check_input(substr($color, 1)));
+        $css = Validator::check_input($css);
+        $html = Validator::check_input($html);
+
+        if (!$name || !$type || !$set || !$color || !$css || !$html) {
+            ErrorController::getInstance()->error404();
+        }
+
+        $typeId = $this->getTypeId($type);
+        $setId = $this->getSetId($set);
+        $colorId = $this->getColorId($color);
 
         $query = 'INSERT INTO public."Component" (name, typeid, setid, colorid, authorid, css, html) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING componentid';
+                VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING componentid';
         $stmt = $this->database->connect()->prepare($query);
-        if (
-            $stmt->execute([$name, $typeId, $setId, $colorId, $userID, $css, $html])
-        ) {
+        if ($stmt->execute([$name, $typeId, $setId, $colorId, $userID, $css, $html])) {
             $componentID = $stmt->fetch(PDO::FETCH_ASSOC)['componentid'];
             $this->addTags($tags, $componentID);
         } else {
@@ -286,6 +290,43 @@ class ComponentRepository extends Repository
                 $stmt->execute();
             }
         }
+    }
+
+    public function likeComponent($componentID, $userID): void
+    {
+        $query = 'INSERT INTO public."Likes" (componentid, userid) VALUES (:componentid, :userid)';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':componentid', $componentID, PDO::PARAM_INT);
+        $stmt->bindParam(':userid', $userID, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function unlikeComponent($componentID, $userID): void
+    {
+        $query = 'DELETE FROM public."Likes" WHERE componentid = :componentid AND userid = :userid';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':componentid', $componentID, PDO::PARAM_INT);
+        $stmt->bindParam(':userid', $userID, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function isLikedComponent($componentID, $userID): bool
+    {
+        $query = 'SELECT * FROM public."Likes" WHERE componentid = :componentid AND userid = :userid';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':componentid', $componentID, PDO::PARAM_INT);
+        $stmt->bindParam(':userid', $userID, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->rowCount() > 0;
+    }
+
+    private function getComponentLikes(int $componentId): int
+    {
+        $query = 'SELECT count(*) FROM public."Likes" WHERE componentid = :id';
+        $stmt = $this->database->connect()->prepare($query);
+        $stmt->bindParam(':id', $componentId, PDO::PARAM_INT);
+        $stmt->execute();
+        return (int)$stmt->fetch(PDO::FETCH_ASSOC)['count'];
     }
 
     public function getLikedComponents($userID): array

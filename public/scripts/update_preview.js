@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const preview_container = document.querySelector('.content');
+    const preview_container = document.querySelector('.component_preview');
     const style_element = document.createElement('style');
     document.head.appendChild(style_element);
 
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         css_textarea.addEventListener('input', () => {
-            style_element.innerHTML = `.content { ${css_textarea.value} }`;
+            style_element.innerHTML = `.component_preview { ${css_textarea.value} }`;
         });
 
     } else {

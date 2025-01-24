@@ -38,12 +38,7 @@ if (!isset($component)) {
 <?php include 'navigation.html.php'; ?>
 <div class="main">
     <div class="left_side">
-        <div class="preview_container">
-            <p>preview</p>
-            <div class="component_preview">
-                <?php echo htmlspecialchars_decode($component->getHtml()); ?>
-            </div>
-        </div>
+        <?php include 'preview_container.html.php'; ?>
         <div class="interaction_buttons_container">
             <button class="interaction_button"
                     onclick="copy(encodeURIComponent('<?php echo htmlspecialchars(json_encode($component->getHtml()), ENT_QUOTES, 'UTF-8'); ?>'),

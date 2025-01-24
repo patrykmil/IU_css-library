@@ -12,7 +12,7 @@ if (!isset($userID) || !isset($types) || !isset($sets) || !isset($tags)) {
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Component page</title>
+    <title>Create component page</title>
     <link rel="stylesheet" href="/public/styles/default.css"/>
     <link rel="stylesheet" href="/public/styles/component.css">
     <link rel="stylesheet" href="/public/styles/create.css">
@@ -22,30 +22,25 @@ if (!isset($userID) || !isset($types) || !isset($sets) || !isset($tags)) {
     <script src="/public/scripts/inputs_validation.js" defer></script>
     <script src="/public/scripts/add_new_component.js" defer></script>
     <script src="/public/scripts/add_set.js" defer></script>
+    <script src="/public/scripts/update_preview.js" defer></script>
     <style>
-        .content * {
+        .component_preview * {
             all: revert;
         }
     </style>
-    <script src="/public/scripts/update_preview.js" defer></script>
 </head>
 
 <body>
 <?php include 'navigation.html.php'; ?>
 <div class="main">
     <div class="left_side">
-        <div class="preview_container">
-            <p>preview</p>
-            <div class="content">
-
-            </div>
-        </div>
+        <?php include 'preview_container.html.php'; ?>
         <form class="new_component_form" action="/create" method="post">
             <div class="inputs_container">
                 <input class="info_input" type="text" placeholder="Name" name="name">
                 <input class="info_input" list="types" placeholder="Type" name="type">
                 <input class="info_input" list="sets" placeholder="Set" name="set">
-                <input class="info_input" type="text" placeholder="Color" name="color">
+                <input class="info_input" type="text" placeholder="Color HEX" name="color">
                 <input class="info_input" list="tags" placeholder="Tags" id="tags_input">
                 <div class="tags">
                 </div>

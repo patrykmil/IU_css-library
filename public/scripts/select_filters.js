@@ -39,7 +39,7 @@ window.addEventListener('load', function () {
     if (sorting) {
         document.getElementById('sorting').value = sorting;
     } else {
-        document.getElementById('sorting').value = 'Newest';
+        document.getElementById('sorting').value = 'Most likes';
     }
 
     if (search) {

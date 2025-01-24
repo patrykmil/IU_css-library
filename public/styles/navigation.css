@@ -176,4 +176,8 @@ nav .mobile_only_option {
     .top_nav_right {
         display: none;
     }
+
+    nav.absolute {
+        position: fixed;
+    }
 }

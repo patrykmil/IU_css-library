@@ -178,7 +178,7 @@ main {
     display: none;
 }
 
-.content {
+.component_preview {
     flex: 1;
     display: flex;
     flex-flow: row wrap;
@@ -266,6 +266,7 @@ main {
     scale: 120%;
 }
 
+
 @media (max-width: 900px) {
     .top_search > #text {
         display: none;
@@ -331,7 +332,7 @@ main {
         border-radius: 0.5rem;
     }
 
-    .content {
+    .component_preview {
         justify-content: center;
     }
 }

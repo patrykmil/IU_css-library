@@ -36,7 +36,7 @@ if (!isset($user)) {
             <button class="btn right" type="button" id="liked">Liked</button>
         </div>
     </div>
-    <div class="content">
+    <div class="component_preview">
         <div class="components liked">
             <div class="group_container">
                 <?php foreach ($liked as $component): ?>

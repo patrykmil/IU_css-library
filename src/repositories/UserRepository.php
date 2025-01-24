@@ -20,7 +20,17 @@ class UserRepository extends Repository
         $query = 'SELECT * FROM public."User"';
         $stmt = $this->database->connect()->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $userObjects = [];
+        foreach ($users as $user) {
+            $userObject = new User($user['nickname']);
+            $userObject->setEmail($user['email']);
+            $userObject->setId($user['userid']);
+            $avatar = $this->getUserAvatar($user['avatarid']);
+            $userObject->setAvatar($avatar);
+            $userObjects[] = $userObject;
+        }
+        return $userObjects;
     }
 
     public function getUserById(int $id): ?User

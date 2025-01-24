@@ -26,7 +26,7 @@ class BrowseController extends AppController
     {
         if ($this->isGet()) {
             $search = $_GET['search'] ?? '';
-            $sorting = $_GET['sorting'] ?? 'Newest';
+            $sorting = $_GET['sorting'] ?? 'Most likes';
             $filters = $_GET['filters'] ?? ['Buttons', 'Inputs', 'Checkboxes', 'Radio buttons'];
             if (!is_array($filters)) {
                 $filters = [$filters];

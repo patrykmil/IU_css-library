@@ -47,7 +47,7 @@ main {
     max-height: 100px;
 }
 
-.content {
+.component_preview {
     margin-left: 6rem;
     margin-right: 6rem;
 }

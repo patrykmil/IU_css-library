@@ -4,7 +4,7 @@
   --background: hsl(195, 6%, 13%);
   --light-background: hsl(195, 6%, 22%);
   --primary: hsl(271, 12%, 46%);
-  --primary-transparent: hsla(271, 12%, 46%, 0.5);
+  --primary-transparent: hsla(0, 0%, 46%, 0.5);
   --accent-green: #89bd9e;
   --accent-orange: #db995a;
   --text-color: #ffffff;

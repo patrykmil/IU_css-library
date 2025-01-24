@@ -67,11 +67,10 @@
                     <button class="filter_button" type="submit">Apply</button>
                 </div>
         </form>
-        <div class="content">
+        <div class="component_preview">
             <?php foreach ($components as $component): ?>
                 <?php include 'component_preview.html.php'; ?>
             <?php endforeach; ?>
-        </div>
         </div>
     </main>
 </body>
