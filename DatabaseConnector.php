@@ -1,7 +1,5 @@
 <?php
 
-require_once "config.php";
-
 class DatabaseConnector
 {
     private static ?DatabaseConnector $instance = null;
@@ -20,11 +18,11 @@ class DatabaseConnector
 
     private function __construct()
     {
-        $this->username = USERNAME;
-        $this->password = PASSWORD;
-        $this->host = HOST;
-        $this->database = DATABASE;
-        $this->port = PORT;
+        $this->username = getenv('USERNAME');
+        $this->password = getenv('PASSWORD');
+        $this->host = getenv('HOST');
+        $this->database = getenv('DATABASE');
+        $this->port = getenv('PORT');
     }
 
 
