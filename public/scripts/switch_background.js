@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const colorModeSwitch = document.getElementById('color_mode');
-    const preview = document.querySelector('.preview_container');
+    const colorModeSwitch = document.querySelector('#color_mode');
+    const preview = document.querySelector('.preview-container');
 
     function updateBackgroundColor() {
         const isDarkMode = colorModeSwitch.checked;

@@ -1,7 +1,7 @@
 <?php /** @var Component $component */ ?>
 <?php if (!isset($user)) {$user = null;} ?>
 
-<a href="/component/<?php echo $component->getId(); ?>" class="browse_item">
+<a href="/component/<?php echo $component->getId(); ?>" class="browse-item">
     <div class="component no-redirect" id="component-<?php echo $component->getId(); ?>">
         <style>
             #component-<?php echo $component->getId(); ?> {

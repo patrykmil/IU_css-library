@@ -14,9 +14,9 @@ function validateNickname(nickname) {
 }
 
 function validateForm(event) {
-    const emailInput = document.querySelector('input[name="email_input"]');
-    const nicknameInput = document.querySelector('input[name="nickname_input"]');
-    const passwordInput = document.querySelector('input[name="password_input"]');
+    const emailInput = document.querySelector('input[name="email-input"]');
+    const nicknameInput = document.querySelector('input[name="nickname-input"]');
+    const passwordInput = document.querySelector('input[name="password-input"]');
 
     let isValid = true;
 
@@ -49,6 +49,6 @@ function validateForm(event) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('.login_form');
+    const form = document.querySelector('.login-form');
     form.addEventListener('submit', validateForm);
 });

@@ -20,15 +20,15 @@
 <body>
     <?php include 'navigation.html.php'; ?>
     <main>
-        <form id="filter_form" method="get" action="/browse">
-            <div class="top_search">
+        <form id="filter-form" method="get" action="/browse">
+            <div class="top-search">
                 <div id="text">
                     <p>Browse all elements</p>
                 </div>
-                <button class="filter_mobile_only" id="toggle_mobile_filters" type="button">Filters</button>
+                <button class="filter_mobile" id="toggleMobileFilters" type="button">Filters</button>
                 <div id="search">
-                    <img class="search_icon" src="/assets/icons/search_thick_grey.svg" alt="Search icon">
-                    <input class="search_bar" type="text" name="search" placeholder="Search?">
+                    <img class="search-icon" src="/assets/icons/search_thick_grey.svg" alt="Search icon">
+                    <input class="search-bar" type="text" name="search" placeholder="Search?">
                 </div>
             </div>
             <div class="bottom">
@@ -44,30 +44,30 @@
                     <div class="types">
                         <p>Show</p>
                         <div>
-                            <button class="select" id="select_all" type="button">All</button>
-                            <button class="select" id="deselect_all" type="button">None</button>
+                            <button class="select" id="selectAll" type="button">All</button>
+                            <button class="select" id="deselectAll" type="button">None</button>
                         </div>
                         <label class="search_options">
-                            <input type="checkbox" class="filter_checkbox" name="filters[]" value="Buttons">
+                            <input type="checkbox" class="filter-checkbox" name="filters[]" value="Buttons">
                             <p>Buttons</p>
                         </label>
                         <label class="search_options">
-                            <input type="checkbox" class="filter_checkbox" name="filters[]" value="Inputs">
+                            <input type="checkbox" class="filter-checkbox" name="filters[]" value="Inputs">
                             <p>Inputs</p>
                         </label>
                         <label class="search_options">
-                            <input type="checkbox" class="filter_checkbox" name="filters[]" value="Checkboxes">
+                            <input type="checkbox" class="filter-checkbox" name="filters[]" value="Checkboxes">
                             <p>Checkboxes</p>
                         </label>
                         <label class="search_options">
-                            <input type="checkbox" class="filter_checkbox" name="filters[]" value="Radio buttons">
+                            <input type="checkbox" class="filter-checkbox" name="filters[]" value="Radio buttons">
                             <p>Radio buttons</p>
                         </label>
                     </div>
-                    <button class="filter_button" type="submit">Apply</button>
+                    <button class="filter-button" type="submit">Apply</button>
                 </div>
         </form>
-        <div class="component_preview">
+        <div class="component-preview">
             <?php foreach ($components as $component): ?>
                 <?php include 'component_preview.html.php'; ?>
             <?php endforeach; ?>

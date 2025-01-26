@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function showPopup() {
-    const popup = document.getElementById('popup');
+    const popup = document.querySelector('#popup');
     popup.style.display = 'flex';
 
     const closeBtn = document.querySelector('.close');
@@ -17,9 +17,9 @@ function showPopup() {
         popup.style.display = 'none';
     };
 
-    const createSetButton = document.getElementById('createSetButton');
+    const createSetButton = document.querySelector('#createSetButton');
     createSetButton.onclick = () => {
-        const newSetName = document.getElementById('newSetName').value;
+        const newSetName = document.querySelector('#newSetName').value;
         if (newSetName) {
             createNewSet(newSetName);
         }
@@ -34,14 +34,14 @@ function createNewSet(setName) {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const sets = JSON.parse(xhr.responseText);
             updateSetList(sets);
-            document.getElementById('popup').style.display = 'none';
+            document.querySelector('#popup').style.display = 'none';
         }
     };
     xhr.send('setName=' + encodeURIComponent(setName));
 }
 
 function updateSetList(sets) {
-    const datalist = document.getElementById('sets');
+    const datalist = document.querySelector('#sets');
     datalist.innerHTML = '';
     sets.forEach(set => {
         const option = document.createElement('option');
@@ -50,5 +50,5 @@ function updateSetList(sets) {
     });
     const option = document.createElement('option');
     option.value = '+create new';
-    datalist.appendChild(option)
+    datalist.appendChild(option);
 }

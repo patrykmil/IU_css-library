@@ -11,7 +11,7 @@
     gap: 3rem;
 }
 
-.preview_container {
+.preview-container {
     max-width: 33rem;
     width: 75%;
     border: 2px solid var(--text-color-dark);
@@ -24,7 +24,7 @@
     overflow: hidden;
 }
 
-.preview_container > p {
+.preview-container > p {
     position: absolute;
     top: 2%;
     left: 3%;
@@ -34,7 +34,7 @@
     color: var(--text-color-dark);
 }
 
-.tags_container {
+.tags-container {
     display: flex;
     flex-direction: column;
     max-width: 33rem;
@@ -59,27 +59,27 @@
     font-size: var(--big-font);
 }
 
-.right_side {
+.right-side {
     flex: 2;
     display: flex;
     flex-flow: column nowrap;
     gap: 3rem;
 }
 
-.right_side > p {
+.right-side > p {
     font-size: var(--double-font);
     font-weight: 500;
     color: var(--text-color-dark);
 }
 
-.code_container {
+.code-container {
     display: flex;
     flex-flow: column nowrap;
     width: 50vw;
     margin-right: 10px;
 }
 
-.change_code {
+.change-code {
     display: inline-flex;
     background-color: var(--background);
     height: 2.375rem;
@@ -91,11 +91,11 @@
     border: 3px solid var(--light-background);
 }
 
-.change_code.active {
+.change-code.active {
     background-color: var(--light-background);
 }
 
-.change_code:hover {
+.change-code:hover {
     cursor: pointer;
 }
 
@@ -127,13 +127,13 @@
     .left_side {
         width: 100%;
     }
-    .right_side {
+    .right-side {
         width: 90%;
     }
-    .submit_button {
+    .submit-button {
         align-self: center;
     }
-    .code_container {
+    .code-container {
         width: 90%;
     }
 }

@@ -1,4 +1,4 @@
-.inputs_container {
+.inputs-container {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -7,7 +7,7 @@
     align-items: center;
 }
 
-.info_input {
+.info-input {
     background-color: var(--light-background);
     width: 15rem;
     border-radius: 0.3rem;
@@ -17,7 +17,7 @@
     padding: 0.2rem;
 }
 
-.info_input.invalid {
+.info-input.invalid {
     box-shadow: rgba(255, 50, 50, 0.25) 0px 50px 100px -20px, rgba(255, 0, 0, 0.3) 0px 30px 60px -30px, rgba(255, 37, 64, 0.35) 0px -2px 6px 0px inset;
 }
 
@@ -27,7 +27,7 @@
     cursor: pointer;
 }
 
-.submit_button {
+.submit-button {
     display: inline-flex;
     width: 7.5em;
     height: 2em;
@@ -42,7 +42,7 @@
     background-color: inherit;
 }
 
-.submit_button:hover {
+.submit-button:hover {
     background-color: var(--primary);
     color: #fff;
     cursor: pointer;

@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', async (event) => {
             event.preventDefault();
             const componentId = button.getAttribute('data-component-id');
-            const componentElement = document.getElementById(`component-${componentId}`).closest('.browse_item');
+            const componentElement = document.getElementById(`component-${componentId}`).closest('.browse-item');
             await deleteComponent(componentId, componentElement);
         });
     });

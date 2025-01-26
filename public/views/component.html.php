@@ -24,11 +24,11 @@ if (!isset($component)) {
     <script src="/public/scripts/deleteFromComponentPage.js" type="module" defer></script>
     <script src="/public/scripts/copyLink.js" type="module" defer></script>
     <style>
-        .component_preview * {
+        .component-preview * {
             all: revert;
         }
 
-        .component_preview {
+        .component-preview {
         <?php echo htmlspecialchars_decode($component->getCss()); ?>
         }
     </style>
@@ -39,28 +39,28 @@ if (!isset($component)) {
 <div class="main">
     <div class="left_side">
         <?php include 'preview_container.html.php'; ?>
-        <div class="interaction_buttons_container">
-            <button class="interaction_button"
+        <div class="interaction-buttons-container">
+            <button class="interaction-button"
                     onclick="copy(encodeURIComponent('<?php echo htmlspecialchars(json_encode($component->getHtml()), ENT_QUOTES, 'UTF-8'); ?>'),
                             encodeURIComponent('<?php echo htmlspecialchars(json_encode($component->getCss()), ENT_QUOTES, 'UTF-8'); ?>'))">
                 <img src="/assets/icons/copy.svg" alt="Copy Icon"/>
             </button>
             <?php if ($component->isLiked() !== null): ?>
                 <?php $likeIcon = $component->isLiked() ? 'heart_fill.svg' : 'heart_nofill.svg'; ?>
-                <button class="interaction_button like" data-component-id="<?php echo $component->getId(); ?>">
+                <button class="interaction-button like" data-component-id="<?php echo $component->getId(); ?>">
                     <img src="/assets/icons/<?php echo $likeIcon; ?>" alt="Like icon">
                 </button>
             <?php endif; ?>
-            <button class="interaction_button share">
+            <button class="interaction-button share">
                 <img src="/assets/icons/share.svg" alt="Share Icon"/>
             </button>
             <?php if (isset($user) and $user->getId() === $component->getAuthor()->getID()): ?>
-                <button class="interaction_button delete" data-component-id="<?php echo $component->getId(); ?>">
+                <button class="interaction-button delete" data-component-id="<?php echo $component->getId(); ?>">
                     <img src="/assets/icons/delete.svg" alt="Delete Icon"/>
                 </button>
             <?php endif; ?>
         </div>
-        <div class="tags_container">
+        <div class="tags-container">
             <div class="tags">
                 <?php foreach ($component->getTags() as $tag): ?>
                     <button style="background-color: #<?php echo $tag->getColor(); ?>;"><?php echo $tag->getName(); ?></button>
@@ -68,18 +68,18 @@ if (!isset($component)) {
             </div>
         </div>
     </div>
-    <div class="right_side">
-        <div class="code_container">
+    <div class="right-side">
+        <div class="code-container">
             <div>
-                <button class="change_code" id="html_button" type="button">HTML</button>
-                <button class="change_code active" id="css_button" type="button">CSS</button>
+                <button class="change-code" id="htmlButton" type="button">HTML</button>
+                <button class="change-code active" id="cssButton" type="button">CSS</button>
             </div>
-            <pre class="code auto_expand" id="html_textarea">
+            <pre class="code auto-expand" id="htmlTextarea">
                 <code class="language-html match-braces">
                     <?php echo $component->getHtml(); ?>
                 </code>
             </pre>
-            <pre class="code active auto_expand" id="css_textarea">
+            <pre class="code active auto-expand" id="cssTextarea">
                 <code class="language-css match-braces">
                     <?php echo $component->getCss(); ?>
                 </code>

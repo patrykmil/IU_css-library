@@ -36,9 +36,9 @@ if (!isset($user)) {
             <button class="btn right" type="button" id="liked">Liked</button>
         </div>
     </div>
-    <div class="component_preview">
+    <div class="component-preview">
         <div class="components liked">
-            <div class="group_container">
+            <div class="group-container">
                 <?php foreach ($liked as $component): ?>
                     <?php include 'component_preview.html.php'; ?>
                 <?php endforeach; ?>
@@ -48,7 +48,7 @@ if (!isset($user)) {
             <?php foreach ($owned as $set): ?>
                 <div class="list">
                     <p class="title"><?php echo $set['name']; ?></p>
-                    <div class="group_container">
+                    <div class="group-container">
                         <?php foreach ($set['components'] as $component): ?>
                             <?php include 'component_preview.html.php'; ?>
                         <?php endforeach; ?>

@@ -14,13 +14,13 @@ function enableTab(e) {
     }
 }
 
-css_textarea.addEventListener('input', () => {
-    autoExpand(css_textarea);
+cssTextarea.addEventListener('input', () => {
+    autoExpand(cssTextarea);
 });
 
-html_textarea.addEventListener('input', () => {
-    autoExpand(html_textarea);
+htmlTextarea.addEventListener('input', () => {
+    autoExpand(htmlTextarea);
 });
 
-html_textarea.addEventListener('keydown', enableTab);
-css_textarea.addEventListener('keydown', enableTab);
+htmlTextarea.addEventListener('keydown', enableTab);
+cssTextarea.addEventListener('keydown', enableTab);

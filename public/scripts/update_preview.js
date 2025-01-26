@@ -1,18 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const preview_container = document.querySelector('.component_preview');
+    const previewContainer = document.querySelector('.component-preview');
     const style_element = document.createElement('style');
     document.head.appendChild(style_element);
 
-    if (html_textarea && css_textarea && preview_container) {
-        html_textarea.addEventListener('input', () => {
-            preview_container.innerHTML = html_textarea.value;
+    if (htmlTextarea && cssTextarea && preview-container) {
+        htmlTextarea.addEventListener('input', () => {
+            previewContainer.innerHTML = htmlTextarea.value;
         });
 
-        css_textarea.addEventListener('input', () => {
-            style_element.innerHTML = `.component_preview { ${css_textarea.value} }`;
+        cssTextarea.addEventListener('input', () => {
+            style_element.innerHTML = `.component-preview { ${cssTextarea.value} }`;
         });
 
     } else {
-        console.error('Element not found: html_textarea or component_preview');
+        console.error('Element not found: htmlTextarea or component-preview');
     }
 });

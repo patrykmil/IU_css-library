@@ -68,7 +68,7 @@ a {
     align-items: center;
 }
 
-.game_ui {
+.game-ui {
     display: flex;
     flex-flow: column nowrap;
     justify-content: center;
@@ -167,7 +167,7 @@ a {
         padding: 0.5rem 1rem;
         font-size: var(--hover-font);
     }
-    .game_ui > p {
+    .game-ui > p {
         font-size: var(--big-font);
     }
 

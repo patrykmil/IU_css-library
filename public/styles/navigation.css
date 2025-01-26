@@ -21,7 +21,7 @@ nav * {
     text-decoration: none;
 }
 
-.top_nav_left {
+.top-nav-left {
     display: flex;
     justify-content: left;
     align-items: center;
@@ -44,7 +44,7 @@ nav .logo:hover {
     cursor: pointer;
 }
 
-.nav_options_list {
+.nav-options-list {
     margin: 0;
     padding: 0;
     list-style-type: none;
@@ -55,12 +55,12 @@ nav .logo:hover {
     height: 100%;
 }
 
-.nav_options_list img {
+.nav-options-list img {
     height: 2em;
     padding-right: 0.5em;
 }
 
-.menu_item {
+.menu-item {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -69,7 +69,7 @@ nav .logo:hover {
     transition: all 0.2s;
 }
 
-.menu_item:hover {
+.menu-item:hover {
     font-size: var(--hover-font);
 }
 
@@ -85,11 +85,11 @@ nav .logo:hover {
     padding-right: 1em;
 }
 
-.right_menu_item {
+.right_menu-item {
     transition: all 0.2s;
 }
 
-.right_menu_item:hover {
+.right_menu-item:hover {
     font-size: var(--hover-font);
     cursor: pointer;
 }
@@ -99,26 +99,26 @@ nav button {
     border: none;
 }
 
-.right_menu_text {
+.right-menu-text {
     transition: all 0.1s;
 }
 
-.right_menu_text:hover {
+.right-menu-text:hover {
     color: var(--primary);
     cursor: pointer;
 }
 
 /* Mobile nav */
 
-nav .mobile_menu_icon {
+nav .mobile-menu-icon {
     display: none;
 }
 
-nav .mobile_only_option {
+nav .mobile-option {
     display: none;
 }
 
-.nav_options_list.active {
+.nav-options-list.active {
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -130,7 +130,7 @@ nav .mobile_only_option {
     align-items: center;
 }
 
-.nav_options_list.active li {
+.nav-options-list.active li {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -138,7 +138,7 @@ nav .mobile_only_option {
     padding: 1em;
 }
 
-.mobile_only_option {
+.mobile-option {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -160,11 +160,11 @@ nav .mobile_only_option {
         position: relative;
     }
 
-    .nav_options_list {
+    .nav-options-list {
         display: none;
     }
 
-    nav .mobile_menu_icon {
+    nav .mobile-menu-icon {
         display: flex;
         justify-content: flex-end;
         align-items: center;

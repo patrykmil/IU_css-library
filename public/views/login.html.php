@@ -13,31 +13,31 @@
 <a href="/start">
     <img class="logo" src="../../assets/images/logo.svg" alt="Logo"/>
 </a>
-<div class="login_form_container">
-    <form class="login_form" action="/login" method="POST">
-        <div class="login_container">
-            <label for="email_input">email address
-                <input name="email_input" class="login_input" type="email" placeholder="email@email.iu"/>
+<div class="login-form-container">
+    <form class="login-form" action="/login" method="POST">
+        <div class="login-container">
+            <label for="email-input">email address
+                <input name="email-input" class="login-input" type="email" placeholder="email@email.iu"/>
             </label>
         </div>
-        <div class="login_container">
-            <label for="password_input">password
-                <input name="password_input" class="login_input" type="password" placeholder="password"/>
+        <div class="login-container">
+            <label for="password-input">password
+                <input name="password-input" class="login-input" type="password" placeholder="password"/>
             </label>
         </div>
-        <button type='submit' class="login_button">SIGN IN</button>
+        <button type='submit' class="login-button">SIGN IN</button>
     </form>
-    <div class="login_other_options">
-        <a href="/register" class="login_option">Register</a>
+    <div class="login-other-options">
+        <a href="/register" class="login-option">Register</a>
     </div>
 </div>
 <?php if (isset($message) && $message !== "Successfully registered!!!") : ?>
-    <div class="validity_message">
+    <div class="validity-message">
         <p><?= $message ?></p>
     </div>
 <?php endif; ?>
 <?php if (isset($message) && $message === "Successfully registered!!!") : ?>
-    <div class="registered_message">
+    <div class="registered-message">
         <p><?= $message ?></p>
     </div>
 <?php endif; ?>

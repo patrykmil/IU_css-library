@@ -14,31 +14,31 @@
 <a href="/start">
     <img class="logo" src="../../assets/images/logo.svg" alt="Logo"/>
 </a>
-<div class="login_form_container">
-    <form class="login_form" action="/register" method="POST">
-        <div class="login_container">
-            <label for="email_input">email address
-                <input name="email_input" class="login_input" type="email" placeholder="email@email.iu"/>
+<div class="login-form-container">
+    <form class="login-form" action="/register" method="POST">
+        <div class="login-container">
+            <label for="email-input">email address
+                <input name="email-input" class="login-input" type="email" placeholder="email@email.iu"/>
             </label>
         </div>
-        <div class="login_container">
-            <label for="nickname_input">nickname
-                <input name="nickname_input" class="login_input" type="text" placeholder="IuNick"/>
+        <div class="login-container">
+            <label for="nickname-input">nickname
+                <input name="nickname-input" class="login-input" type="text" placeholder="IuNick"/>
             </label>
         </div>
-        <div class="login_container">
-            <label for="password_input">password
-                <input name="password_input" class="login_input" type="password" placeholder="password"/>
+        <div class="login-container">
+            <label for="password-input">password
+                <input name="password-input" class="login-input" type="password" placeholder="password"/>
             </label>
         </div>
-        <button type='submit' class="login_button">REGISTER</button>
+        <button type='submit' class="login-button">REGISTER</button>
     </form>
-    <div class="login_other_options">
-        <a href="/login" class="login_option">Log in?</a>
+    <div class="login-other-options">
+        <a href="/login" class="login-option">Log in</a>
     </div>
 </div>
 <?php if (isset($message) && $message !== "Successfully registered!!!") : ?>
-    <div class="validity_message">
+    <div class="validity-message">
         <p><?= $message ?></p>
     </div>
 <?php endif; ?>

@@ -377,7 +377,7 @@ VALUES (6, 'gradient radio', 1, 4, 9, e'.gradient-radio {
     &lt;/label&gt;', 4, '2025-01-12 14:04:52.415996');
 
 INSERT INTO public."Component" (componentid, name, setid, typeid, colorid, css, html, authorid, createdat)
-VALUES (47, 'pink submit', 3, 1, 10, e'#submit_button {
+VALUES (47, 'pink submit', 3, 1, 10, e'#submit-button {
   display: inline-flex;
   font-family: &quot;Segoe UI&quot;, Tahoma, Geneva, Verdana, sans-serif;
   width: 7.5em;
@@ -394,15 +394,15 @@ VALUES (47, 'pink submit', 3, 1, 10, e'#submit_button {
   background-color: inherit;
 }
 
-#submit_button:hover {
+#submit-button:hover {
   background-color: rgb(212, 58, 212);
   color: #fff;
   cursor: pointer;
   border-color: #ffffff;
-}', '&lt;button id=&quot;submit_button&quot;&gt;Submit&lt;/button&gt;', 2, '2025-01-12 13:54:00.663748');
+}', '&lt;button id=&quot;submit-button&quot;&gt;Submit&lt;/button&gt;', 2, '2025-01-12 13:54:00.663748');
 
 INSERT INTO public."Component" (componentid, name, setid, typeid, colorid, css, html, authorid, createdat)
-VALUES (53, 'purple submit', 3, 1, 11, e'#submit_button {
+VALUES (53, 'purple submit', 3, 1, 11, e'#submit-button {
   display: inline-flex;
   font-family: &quot;Segoe UI&quot;, Tahoma, Geneva, Verdana, sans-serif;
   width: 7.5em;
@@ -419,15 +419,15 @@ VALUES (53, 'purple submit', 3, 1, 11, e'#submit_button {
   background-color: inherit;
 }
 
-#submit_button:hover {
+#submit-button:hover {
   background-color: #6a5ed3;
   color: #fff;
   cursor: pointer;
   border-color: #ffffff;
-}', '&lt;button id=&quot;submit_button&quot;&gt;Submit&lt;/button&gt;', 2, '2025-01-23 12:48:54.729399');
+}', '&lt;button id=&quot;submit-button&quot;&gt;Submit&lt;/button&gt;', 2, '2025-01-23 12:48:54.729399');
 
 INSERT INTO public."Component" (componentid, name, setid, typeid, colorid, css, html, authorid, createdat)
-VALUES (54, 'green submit', 3, 1, 12, e'#submit_button {
+VALUES (54, 'green submit', 3, 1, 12, e'#submit-button {
   display: inline-flex;
   font-family: &quot;Segoe UI&quot;, Tahoma, Geneva, Verdana, sans-serif;
   width: 7.5em;
@@ -444,12 +444,12 @@ VALUES (54, 'green submit', 3, 1, 12, e'#submit_button {
   background-color: inherit;
 }
 
-#submit_button:hover {
+#submit-button:hover {
   background-color: #5ed398;
   color: #000000;
   cursor: pointer;
   border-color: #000000;
-}', '&lt;button id=&quot;submit_button&quot;&gt;Submit&lt;/button&gt;', 2, '2025-01-23 12:50:12.928597');
+}', '&lt;button id=&quot;submit-button&quot;&gt;Submit&lt;/button&gt;', 2, '2025-01-23 12:50:12.928597');
 
 INSERT INTO public."Component" (componentid, name, setid, typeid, colorid, css, html, authorid, createdat)
 VALUES (55, 'green input', 3, 2, 12, e'#search_input {

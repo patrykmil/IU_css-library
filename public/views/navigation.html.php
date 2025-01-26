@@ -19,65 +19,65 @@ if ($cookieData) {
 
 <body>
 <nav>
-    <div class="top_nav_left">
+    <div class="top-nav-left">
         <a href="/start">
-        <img class="logo" src="../../assets/images/logo.svg" alt="Logo"/>
+            <img class="logo" src="../../assets/images/logo.svg" alt="Logo"/>
         </a>
-        <ul class="nav_options_list">
+        <ul class="nav-options-list">
             <li>
                 <form action="/browse" method="get">
-                    <button type="submit" class="menu_item">
+                    <button type="submit" class="menu-item">
                         <img src="../../assets/icons/search_thick.svg" alt="Browse Icon"/>BROWSE
                     </button>
                 </form>
             </li>
             <li>
                 <form action="<?php echo isset($nickname) ? '/collection/' . $nickname : '/login'; ?>" method="get">
-                    <button type="submit" class="menu_item">
+                    <button type="submit" class="menu-item">
                         <img src="../../assets/icons/bookmark_fill.svg" alt="Collection Icon"/>COLLECTION
                     </button>
                 </form>
             </li>
             <li>
                 <form action="/create" method="get">
-                    <button type="submit" class="menu_item">
+                    <button type="submit" class="menu-item">
                         <img src="../../assets/icons/create.svg" alt="Create Icon"/>CREATE
                     </button>
                 </form>
             </li>
             <?php if (isset($_COOKIE['user_session'])): ?>
-                <li class="mobile_only_option">
-                    <a class="menu_item">PROFILE</a>
+                <li class="mobile-option">
+                    <a class="menu-item">PROFILE</a>
                 </li>
-                <li class="mobile_only_option">
+                <li class="mobile-option">
                     <form action="/logout" method="post">
-                        <button type="submit" class="menu_item">LOG OUT</button>
+                        <button type="submit" class="menu-item">LOG OUT</button>
                     </form>
                 </li>
             <?php else: ?>
-                <li class="mobile_only_option">
+                <li class="mobile-option">
                     <form action="/login" method="get">
-                        <button type="submit" class="menu_item">LOG IN</button>
+                        <button type="submit" class="menu-item">LOG IN</button>
                     </form>
                 </li>
             <?php endif; ?>
         </ul>
 
-        <a class="mobile_menu_icon menu_item menu_show"><img src="../../assets/icons/menu.svg"
+        <a class="mobile-menu-icon menu-item menu-show"><img src="../../assets/icons/menu.svg"
                                                              alt="Menu Icon"/></a>
     </div>
 
     <div class="top_nav_right">
         <?php if (isset($_COOKIE['user_session'])): ?>
-            <img class="right_menu_item"
+            <img class="right_menu-item"
                  src="../../assets/avatars/<?php echo $avatarUrl; ?>"
                  alt="My Avatar"/>
             <form action="/logout" method="post">
-                <button type="submit" class="right_menu_text">LOG OUT</button>
+                <button type="submit" class="right-menu-text">LOG OUT</button>
             </form>
         <?php else: ?>
             <form action="/login" method="get">
-                <button type="submit" class="right_menu_text">LOG IN</button>
+                <button type="submit" class="right-menu-text">LOG IN</button>
             </form>
         <?php endif; ?>
     </div>

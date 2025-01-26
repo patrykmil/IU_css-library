@@ -61,17 +61,17 @@
         <?php endif; ?>
     </div>
     <div class="container game">
-        <div class="game_ui">
-            <p class="game_string">Memory game</span></p>
-            <button class="start game_button">Start</button>
+        <div class="game-ui">
+            <p class="game-string">Memory game</span></p>
+            <button class="start game-button">Start</button>
         </div>
         <div class="tiles">
-            <button class="tile game_button" data-value="1">1</button>
-            <button class="tile game_button" data-value="2">2</button>
-            <button class="tile game_button" data-value="3">3</button>
-            <button class="tile game_button" data-value="4">4</button>
-            <button class="tile game_button" data-value="5">5</button>
-            <button class="tile game_button" data-value="6">6</button>
+            <button class="tile game-button" data-value="1">1</button>
+            <button class="tile game-button" data-value="2">2</button>
+            <button class="tile game-button" data-value="3">3</button>
+            <button class="tile game-button" data-value="4">4</button>
+            <button class="tile game-button" data-value="5">5</button>
+            <button class="tile game-button" data-value="6">6</button>
         </div>
     </div>
 </main>

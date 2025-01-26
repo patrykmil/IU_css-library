@@ -47,7 +47,7 @@ main {
     max-height: 100px;
 }
 
-.component_preview {
+.component-preview {
     margin-left: 6rem;
     margin-right: 6rem;
 }
@@ -78,7 +78,7 @@ main {
     border-radius: 10px;
 }
 
-.group_container {
+.group-container {
     display: flex;
     flex-flow: row wrap;
     gap: 2rem;

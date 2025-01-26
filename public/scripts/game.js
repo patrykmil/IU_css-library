@@ -1,6 +1,6 @@
 class Game {
     constructor() {
-        this.string = document.querySelector('.game_string');
+        this.string = document.querySelector('.game-string');
         this.tiles = document.querySelectorAll('.tile');
         this.button = document.querySelector('.start');
         this.state = new BeforeGame();

@@ -1,18 +1,18 @@
-const css_textarea = document.getElementById('css_textarea');
-const html_textarea = document.getElementById('html_textarea');
-const css_button = document.getElementById('css_button');
-const html_button = document.getElementById('html_button');
+const cssTextarea = document.querySelector('#cssTextarea');
+const htmlTextarea = document.querySelector('#htmlTextarea');
+const cssButton = document.querySelector('#cssButton');
+const htmlButton = document.querySelector('#htmlButton');
 
-css_button.addEventListener('click', () => {
-    css_textarea.classList.add('active');
-    css_button.classList.add('active');
-    html_textarea.classList.remove('active');
-    html_button.classList.remove('active');
+cssButton.addEventListener('click', () => {
+    cssTextarea.classList.add('active');
+    cssButton.classList.add('active');
+    htmlTextarea.classList.remove('active');
+    htmlButton.classList.remove('active');
 });
 
-html_button.addEventListener('click', () => {
-    html_textarea.classList.add('active');
-    html_button.classList.add('active');
-    css_textarea.classList.remove('active');
-    css_button.classList.remove('active');
+htmlButton.addEventListener('click', () => {
+    htmlTextarea.classList.add('active');
+    htmlButton.classList.add('active');
+    cssTextarea.classList.remove('active');
+    cssButton.classList.remove('active');
 });

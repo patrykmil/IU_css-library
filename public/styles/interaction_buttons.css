@@ -1,4 +1,4 @@
-.interaction_button {
+.interaction-button {
     background-color: var(--background);
     display: inline-flex;
     padding: 0.375rem 0.75rem;
@@ -10,15 +10,15 @@
     cursor: pointer;
 }
 
-.interaction_button:hover {
+.interaction-button:hover {
     background-color: var(--primary-transparent);
 }
 
-.interaction_button > img {
+.interaction-button > img {
     height: 2.8125rem;
 }
 
-.interaction_buttons_container {
+.interaction-buttons-container {
     width: 50%;
     display: flex;
     align-items: center;

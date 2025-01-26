@@ -29,8 +29,8 @@ class SecurityController extends AppController
             return;
         }
 
-        $email = $_POST['email_input'];
-        $password = $_POST['password_input'];
+        $email = $_POST['email-input'];
+        $password = $_POST['password-input'];
 
         $email = Validator::verifyEmail($email);
         if (!$email) {
@@ -55,7 +55,7 @@ class SecurityController extends AppController
 
         $cookieValue = $this->repository->addUserSession($user->getId());
         setcookie('user_session', $cookieValue, time() + (60 * 60 * 24 * 30), "/", "", true, true);
-        header("Location: /browse");
+        header("Location: /start");
     }
 
     public function logout(): void
@@ -74,9 +74,9 @@ class SecurityController extends AppController
             return;
         }
 
-        $email = $_POST['email_input'];
-        $nickname = $_POST['nickname_input'];
-        $password = $_POST['password_input'];
+        $email = $_POST['email-input'];
+        $nickname = $_POST['nickname-input'];
+        $password = $_POST['password-input'];
 
         $email = Validator::verifyEmail($email);
         if (!$email) {

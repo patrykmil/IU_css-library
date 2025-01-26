@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector('.new_component_form');
+    const form = document.querySelector('.new-component-form');
     const tagsContainer = document.querySelector('.tags');
-    const htmlTextarea = document.querySelector('#html_textarea');
-    const cssTextarea = document.querySelector('#css_textarea');
+    const htmlTextarea = document.querySelector('#htmlTextarea');
+    const cssTextarea = document.querySelector('#cssTextarea');
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();

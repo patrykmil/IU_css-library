@@ -5,7 +5,7 @@ body {
     align-items: center;
 }
 
-.login_form_container {
+.login-form-container {
     height: 33.75rem;
     width: 19rem;
     margin-top: 1.5em;
@@ -27,18 +27,18 @@ body {
     filter: drop-shadow(0 0 0.75rem var(--primary));
 }
 
-.login_form {
+.login-form {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
 }
 
-.login_container {
+.login-container {
     margin-top: 2em;
 }
 
-.login_container > label {
+.login-container > label {
     padding: 0;
     color: #fff;
     font-size: var(--small-font);
@@ -47,7 +47,7 @@ body {
     margin: 0 0 0 0.625rem;
 }
 
-.login_input {
+.login-input {
     display: flex;
     width: 13.5rem;
     height: 2rem;
@@ -60,11 +60,11 @@ body {
     background-color: inherit;
 }
 
-.login_input.invalid {
+.login-input.invalid {
     box-shadow: rgba(255, 50, 50, 0.25) 0px 50px 100px -20px, rgba(255, 0, 0, 0.3) 0px 30px 60px -30px, rgba(255, 37, 64, 0.35) 0px -2px 6px 0px inset;
 }
 
-.login_button {
+.login-button {
     margin-top: 1.5em;
     display: inline-flex;
     width: 7.5em;
@@ -80,27 +80,27 @@ body {
     background-color: inherit;
 }
 
-.login_button:hover {
+.login-button:hover {
     background-color: var(--primary);
     color: #fff;
     cursor: pointer;
 }
 
-.login_other_options {
+.login-other-options {
     display: flex;
     width: 100%;
     justify-content: space-evenly;
     align-items: center;
 }
 
-.login_other_options > a {
+.login-other-options > a {
     color: var(--primary);
     font-size: var(--regular-font);
     text-decoration: underline;
     text-decoration-style: solid;
 }
 
-.validity_message, .registered_message {
+.validity-message, .registered-message {
     position: fixed;
     height: 5rem;
     width: auto;
@@ -115,15 +115,15 @@ body {
     padding: 0.5rem 1rem;
 }
 
-.validity_message, .registered_message > p {
+.validity-message, .registered-message > p {
     font-size: var(--big-font);
     font-weight: 500;
 }
 
-.validity_message > p {
+.validity-message > p {
     color: var(--accent-orange);
 }
 
-.registered_message > p{
+.registered-message > p{
     color:var(--primary);
 }
