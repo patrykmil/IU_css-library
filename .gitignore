@@ -1,6 +1,8 @@
 TODO.txt
+.env
 pgAdmin_login
 .idea/
+
 # Default ignored files
 /shelf/
 /workspace.xml
