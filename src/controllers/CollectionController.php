@@ -27,9 +27,16 @@ class CollectionController extends AppController
         return self::$instance;
     }
 
-    public function collection(string $nickname)
+    public function collection(?string $nickname): void
     {
         if ($this->isGet()) {
+            if (!$nickname) {
+                $user = Decoder::decodeUserSession();
+                if (!$user) {
+                    header('Location: /login');
+                }
+                $nickname = $user->getNickname();
+            }
             $user = $this->userRepository->getUserByName($nickname);
             $liked = $this->componentRepository->getLikedComponents($user->getId());
             $owned = $this->componentRepository->getOwnedComponents($user->getId());
@@ -46,11 +53,11 @@ class CollectionController extends AppController
                     }
                 }
             }
-            return $this->render('collection', ['user' => $user, 'liked' => $liked, 'owned' => $owned]);
+            $this->render('collection', ['user' => $user, 'liked' => $liked, 'owned' => $owned]);
         }
     }
 
-    public function deleteComponent()
+    public function deleteComponent(): void
     {
         if ($this->isPost()) {
             $user = Decoder::decodeUserSession();

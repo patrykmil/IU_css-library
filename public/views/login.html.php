@@ -28,8 +28,7 @@
         <button type='submit' class="login_button">SIGN IN</button>
     </form>
     <div class="login_other_options">
-        <a href="#" class="login_option">Forgot Password?</a>
-        <a href="register" class="login_option">Register</a>
+        <a href="/register" class="login_option">Register</a>
     </div>
 </div>
 <?php if (isset($message) && $message !== "Successfully registered!!!") : ?>

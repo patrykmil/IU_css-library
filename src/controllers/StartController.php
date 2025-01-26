@@ -16,11 +16,11 @@ class StartController extends AppController
     return self::$instance;
   }
 
-  public function start()
+  public function start(): void
   {
       $userSession = Decoder::decodeUserSession();
       if ($this->isGet()) {
-          return $this->render("start", ['user' => $userSession]);
+          $this->render("start", ['user' => $userSession]);
       }
   }
 }

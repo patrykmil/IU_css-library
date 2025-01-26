@@ -29,10 +29,12 @@ class ComponentRepository extends Repository
         JOIN public."Color" c USING (colorid)
         WHERE ct.componentid = :id
     ';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $componentID, PDO::PARAM_INT);
         $stmt->execute();
         $tagsData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->database->disconnect($conn);
 
         $tags = [];
         foreach ($tagsData as $tag) {
@@ -82,7 +84,8 @@ class ComponentRepository extends Repository
 
     private function fetchComponents(string $query, array $filters, string $search): array
     {
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $paramIndex = 1;
         foreach ($filters as $filter) {
             $stmt->bindValue($paramIndex++, $filter);
@@ -93,7 +96,9 @@ class ComponentRepository extends Repository
             $stmt->bindValue($paramIndex, '%' . $search . '%');
         }
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $components = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->database->disconnect($conn);
+        return $components;
     }
 
     public function getComponents(string $sorting = 'Most likes', array $filters = ['Buttons', 'Inputs', 'Checkboxes', 'Radio buttons'], string $search = ''): array
@@ -159,10 +164,12 @@ class ComponentRepository extends Repository
                 LEFT JOIN public."Type" USING (typeid)
             WHERE componentid = :id
         ';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $component = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->database->disconnect($conn);
 
         if (!$component) {
             return null;
@@ -188,10 +195,12 @@ class ComponentRepository extends Repository
     private function getTypeId(string $type): int
     {
         $query = 'SELECT typeid FROM public."Type" WHERE name = :type';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':type', $type);
         $stmt->execute();
         $typeId = $stmt->fetch(PDO::FETCH_ASSOC)['typeid'];
+        $this->database->disconnect($conn);
         if (!$typeId) {
             throw new Exception('Type not found');
         }
@@ -204,10 +213,12 @@ class ComponentRepository extends Repository
     private function getSetId(string $set): int
     {
         $query = 'SELECT setid FROM public."Set" WHERE name = :set';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':set', $set);
         $stmt->execute();
         $setId = $stmt->fetch(PDO::FETCH_ASSOC)['setid'];
+        $this->database->disconnect($conn);
         if (!$setId) {
             throw new Exception('Set not found');
         }
@@ -220,16 +231,20 @@ class ComponentRepository extends Repository
     private function getColorId(string $color): int
     {
         $query = 'SELECT colorid FROM public."Color" WHERE hex = :color';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':color', $color);
         $stmt->execute();
         $colorId = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->database->disconnect($conn);
         if (!$colorId) {
             $query = 'INSERT INTO public."Color" (hex) VALUES (:color) RETURNING colorid';
-            $stmt = $this->database->connect()->prepare($query);
+            $conn = $this->database->connect();
+            $stmt = $conn->prepare($query);
             $stmt->bindParam(':color', $color);
             $stmt->execute();
             $colorId = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->database->disconnect($conn);
         }
         $colorId = $colorId['colorid'];
         if (!$colorId) {
@@ -260,9 +275,11 @@ class ComponentRepository extends Repository
 
         $query = 'INSERT INTO public."Component" (name, typeid, setid, colorid, authorid, css, html) 
                 VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING componentid';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         if ($stmt->execute([$name, $typeId, $setId, $colorId, $userID, $css, $html])) {
             $componentID = $stmt->fetch(PDO::FETCH_ASSOC)['componentid'];
+            $this->database->disconnect($conn);
             $this->addTags($tags, $componentID);
         } else {
             throw new Exception('Failed to create component');
@@ -279,15 +296,19 @@ class ComponentRepository extends Repository
             if (!$tag) {
                 ErrorController::getInstance()->error404();
             }
-            $stmt = $this->database->connect()->prepare($queryTagID);
+            $conn = $this->database->connect();
+            $stmt = $conn->prepare($queryTagID);
             $stmt->bindParam(':name', $tag);
             $stmt->execute();
             $tagID = $stmt->fetch(PDO::FETCH_ASSOC)['tagid'];
+            $this->database->disconnect($conn);
             if ($tagID) {
-                $stmt = $this->database->connect()->prepare($queryInsertComponentTag);
+                $conn = $this->database->connect();
+                $stmt = $conn->prepare($queryInsertComponentTag);
                 $stmt->bindParam(':component', $componentID, PDO::PARAM_INT);
                 $stmt->bindParam(':tag', $tagID, PDO::PARAM_INT);
                 $stmt->execute();
+                $this->database->disconnect($conn);
             }
         }
     }
@@ -295,47 +316,59 @@ class ComponentRepository extends Repository
     public function likeComponent($componentID, $userID): void
     {
         $query = 'INSERT INTO public."Likes" (componentid, userid) VALUES (:componentid, :userid)';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':componentid', $componentID, PDO::PARAM_INT);
         $stmt->bindParam(':userid', $userID, PDO::PARAM_INT);
         $stmt->execute();
+        $this->database->disconnect($conn);
     }
 
     public function unlikeComponent($componentID, $userID): void
     {
         $query = 'DELETE FROM public."Likes" WHERE componentid = :componentid AND userid = :userid';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':componentid', $componentID, PDO::PARAM_INT);
         $stmt->bindParam(':userid', $userID, PDO::PARAM_INT);
         $stmt->execute();
+        $this->database->disconnect($conn);
     }
 
     public function isLikedComponent($componentID, $userID): bool
     {
         $query = 'SELECT * FROM public."Likes" WHERE componentid = :componentid AND userid = :userid';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':componentid', $componentID, PDO::PARAM_INT);
         $stmt->bindParam(':userid', $userID, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->rowCount() > 0;
+        $row_count = $stmt->rowCount() > 0;
+        $this->database->disconnect($conn);
+        return $row_count;
     }
 
     private function getComponentLikes(int $componentId): int
     {
         $query = 'SELECT count(*) FROM public."Likes" WHERE componentid = :id';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $componentId, PDO::PARAM_INT);
         $stmt->execute();
-        return (int)$stmt->fetch(PDO::FETCH_ASSOC)['count'];
+        $likes = (int)$stmt->fetch(PDO::FETCH_ASSOC)['count'];
+        $this->database->disconnect($conn);
+        return $likes;
     }
 
     public function getLikedComponents($userID): array
     {
         $query = 'SELECT componentid FROM public."Likes" WHERE userid = :id';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $userID, PDO::PARAM_INT);
         $stmt->execute();
         $componentIDs = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+        $this->database->disconnect($conn);
         $components = [];
         foreach ($componentIDs as $componentID) {
             $components[] = $this->getComponentById($componentID);
@@ -346,17 +379,21 @@ class ComponentRepository extends Repository
     public function getOwnedComponents($userID): array
     {
         $query = 'SELECT setid, name FROM public."Set" WHERE ownerid = :id';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $userID, PDO::PARAM_INT);
         $stmt->execute();
         $sets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->database->disconnect($conn);
         $components = [];
         foreach ($sets as $set) {
             $query = 'SELECT componentid FROM public."Component" WHERE setid = :id';
-            $stmt = $this->database->connect()->prepare($query);
+            $conn = $this->database->connect();
+            $stmt = $conn->prepare($query);
             $stmt->bindParam(':id', $set['setid'], PDO::PARAM_INT);
             $stmt->execute();
             $componentIDs = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+            $this->database->disconnect($conn);
             $tempComp = [];
             foreach ($componentIDs as $componentID) {
                 $tempComp[] = $this->getComponentById($componentID);
@@ -369,8 +406,10 @@ class ComponentRepository extends Repository
     public function deleteComponent($componentID): void
     {
         $query = 'DELETE FROM public."Component" WHERE componentid = :id';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $componentID, PDO::PARAM_INT);
         $stmt->execute();
+        $this->database->disconnect($conn);
     }
 }

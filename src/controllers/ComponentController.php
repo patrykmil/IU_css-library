@@ -21,13 +21,18 @@ class ComponentController extends AppController
         return self::$instance;
     }
 
-    public function component(int $id)
+    public function component(int $id): void
     {
         require_once 'src/models/Component.php';
         require_once 'src/models/User.php';
         require_once 'src/repositories/UserRepository.php';
 
         $component = $this->componentRepository->getComponentById($id);
+        if (!$component) {
+            require_once 'src/controllers/ErrorController.php';
+            ErrorController::getInstance()->error404();
+            return;
+        }
         $userSession = Decoder::decodeUserSession();
         if($userSession) {
             $component->setLiked($this->componentRepository->isLikedComponent($component->getId(), $userSession->getId()));

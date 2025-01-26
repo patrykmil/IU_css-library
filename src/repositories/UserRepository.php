@@ -18,9 +18,11 @@ class UserRepository extends Repository
     public function getUsers(): array
     {
         $query = 'SELECT * FROM public."User"';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->database->disconnect($conn);
         $userObjects = [];
         foreach ($users as $user) {
             $userObject = new User($user['nickname']);
@@ -36,10 +38,12 @@ class UserRepository extends Repository
     public function getUserById(int $id): ?User
     {
         $query = 'SELECT * FROM public."User" WHERE userid = :id';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->database->disconnect($conn);
         if (!$user) {
             return null;
         }
@@ -54,10 +58,12 @@ class UserRepository extends Repository
     public function getUserByEmail(string $email): ?User
     {
         $query = 'SELECT * FROM public."User" WHERE email = :email';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->database->disconnect($conn);
         if (!$user) {
             return null;
         }
@@ -73,10 +79,12 @@ class UserRepository extends Repository
     public function getUserByName(string $name): ?User
     {
         $query = 'SELECT * FROM public."User" WHERE nickname = :name';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':name', $name);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->database->disconnect($conn);
         if (!$user) {
             return null;
         }
@@ -91,10 +99,12 @@ class UserRepository extends Repository
     public function getUserAvatar(int $avatarId): ?string
     {
         $query = 'SELECT avatarpath FROM public."Avatar" WHERE avatarid = :avatarId';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':avatarId', $avatarId, PDO::PARAM_INT);
         $stmt->execute();
         $avatar = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->database->disconnect($conn);
         if (!$avatar) {
             return null;
         }
@@ -107,18 +117,21 @@ class UserRepository extends Repository
             return false;
         }
         $query = 'INSERT INTO public."User" (email, nickname, passwordhash, avatarid) VALUES (?, ?, ?, ?)';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         try {
             $avatarID = random_int(1, 9);
         } catch (Exception) {
             $avatarID = 1;
         }
-        return $stmt->execute([
+        $success = $stmt->execute([
             $user->getEmail(),
             $user->getNickname(),
             $user->getPassword(),
             $avatarID
         ]);
+        $this->database->disconnect($conn);
+        return $success;
     }
 
     public function addUserSession(int $userId): string
@@ -130,17 +143,22 @@ class UserRepository extends Repository
                 return '';
             }
             $query = 'SELECT COUNT(*) FROM public."UserSession" WHERE token = :token';
-            $stmt = $this->database->connect()->prepare($query);
+            $conn = $this->database->connect();
+            $stmt = $conn->prepare($query);
             $stmt->bindParam(':token', $token);
             $stmt->execute();
             $count = $stmt->fetchColumn();
+            $this->database->disconnect($conn);
         } while ($count > 0);
 
         $query = 'INSERT INTO public."UserSession" (token, userID, expiresAt) VALUES (:token, :userID, CURRENT_TIMESTAMP + INTERVAL \'30 days\')';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':token', $token);
         $stmt->bindParam(':userID', $userId, PDO::PARAM_INT);
-        if ($stmt->execute()) {
+        $success = $stmt->execute();
+        $this->database->disconnect($conn);
+        if ($success) {
             return $token;
         }
         return '';
@@ -149,18 +167,23 @@ class UserRepository extends Repository
     public function deleteUserSession(string $token): bool
     {
         $query = 'DELETE FROM public."UserSession" WHERE token = :token';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':token', $token);
-        return $stmt->execute();
+        $success = $stmt->execute();
+        $this->database->disconnect($conn);
+        return $success;
     }
 
     public function getUserBySession(string $token): ?User
     {
         $query = 'SELECT * FROM public."UserSession" WHERE token = :token';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':token', $token);
         $stmt->execute();
         $session = $stmt->fetch(PDO::FETCH_ASSOC);
+        $this->database->disconnect($conn);
         if (!$session) {
             return null;
         }

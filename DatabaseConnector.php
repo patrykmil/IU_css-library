@@ -28,7 +28,7 @@ class DatabaseConnector
     }
 
 
-    public function connect()
+    public function connect(): PDO
     {
         try {
             $conn = new PDO(
@@ -42,9 +42,10 @@ class DatabaseConnector
             $errorController = ErrorController::getInstance();
             $errorController->error500();
         }
+        exit();
     }
 
-    public function disconnect($conn)
+    public function disconnect(PDO &$conn): void
     {
         $conn = null;
     }

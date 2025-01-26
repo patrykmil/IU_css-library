@@ -24,17 +24,19 @@ class CreateController extends AppController
         return self::$instance;
     }
 
-    public function create()
+    public function create(): void
     {
         $userSession = Decoder::decodeUserSession();
         if ($this->isGet()) {
             if (!$userSession) {
-                return $this->render('login', ['message' => 'You need to log in first!']);
+                $this->render('login', ['message' => 'You need to log in first!']);
+                return;
             }
             $types = $this->defaultRepository->getTypes();
             $sets = $this->defaultRepository->getUserSets($userSession->getId());
             $tags = $this->defaultRepository->getTagNames();
-            return $this->render('create', ['userID' => $userSession->getId(), 'types' => $types, 'sets' => $sets, 'tags' => $tags]);
+            $this->render('create', ['userID' => $userSession->getId(), 'types' => $types, 'sets' => $sets, 'tags' => $tags]);
+            return;
         }
 
         if ($this->isPost()) {
@@ -49,18 +51,20 @@ class CreateController extends AppController
             try {
                 $componentID = $this->componentRepository->createComponent($name, $type, $set, $color, $tags, $userID, $css, $html);
             } catch (Exception) {
-                return ErrorController::getInstance()->error500();
+                ErrorController::getInstance()->error500();
+                return;
             }
             header('Content-Type: application/json');
             echo json_encode(['url' => "/component/{$componentID}"]);
         }
     }
 
-    public function createSet()
+    public function createSet(): void
     {
         $userSession = Decoder::decodeUserSession();
         if (!$userSession) {
-            return ErrorController::getInstance()->error500();
+            ErrorController::getInstance()->error401();
+            return;
         }
         $setName = $_POST['setName'];
         $sets = $this->defaultRepository->addSet($userSession->getId(), $setName);

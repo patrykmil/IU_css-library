@@ -37,19 +37,10 @@ class Routing
             require_once "src/controllers/{$route['controller']}.php";
             $strategy['controller'] = call_user_func([$route['controller'], 'getInstance']);
             $strategy['method'] = $route['method'];
+            $strategy['param'] = $param;
         } else {
             $strategy['controller'] = ErrorController::getInstance();
             $strategy['method'] = 'error404';
-        }
-        $reflection = new ReflectionMethod($strategy['controller'], $strategy['method']);
-        if ($reflection->getNumberOfRequiredParameters() > 0) {
-            if($param !== null) {
-                $strategy['param'] = $param;
-            }
-            else {
-                $strategy['controller'] = ErrorController::getInstance();
-                $strategy['method'] = 'error404';
-            }
         }
         return $strategy;
     }

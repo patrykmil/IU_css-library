@@ -1,5 +1,6 @@
 <?php
 require_once 'Repository.php';
+
 class DefaultRepository extends Repository
 {
     private static ?DefaultRepository $instance = null;
@@ -15,35 +16,47 @@ class DefaultRepository extends Repository
     public function getTagNames(): array
     {
         $query = 'SELECT name FROM public."Tag"';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $names = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $this->database->disconnect($conn);
+        return $names;
     }
 
     public function getTypes(): array
     {
         $query = 'SELECT name FROM public."Type"';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $types = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $this->database->disconnect($conn);
+        return $types;
     }
 
     public function getUserSets($authorID): array
     {
         $query = 'SELECT name FROM public."Set" WHERE ownerid = :id';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $authorID, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $sets = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        $this->database->disconnect($conn);
+        return $sets;
     }
 
     public function addSet($authorID, $setName): array
     {
         $query = 'INSERT INTO public."Set" (name, ownerid) VALUES (:name, :ownerid)';
-        $stmt = $this->database->connect()->prepare($query);
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
         $stmt->bindParam(':name', $setName);
         $stmt->bindParam(':ownerid', $authorID, PDO::PARAM_INT);
         $stmt->execute();
-        return $this->getUserSets($authorID);
+        $sets = $this->getUserSets($authorID);
+        $this->database->disconnect($conn);
+        return $sets;
     }
 }

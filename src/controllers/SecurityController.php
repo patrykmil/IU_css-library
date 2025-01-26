@@ -22,10 +22,11 @@ class SecurityController extends AppController
         return self::$instance;
     }
 
-    public function login()
+    public function login(): void
     {
         if ($this->isGet()) {
-            return $this->render("login");
+            $this->render("login");
+            return;
         }
 
         $email = $_POST['email_input'];
@@ -33,41 +34,44 @@ class SecurityController extends AppController
 
         $email = Validator::verifyEmail($email);
         if (!$email) {
-            return $this->render('login', ['message' => 'Invalid email!!!']);
+            $this->render('login', ['message' => 'Invalid email!!!']);
+            return;
         }
         $password = Validator::verifyPassword($password);
         if (!$password) {
-            return $this->render('login', ['message' => 'Invalid password!!!']);
+            $this->render('login', ['message' => 'Invalid password!!!']);
+            return;
         }
 
         $user = $this->repository->getUserByEmail($email);
         if ($user == null) {
-            return $this->render('login', ['message' => 'Wrong email!!!']);
+            $this->render('login', ['message' => 'Wrong email!!!']);
+            return;
         }
         if (!password_verify($password, $user->getPassword())) {
-            return $this->render('login', ['message' => 'Wrong password!!!']);
+            $this->render('login', ['message' => 'Wrong password!!!']);
+            return;
         }
 
         $cookieValue = $this->repository->addUserSession($user->getId());
         setcookie('user_session', $cookieValue, time() + (60 * 60 * 24 * 30), "/", "", true, true);
         header("Location: /browse");
-        exit();
     }
 
-    public function logout()
+    public function logout(): void
     {
         if ($this->repository->deleteUserSession($_COOKIE['user_session'])) {
             setcookie('user_session', '', time() - 3600, "/");
             $previousPage = $_SERVER['HTTP_REFERER'] ?? '/';
             header("Location: $previousPage");
-            exit();
         }
     }
 
-    public function register()
+    public function register(): void
     {
         if ($this->isGet()) {
-            return $this->render("register");
+            $this->render("register");
+            return;
         }
 
         $email = $_POST['email_input'];
@@ -76,17 +80,20 @@ class SecurityController extends AppController
 
         $email = Validator::verifyEmail($email);
         if (!$email) {
-            return $this->render('register', ['message' => 'Invalid email!!!']);
+            $this->render('register', ['message' => 'Invalid email!!!']);
+            return;
         }
 
         $password = Validator::verifyPassword($password);
         if (!$password) {
-            return $this->render('register', ['message' => 'Invalid password!!!']);
+            $this->render('register', ['message' => 'Invalid password!!!']);
+            return;
         }
 
         $nickname = Validator::verifyNickname($nickname);
         if (!$nickname) {
-            return $this->render('register', ['message' => 'Invalid nickname!!!']);
+            $this->render('register', ['message' => 'Invalid nickname!!!']);
+            return;
         }
 
         $user = new User($nickname);
@@ -94,8 +101,9 @@ class SecurityController extends AppController
         $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
 
         if ($this->repository->addUser($user)) {
-            return $this->render('login', ['message' => 'Successfully registered!!!']);
+            $this->render('login', ['message' => 'Successfully registered!!!']);
+            return;
         }
-        return $this->render('register', ['message' => 'User with this email already exists!!!']);
+        $this->render('register', ['message' => 'User with this email already exists!!!']);
     }
 }

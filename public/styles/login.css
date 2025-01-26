@@ -60,6 +60,10 @@ body {
     background-color: inherit;
 }
 
+.login_input.invalid {
+    box-shadow: rgba(255, 50, 50, 0.25) 0px 50px 100px -20px, rgba(255, 0, 0, 0.3) 0px 30px 60px -30px, rgba(255, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+
 .login_button {
     margin-top: 1.5em;
     display: inline-flex;

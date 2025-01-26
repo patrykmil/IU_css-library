@@ -11,7 +11,7 @@ class Validator
     public static function verifyPassword(string $password): ?string
     {
         $password = self::check_input($password);
-        if (!preg_match('/^[A-Za-z0-9-?!%&$_]*$/', $password) || strlen($password) < 8) {
+        if (!preg_match('/^[A-Za-z0-9-?!%&$_=+#]*$/', $password) || strlen($password) < 8) {
             return false;
         }
         return $password;

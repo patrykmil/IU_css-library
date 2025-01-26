@@ -7,6 +7,7 @@
     <title>Login page</title>
     <link rel="stylesheet" href="/public/styles/default.css"/>
     <link rel="stylesheet" href="/public/styles/login.css"/>
+    <script src="/public/scripts/validate_register.js" defer></script>
 </head>
 
 <body>
@@ -33,7 +34,7 @@
         <button type='submit' class="login_button">REGISTER</button>
     </form>
     <div class="login_other_options">
-        <a href="login" class="login_option">Log in?</a>
+        <a href="/login" class="login_option">Log in?</a>
     </div>
 </div>
 <?php if (isset($message) && $message !== "Successfully registered!!!") : ?>

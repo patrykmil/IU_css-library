@@ -22,7 +22,7 @@ class BrowseController extends AppController
         return self::$instance;
     }
 
-    public function browse()
+    public function browse(): void
     {
         if ($this->isGet()) {
             $search = $_GET['search'] ?? '';
@@ -38,7 +38,7 @@ class BrowseController extends AppController
                     $component->setLiked($this->componentRepository->isLikedComponent($component->getId(), $userSession->getId()));
                 }
             }
-            return $this->render('browse', ['components' => $components]);
+            $this->render('browse', ['components' => $components]);
         }
     }
 }
