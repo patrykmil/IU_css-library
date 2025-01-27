@@ -17,7 +17,7 @@ class UserRepository extends Repository
 
     public function getUsers(): array
     {
-        $query = 'SELECT * FROM public."User"';
+        $query = 'SELECT * FROM public."UserDetailsView"';
         $conn = $this->database->connect();
         $stmt = $conn->prepare($query);
         $stmt->execute();
@@ -28,8 +28,7 @@ class UserRepository extends Repository
             $userObject = new User($user['nickname']);
             $userObject->setEmail($user['email']);
             $userObject->setId($user['userid']);
-            $avatar = $this->getUserAvatar($user['avatarid']);
-            $userObject->setAvatar($avatar);
+            $userObject->setAvatar($user['avatarpath']);
             $userObjects[] = $userObject;
         }
         return $userObjects;
@@ -37,7 +36,7 @@ class UserRepository extends Repository
 
     public function getUserById(int $id): ?User
     {
-        $query = 'SELECT * FROM public."User" WHERE userid = :id';
+        $query = 'SELECT * FROM public."UserDetailsView" WHERE userid = :id';
         $conn = $this->database->connect();
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -50,8 +49,7 @@ class UserRepository extends Repository
         $userObject = new User($user['nickname']);
         $userObject->setEmail($user['email']);
         $userObject->setId($user['userid']);
-        $avatar = $this->getUserAvatar($user['avatarid']);
-        $userObject->setAvatar($avatar);
+        $userObject->setAvatar($user['avatarpath']);
         return $userObject;
     }
 
@@ -113,55 +111,31 @@ class UserRepository extends Repository
 
     public function addUser(User $user): bool
     {
-        if ($this->getUserByEmail($user->getEmail())) {
-            return false;
-        }
-        $query = 'INSERT INTO public."User" (email, nickname, passwordhash, avatarid) VALUES (?, ?, ?, ?)';
+        $query = 'SELECT add_user(:email, :nickname, :passwordhash)';
         $conn = $this->database->connect();
         $stmt = $conn->prepare($query);
-        try {
-            $avatarID = random_int(1, 9);
-        } catch (Exception) {
-            $avatarID = 1;
-        }
-        $success = $stmt->execute([
-            $user->getEmail(),
-            $user->getNickname(),
-            $user->getPassword(),
-            $avatarID
-        ]);
+        $email = $user->getEmail();
+        $nickname = $user->getNickname();
+        $password = $user->getPassword();
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':nickname', $nickname);
+        $stmt->bindParam(':passwordhash', $password);
+        $stmt->execute();
+        $success = $stmt->fetchColumn();
         $this->database->disconnect($conn);
         return $success;
     }
 
     public function addUserSession(int $userId): string
     {
-        do {
-            try {
-                $token = bin2hex(random_bytes(16));
-            } catch (Exception) {
-                return '';
-            }
-            $query = 'SELECT COUNT(*) FROM public."UserSession" WHERE token = :token';
-            $conn = $this->database->connect();
-            $stmt = $conn->prepare($query);
-            $stmt->bindParam(':token', $token);
-            $stmt->execute();
-            $count = $stmt->fetchColumn();
-            $this->database->disconnect($conn);
-        } while ($count > 0);
-
-        $query = 'INSERT INTO public."UserSession" (token, userID, expiresAt) VALUES (:token, :userID, CURRENT_TIMESTAMP + INTERVAL \'30 days\')';
+        $query = 'SELECT add_user_session(:userID)';
         $conn = $this->database->connect();
         $stmt = $conn->prepare($query);
-        $stmt->bindParam(':token', $token);
         $stmt->bindParam(':userID', $userId, PDO::PARAM_INT);
-        $success = $stmt->execute();
+        $stmt->execute();
+        $token = $stmt->fetchColumn();
         $this->database->disconnect($conn);
-        if ($success) {
-            return $token;
-        }
-        return '';
+        return $token ?: '';
     }
 
     public function deleteUserSession(string $token): bool

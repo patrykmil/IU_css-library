@@ -17,8 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('tags', JSON.stringify(tags));
         formData.append('html', htmlTextarea.value);
         formData.append('css', cssTextarea.value);
+        for (const key of formData.keys()) {
+            console.log(key, formData.getAll(key));
+        }
 
-        console.log('Submitting form data:', formData);
 
         try {
             const response = await fetch(form.action, {
@@ -36,8 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.url) {
                 window.location.href = data.url;
             }
+            else {
+                alert(data.error);
+            }
         } catch (error) {
             console.error("Error:", error);
+            if (error.response) {
+                console.log('Error response:', await error.response.json());
+            }
         }
     });
 });

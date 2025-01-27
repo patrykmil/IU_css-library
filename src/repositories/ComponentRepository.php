@@ -1,6 +1,5 @@
 <?php
 
-
 require_once 'Repository.php';
 require_once 'UserRepository.php';
 require_once 'src/models/Component.php';
@@ -23,12 +22,10 @@ class ComponentRepository extends Repository
     public function getTags(int $componentID): array
     {
         $query = '
-        SELECT t.tagid, t.name, c.hex
-        FROM public."ComponentTag" ct
-        JOIN public."Tag" t USING (tagid)
-        JOIN public."Color" c USING (colorid)
-        WHERE ct.componentid = :id
-    ';
+            SELECT tagid, name, hex
+            FROM public."ComponentTagsView"
+            WHERE componentid = :id
+        ';
         $conn = $this->database->connect();
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $componentID, PDO::PARAM_INT);
@@ -46,9 +43,9 @@ class ComponentRepository extends Repository
     private function generateSortingQuery(string $sorting): string
     {
         return match ($sorting) {
-            'Newest' => 'ORDER BY "Component".createdat DESC',
-            'Oldest' => 'ORDER BY "Component".createdat ASC',
-            default => 'ORDER BY (SELECT count(*) FROM public."Likes" WHERE componentid = "Component".componentid) DESC',
+            'Newest' => 'ORDER BY createdat DESC',
+            'Oldest' => 'ORDER BY createdat ASC',
+            default => 'ORDER BY likes DESC',
         };
     }
 
@@ -68,7 +65,7 @@ class ComponentRepository extends Repository
         $filterQuery = '';
         if (!empty($mappedFilters)) {
             $filterPlaceholders = implode(',', array_fill(0, count($mappedFilters), '?'));
-            $filterQuery = 'AND "Type".name IN (' . $filterPlaceholders . ')';
+            $filterQuery = 'AND typename IN (' . $filterPlaceholders . ')';
         }
 
         return [$filterQuery, $mappedFilters];
@@ -77,7 +74,7 @@ class ComponentRepository extends Repository
     private function generateSearchQuery(string $search): string
     {
         if (!empty($search)) {
-            return 'AND ("Component".name ILIKE ? OR "Set".name ILIKE ? OR "User".nickname ILIKE ?)';
+            return 'AND (name ILIKE ? OR setname ILIKE ? OR nickname ILIKE ?)';
         }
         return '';
     }
@@ -108,35 +105,31 @@ class ComponentRepository extends Repository
         list($filterQuery, $filters) = $this->generateFilterQuery($filters);
 
         $query = '
-        SELECT
-            "Component".componentid,
-            "Component".name,
-            "Component".css,
-            "Component".html,
-            "Component".authorid,
-            "User".nickname,
-            "Color".hex,
-            "Type".name as typename,
-            "Set".name as setname
-        FROM public."Component"
-            LEFT JOIN public."Color" USING (colorid)
-            LEFT JOIN public."Set" USING (setid)
-            LEFT JOIN public."Type" USING (typeid)
-            LEFT JOIN public."User" ON "Component".authorid = "User".userid
-        WHERE 1=1 ' . $filterQuery . ' ' . $searchQuery . ' ' . $sortingQuery;
+            SELECT
+                componentid,
+                name,
+                css,
+                html,
+                authorid,
+                nickname,
+                hex,
+                typename,
+                setname,
+                likes
+            FROM public."ComponentDetailsView"
+            WHERE 1=1 ' . $filterQuery . ' ' . $searchQuery . ' ' . $sortingQuery;
 
         $componentList = $this->fetchComponents($query, $filters, $search);
 
         $components = [];
         foreach ($componentList as $component) {
-            $likes = $this->getComponentLikes($component['componentid']);
             $components[] = new Component(
                 $component['name'],
                 $component['setname'],
                 $component['typename'],
                 $component['hex'],
                 $this->getTags($component['componentid']),
-                $likes,
+                $component['likes'],
                 $component['css'],
                 $component['html'],
                 UserRepository::getInstance()->getUserById($component['authorid']),
@@ -149,21 +142,20 @@ class ComponentRepository extends Repository
     public function getComponentById(int $id): ?Component
     {
         $query = '
-            SELECT
-                "Component".componentid,
-                "Component".name,
-                "Component".css,
-                "Component".html,
-                "Component".authorid,
-                "Color".hex,
-                "Type".name as typename,
-                "Set".name as setname
-            FROM public."Component"
-                LEFT JOIN public."Color" USING (colorid)
-                LEFT JOIN public."Set" USING (setid)
-                LEFT JOIN public."Type" USING (typeid)
-            WHERE componentid = :id
-        ';
+        SELECT
+            componentid,
+            name,
+            css,
+            html,
+            authorid,
+            nickname,
+            hex,
+            typename,
+            setname,
+            likes
+        FROM public."ComponentDetailsView"
+        WHERE componentid = :id
+    ';
         $conn = $this->database->connect();
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -181,7 +173,7 @@ class ComponentRepository extends Repository
             $component['typename'],
             $component['hex'],
             $this->getTags($component['componentid']),
-            $this->getComponentLikes($component['componentid']),
+            $component['likes'],
             $component['css'],
             $component['html'],
             UserRepository::getInstance()->getUserById($component['authorid']),
@@ -256,7 +248,7 @@ class ComponentRepository extends Repository
     /**
      * @throws Exception
      */
-    public function createComponent(string $name, string $type, string $set, string $color, array $tags, int $userID, string $css, string $html): int
+    public function addComponent(string $name, string $type, string $set, string $color, array $tags, int $userID, string $css, string $html): int
     {
         $name = Validator::check_input($name);
         $type = Validator::check_input($type);
@@ -266,49 +258,63 @@ class ComponentRepository extends Repository
         $html = Validator::check_input($html);
 
         if (!$name || !$type || !$set || !$color || !$css || !$html) {
-            ErrorController::getInstance()->error404();
+            throw new Exception('Invalid input');
         }
 
-        $typeId = $this->getTypeId($type);
-        $setId = $this->getSetId($set);
-        $colorId = $this->getColorId($color);
-
-        $query = 'INSERT INTO public."Component" (name, typeid, setid, colorid, authorid, css, html) 
-                VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING componentid';
         $conn = $this->database->connect();
-        $stmt = $conn->prepare($query);
-        if ($stmt->execute([$name, $typeId, $setId, $colorId, $userID, $css, $html])) {
-            $componentID = $stmt->fetch(PDO::FETCH_ASSOC)['componentid'];
+        try {
+            $conn->beginTransaction();
+
+            $typeId = $this->getTypeId($type);
+            $setId = $this->getSetId($set);
+            $colorId = $this->getColorId($color);
+
+            $query = 'INSERT INTO public."Component" (name, typeid, setid, colorid, authorid, css, html) 
+                VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING componentid';
+            $stmt = $conn->prepare($query);
+            if ($stmt->execute([$name, $typeId, $setId, $colorId, $userID, $css, $html])) {
+                $componentID = $stmt->fetch(PDO::FETCH_ASSOC)['componentid'];
+                $this->addTags($tags, $componentID, $conn);
+            } else {
+                throw new Exception('Failed to create component');
+            }
+
+            $conn->commit();
+        } catch (Exception $e) {
+            $conn->rollBack();
+            throw $e;
+        } finally {
             $this->database->disconnect($conn);
-            $this->addTags($tags, $componentID);
-        } else {
-            throw new Exception('Failed to create component');
         }
+
         return $componentID;
     }
 
-    private function addTags(array $tags, int $componentID): void
+    /**
+     * @throws Exception
+     */
+    private function addTags(array $tags, int $componentID, PDO $conn): void
     {
         $queryTagID = 'SELECT tagid FROM public."Tag" WHERE name = :name';
         $queryInsertComponentTag = 'INSERT INTO public."ComponentTag" (componentid, tagid) VALUES (:component, :tag)';
         foreach ($tags as $tag) {
             $tag = Validator::check_input($tag);
             if (!$tag) {
-                ErrorController::getInstance()->error404();
+                throw new Exception('Invalid tag');
             }
-            $conn = $this->database->connect();
             $stmt = $conn->prepare($queryTagID);
             $stmt->bindParam(':name', $tag);
             $stmt->execute();
             $tagID = $stmt->fetch(PDO::FETCH_ASSOC)['tagid'];
-            $this->database->disconnect($conn);
             if ($tagID) {
-                $conn = $this->database->connect();
                 $stmt = $conn->prepare($queryInsertComponentTag);
                 $stmt->bindParam(':component', $componentID, PDO::PARAM_INT);
                 $stmt->bindParam(':tag', $tagID, PDO::PARAM_INT);
-                $stmt->execute();
-                $this->database->disconnect($conn);
+                if (!$stmt->execute()) {
+                    throw new Exception('Failed to insert component tag');
+                }
+            } else {
+                throw new Exception('Tag not found');
             }
         }
     }

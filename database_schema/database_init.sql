@@ -1,20 +1,12 @@
-DROP TABLE IF EXISTS "Color" CASCADE;
-DROP TABLE IF EXISTS "Avatar" CASCADE;
-DROP TABLE IF EXISTS "User" CASCADE;
-DROP TABLE IF EXISTS "Set" CASCADE;
-DROP TABLE IF EXISTS "Type" CASCADE;
-DROP TABLE IF EXISTS "Component" CASCADE;
-DROP TABLE IF EXISTS "Tag" CASCADE;
-DROP TABLE IF EXISTS "ComponentTag" CASCADE;
-DROP TABLE IF EXISTS "Likes" CASCADE;
-
-
+DROP SCHEMA IF EXISTS public CASCADE;
+CREATE SCHEMA public;
+--------------------------------------------------------------------------------------------------
 CREATE TABLE "Avatar"
 (
     avatarID   SERIAL PRIMARY KEY,
     avatarPath VARCHAR(255) NOT NULL
 );
-
+--------------------------------------------------------------------------------------------------
 CREATE TABLE "User"
 (
     userID       SERIAL PRIMARY KEY,
@@ -24,27 +16,26 @@ CREATE TABLE "User"
     avatarID     INT                 REFERENCES "Avatar" (avatarID) ON DELETE SET NULL,
     isAdmin      BOOLEAN DEFAULT FALSE
 );
-
+--------------------------------------------------------------------------------------------------
 CREATE TABLE "Set"
 (
     setID   SERIAL PRIMARY KEY,
     name    VARCHAR(30) NOT NULL,
     ownerID INT         REFERENCES "User" (userID) ON DELETE SET NULL
 );
-
-
+--------------------------------------------------------------------------------------------------
 CREATE TABLE "Type"
 (
     typeID SERIAL PRIMARY KEY,
     name   VARCHAR(30) NOT NULL
 );
-
+--------------------------------------------------------------------------------------------------
 CREATE TABLE "Color"
 (
     colorID SERIAL PRIMARY KEY,
     hex     VARCHAR(6) NOT NULL
 );
-
+--------------------------------------------------------------------------------------------------
 CREATE TABLE "Component"
 (
     componentID SERIAL PRIMARY KEY,
@@ -57,24 +48,21 @@ CREATE TABLE "Component"
     authorID    INT REFERENCES "User" (userID) ON DELETE CASCADE,
     createdAt   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-
+--------------------------------------------------------------------------------------------------
 CREATE TABLE "Tag"
 (
     tagID   SERIAL PRIMARY KEY,
     name    VARCHAR(30) NOT NULL UNIQUE,
     colorID INT         REFERENCES "Color" (colorID) ON DELETE SET NULL
 );
-
-
+--------------------------------------------------------------------------------------------------
 CREATE TABLE "ComponentTag"
 (
     componentID INT REFERENCES "Component" (componentID) ON DELETE CASCADE,
     tagID       INT REFERENCES "Tag" (tagID) ON DELETE CASCADE,
     PRIMARY KEY (componentID, tagID)
 );
-
-
+--------------------------------------------------------------------------------------------------
 CREATE TABLE "Likes"
 (
     userID      INT REFERENCES "User" (userID) ON DELETE CASCADE,
@@ -82,17 +70,31 @@ CREATE TABLE "Likes"
     likedAt     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (userID, componentID)
 );
-
-
+--------------------------------------------------------------------------------------------------
 CREATE TABLE "UserSession"
 (
     token     VARCHAR(255) PRIMARY KEY,
     userID    INT REFERENCES "User" (userID) ON DELETE CASCADE,
     expiresAt TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL '30 days')
 );
-
-
--- Avatar inserts
+--------------------------------------------------------------------------------------------------
+CREATE TABLE "Message"
+(
+    messageid   INTEGER NOT NULL PRIMARY KEY,
+    name        VARCHAR NOT NULL,
+    description TEXT
+);
+--------------------------------------------------------------------------------------------------
+CREATE TABLE "DeletedComponent"
+(
+    componentid INTEGER NOT NULL PRIMARY KEY,
+    name        VARCHAR NOT NULL,
+    css         TEXT,
+    html        TEXT,
+    authorid    INTEGER,
+    messageid   INTEGER REFERENCES "Message" (messageid) ON DELETE SET NULL
+);
+-------------------------------------------------------------------------------------------------- Avatar inserts
 INSERT INTO public."Avatar" (avatarid, avatarpath)
 VALUES (1, 'basic_green.svg');
 INSERT INTO public."Avatar" (avatarid, avatarpath)
@@ -111,16 +113,14 @@ INSERT INTO public."Avatar" (avatarid, avatarpath)
 VALUES (8, 'hair_orange.svg');
 INSERT INTO public."Avatar" (avatarid, avatarpath)
 VALUES (9, 'hair_purple.svg');
-
--- User inserts
+-------------------------------------------------------------------------------------------------- User inserts
 INSERT INTO public."User" (userid, email, nickname, passwordhash, avatarid, isadmin)
 VALUES (1, 'iuadmin@iu.iu', 'admin1', '$2y$12$9cqkVFs2HxdhzN0ZPp8/1uudWjvDZT5YJVI4euVIUJjgPazullhtm', 3, true);
 INSERT INTO public."User" (userid, email, nickname, passwordhash, avatarid)
 VALUES (2, 'patryk@gmail.com', 'patryk', '$2a$12$AO9m5bhM66mJ6VYJmpcnDeyiB14EmM1FyDhP5plk6wAvSwD0YEirm', 1);
 INSERT INTO public."User" (userid, email, nickname, passwordhash, avatarid)
 VALUES (4, 'none@proton.me', 'none', '$2y$12$d/MJQW2V0jQkYbLLJqZRpOHyH8Fcs4Bqh78i17oqhAASJjPEInV5K', 8);
-
---Type inserts
+--------------------------------------------------------------------------------------------------Type inserts
 INSERT INTO public."Type" (typeid, name)
 VALUES (1, 'button');
 INSERT INTO public."Type" (typeid, name)
@@ -129,8 +129,7 @@ INSERT INTO public."Type" (typeid, name)
 VALUES (3, 'checkbox');
 INSERT INTO public."Type" (typeid, name)
 VALUES (4, 'radio button');
-
---Color inserts
+--------------------------------------------------------------------------------------------------Color inserts
 INSERT INTO public."Color" (colorid, hex)
 VALUES (1, '00F0FF');
 INSERT INTO public."Color" (colorid, hex)
@@ -155,16 +154,14 @@ INSERT INTO public."Color" (colorid, hex)
 VALUES (11, '6a5ed3');
 INSERT INTO public."Color" (colorid, hex)
 VALUES (12, '5ed398');
-
---Set inserts
+--------------------------------------------------------------------------------------------------Set inserts
 INSERT INTO public."Set" (setid, name, ownerid)
 VALUES (1, 'gradient', 4);
 INSERT INTO public."Set" (setid, name, ownerid)
 VALUES (2, 'others', 4);
 INSERT INTO public."Set" (setid, name, ownerid)
 VALUES (3, 'easy', 2);
-
---Tag inserts
+--------------------------------------------------------------------------------------------------Tag inserts
 INSERT INTO public."Tag" (tagid, name, colorid)
 VALUES (1, 'simple', 1);
 INSERT INTO public."Tag" (tagid, name, colorid)
@@ -201,8 +198,7 @@ INSERT INTO public."Tag" (tagid, name, colorid)
 VALUES (17, 'transparent', 1);
 INSERT INTO public."Tag" (tagid, name, colorid)
 VALUES (18, 'solid', 2);
-
---Component inserts
+--------------------------------------------------------------------------------------------------Component inserts
 INSERT INTO public."Component" (componentid, name, setid, typeid, colorid, css, html, authorid, createdat)
 VALUES (1, 'purple check', 1, 3, 9, e'.container input {
   position: absolute;
@@ -270,7 +266,7 @@ VALUES (1, 'purple check', 1, 3, 9, e'.container input {
       &lt;input type=&quot;checkbox&quot; checked=&quot;checked&quot; /&gt;
       &lt;div class=&quot;checkmark&quot;&gt;&lt;/div&gt;
     &lt;/label&gt;', 4, '2025-01-12 13:47:04.369663');
-
+--------------------------------------------------------------------------------------------------
 INSERT INTO public."Component" (componentid, name, setid, typeid, colorid, css, html, authorid, createdat)
 VALUES (2, 'keycap radio button', 2, 4, 3, e'.btn {
   font: inherit;
@@ -312,7 +308,7 @@ VALUES (2, 'keycap radio button', 2, 4, 3, e'.btn {
       &lt;button class=&quot;btn middle&quot; type=&quot;button&quot;&gt;Middle&lt;/button&gt;
       &lt;button class=&quot;btn right&quot; type=&quot;button&quot;&gt;Right&lt;/button&gt;
     &lt;/div&gt;', 4, '2025-01-12 13:49:21.140628');
-
+--------------------------------------------------------------------------------------------------
 INSERT INTO public."Component" (componentid, name, setid, typeid, colorid, css, html, authorid, createdat)
 VALUES (5, 'gradient text', 1, 2, 9, e'.gradient-border {
             border: 2px solid transparent;
@@ -330,7 +326,7 @@ VALUES (5, 'gradient text', 1, 2, 9, e'.gradient-border {
         }',
         '&lt;input type=&quot;text&quot; class=&quot;gradient-border&quot; placeholder=&quot;Enter text here&quot;&gt;',
         4, '2025-01-12 14:00:50.977333');
-
+--------------------------------------------------------------------------------------------------
 INSERT INTO public."Component" (componentid, name, setid, typeid, colorid, css, html, authorid, createdat)
 VALUES (6, 'gradient radio', 1, 4, 9, e'.gradient-radio {
             position: relative;
@@ -375,7 +371,7 @@ VALUES (6, 'gradient radio', 1, 4, 9, e'.gradient-radio {
         &lt;input type=&quot;radio&quot; name=&quot;radio&quot;&gt;
         &lt;span class=&quot;checkmark&quot;&gt;&lt;/span&gt;
     &lt;/label&gt;', 4, '2025-01-12 14:04:52.415996');
-
+--------------------------------------------------------------------------------------------------
 INSERT INTO public."Component" (componentid, name, setid, typeid, colorid, css, html, authorid, createdat)
 VALUES (47, 'pink submit', 3, 1, 10, e'#submit-button {
   display: inline-flex;
@@ -400,7 +396,7 @@ VALUES (47, 'pink submit', 3, 1, 10, e'#submit-button {
   cursor: pointer;
   border-color: #ffffff;
 }', '&lt;button id=&quot;submit-button&quot;&gt;Submit&lt;/button&gt;', 2, '2025-01-12 13:54:00.663748');
-
+--------------------------------------------------------------------------------------------------
 INSERT INTO public."Component" (componentid, name, setid, typeid, colorid, css, html, authorid, createdat)
 VALUES (53, 'purple submit', 3, 1, 11, e'#submit-button {
   display: inline-flex;
@@ -425,7 +421,7 @@ VALUES (53, 'purple submit', 3, 1, 11, e'#submit-button {
   cursor: pointer;
   border-color: #ffffff;
 }', '&lt;button id=&quot;submit-button&quot;&gt;Submit&lt;/button&gt;', 2, '2025-01-23 12:48:54.729399');
-
+--------------------------------------------------------------------------------------------------
 INSERT INTO public."Component" (componentid, name, setid, typeid, colorid, css, html, authorid, createdat)
 VALUES (54, 'green submit', 3, 1, 12, e'#submit-button {
   display: inline-flex;
@@ -450,7 +446,7 @@ VALUES (54, 'green submit', 3, 1, 12, e'#submit-button {
   cursor: pointer;
   border-color: #000000;
 }', '&lt;button id=&quot;submit-button&quot;&gt;Submit&lt;/button&gt;', 2, '2025-01-23 12:50:12.928597');
-
+--------------------------------------------------------------------------------------------------
 INSERT INTO public."Component" (componentid, name, setid, typeid, colorid, css, html, authorid, createdat)
 VALUES (55, 'green input', 3, 2, 12, e'#search_input {
   display: inline-flex;
@@ -476,8 +472,7 @@ VALUES (55, 'green input', 3, 2, 12, e'#search_input {
         '&lt;input name=&quot;text&quot; id=&quot;search_input&quot; type=&quot;text&quot; placeholder=&quot;Search&quot; /&gt;',
         2, '2025-01-23 12:57:35.674594');
 
-
---Component-Tag inserts
+--------------------------------------------------------------------------------------------------Component-Tag inserts
 INSERT INTO public."ComponentTag" (componentid, tagid)
 VALUES (1, 12);
 INSERT INTO public."ComponentTag" (componentid, tagid)
@@ -514,8 +509,7 @@ INSERT INTO public."ComponentTag" (componentid, tagid)
 VALUES (55, 9);
 INSERT INTO public."ComponentTag" (componentid, tagid)
 VALUES (55, 15);
-
---Likes inserts
+--------------------------------------------------------------------------------------------------Likes inserts
 INSERT INTO public."Likes" (userid, componentid, likedat)
 VALUES (2, 5, '2025-01-17 15:48:30.070802');
 INSERT INTO public."Likes" (userid, componentid, likedat)
@@ -528,8 +522,7 @@ INSERT INTO public."Likes" (userid, componentid, likedat)
 VALUES (2, 1, '2025-01-20 18:52:07.011277');
 INSERT INTO public."Likes" (userid, componentid, likedat)
 VALUES (2, 6, '2025-01-21 18:32:24.644146');
-
---Reset sequence
+--------------------------------------------------------------------------------------------------Reset sequence
 SELECT setval(pg_get_serial_sequence('"User"', 'userid'), coalesce(max(userid) + 1, 1), false)
 FROM "User";
 SELECT setval(pg_get_serial_sequence('"Avatar"', 'avatarid'), coalesce(max(avatarid) + 1, 1), false)
@@ -544,3 +537,124 @@ SELECT setval(pg_get_serial_sequence('"Tag"', 'tagid'), coalesce(max(tagid) + 1,
 FROM "Tag";
 SELECT setval(pg_get_serial_sequence('"Component"', 'componentid'), coalesce(max(componentid) + 1, 1), false)
 FROM "Component";
+
+-------------------------------------------------------------------------------------------------- Views
+create view "UserDetailsView"(userid, nickname, email, passwordhash, avatarpath) as
+SELECT u.userid,
+       u.nickname,
+       u.email,
+       u.passwordhash,
+       a.avatarpath
+FROM "User" u
+         LEFT JOIN "Avatar" a ON u.avatarid = a.avatarid;
+
+alter table "UserDetailsView"
+    owner to docker;
+--------------------------------------------------------------------------------------------------
+create view "ComponentTagsView"(componentid, tagid, name, hex) as
+SELECT ct.componentid,
+       t.tagid,
+       t.name,
+       c.hex
+FROM "ComponentTag" ct
+         JOIN "Tag" t USING (tagid)
+         JOIN "Color" c USING (colorid);
+
+alter table "ComponentTagsView"
+    owner to docker;
+--------------------------------------------------------------------------------------------------
+create view "ComponentDetailsView"
+            (componentid, name, authorid, nickname, hex, typename, setname, createdat, likes, tags, css, html) as
+SELECT c.componentid,
+       c.name,
+       c.authorid,
+       u.nickname,
+       co.hex,
+       t.name                                 AS typename,
+       s.name                                 AS setname,
+       c.createdat,
+       (SELECT count(*) AS count
+        FROM "Likes" l
+        WHERE l.componentid = c.componentid)  AS likes,
+       (SELECT string_agg(tg.name::text, ', '::text) AS string_agg
+        FROM "ComponentTag" ct
+                 JOIN "Tag" tg ON ct.tagid = tg.tagid
+        WHERE ct.componentid = c.componentid) AS tags,
+       c.css,
+       c.html
+FROM "Component" c
+         LEFT JOIN "Color" co USING (colorid)
+         LEFT JOIN "Set" s USING (setid)
+         LEFT JOIN "Type" t USING (typeid)
+         LEFT JOIN "User" u ON c.authorid = u.userid;
+
+alter table "ComponentDetailsView"
+    owner to docker;
+-------------------------------------------------------------------------------------------------- Routines
+create function add_user(emailn text, nickname text, passwordhash text, OUT success boolean) returns boolean
+    language plpgsql
+as
+$$
+DECLARE
+    avatar INT;
+BEGIN
+    IF EXISTS (SELECT 1 FROM public."User" WHERE email = emailN) THEN
+        success := FALSE;
+        RETURN;
+    END IF;
+
+    SELECT avatarid INTO avatar FROM public."Avatar" ORDER BY RANDOM() LIMIT 1;
+
+    INSERT INTO public."User" (email, nickname, passwordhash, avatarid)
+    VALUES (emailN, nickname, passwordhash, avatar);
+
+    success := TRUE;
+END;
+$$;
+alter function add_user(text, text, text, out boolean) owner to docker;
+--------------------------------------------------------------------------------------------------
+create function add_user_session(user_id integer) returns text
+    language plpgsql
+as
+$$
+DECLARE
+    session_token TEXT;
+    count         INT;
+BEGIN
+    LOOP
+        session_token := substring(md5(random()::text) from 1 for 16);
+        SELECT COUNT(*) INTO count FROM public."UserSession" WHERE token = session_token;
+        EXIT WHEN count = 0;
+    END LOOP;
+
+    INSERT INTO public."UserSession" (token, userID, expiresAt)
+    VALUES (session_token, user_id, CURRENT_TIMESTAMP + INTERVAL '30 days');
+
+    RETURN session_token;
+END;
+$$;
+alter function add_user_session(integer) owner to docker;
+--------------------------------------------------------------------------------------------------
+create procedure admin_delete_component(IN comp_id integer, IN msg_id integer DEFAULT 0)
+    language plpgsql
+as
+$$
+BEGIN
+    INSERT INTO "DeletedComponent" (componentid, name, css, html, authorid, messageid)
+    SELECT componentid, name, css, html, authorid, msg_id
+    FROM "Component"
+    WHERE componentid = comp_id;
+
+    DELETE
+    FROM "Component"
+    WHERE componentid = comp_id;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END;
+$$;
+alter procedure admin_delete_component(integer, integer) owner to docker;
+--------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+

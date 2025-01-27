@@ -49,9 +49,9 @@ class CreateController extends AppController
             $css = $_POST['css'];
             $html = $_POST['html'];
             try {
-                $componentID = $this->componentRepository->createComponent($name, $type, $set, $color, $tags, $userID, $css, $html);
-            } catch (Exception) {
-                ErrorController::getInstance()->error500();
+                $componentID = $this->componentRepository->addComponent($name, $type, $set, $color, $tags, $userID, $css, $html);
+            } catch (Exception $e) {
+                echo json_encode(['error' => 'Unable to create component']);
                 return;
             }
             header('Content-Type: application/json');
@@ -63,7 +63,7 @@ class CreateController extends AppController
     {
         $userSession = Decoder::decodeUserSession();
         if (!$userSession) {
-            ErrorController::getInstance()->error401();
+            echo json_encode(['error' => 'An error occurred while adding a component.']);
             return;
         }
         $setName = $_POST['setName'];

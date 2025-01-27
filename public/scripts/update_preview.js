@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const previewContainer = document.querySelector('.component-preview');
+    const preview_container = document.querySelector('.component-preview');
     const style_element = document.createElement('style');
     document.head.appendChild(style_element);
 
-    if (htmlTextarea && cssTextarea && preview-container) {
+    if (htmlTextarea && cssTextarea && preview_container) {
         htmlTextarea.addEventListener('input', () => {
-            previewContainer.innerHTML = htmlTextarea.value;
+            preview_container.innerHTML = htmlTextarea.value;
         });
 
         cssTextarea.addEventListener('input', () => {
