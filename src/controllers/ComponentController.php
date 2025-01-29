@@ -23,21 +23,23 @@ class ComponentController extends AppController
 
     public function component(int $id): void
     {
-        require_once 'src/models/Component.php';
-        require_once 'src/models/User.php';
-        require_once 'src/repositories/UserRepository.php';
+        if ($this->isGet()) {
+            require_once 'src/models/Component.php';
+            require_once 'src/models/User.php';
+            require_once 'src/repositories/UserRepository.php';
 
-        $component = $this->componentRepository->getComponentById($id);
-        if (!$component) {
-            require_once 'src/controllers/ErrorController.php';
-            ErrorController::getInstance()->error404();
-            return;
+            $component = $this->componentRepository->getComponentById($id);
+            if (!$component) {
+                require_once 'src/controllers/ErrorController.php';
+                ErrorController::getInstance()->error404();
+                return;
+            }
+            $userSession = Decoder::decodeUserSession();
+            if ($userSession) {
+                $component->setLiked($this->componentRepository->isLikedComponent($component->getId(), $userSession->getId()));
+            }
+            $this->render("component", ['component' => $component, 'user' => $userSession]);
         }
-        $userSession = Decoder::decodeUserSession();
-        if($userSession) {
-            $component->setLiked($this->componentRepository->isLikedComponent($component->getId(), $userSession->getId()));
-        }
-        $this->render("component", ['component' => $component, 'user' => $userSession]);
     }
 
     public function toggleLike(): void
@@ -54,6 +56,23 @@ class ComponentController extends AppController
         } else {
             $this->componentRepository->likeComponent($componentID, $userID);
             echo json_encode(['liked' => true]);
+        }
+    }
+
+    public function adminDeleteComponent(): void
+    {
+        $userSession = Decoder::decodeUserSession();
+        if (!$userSession || !$userSession->isAdministrator()) {
+            http_response_code(403);
+            echo json_encode(['success' => false]);
+            return;
+        }
+        if ($this->isPost()) {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $messageID = $data['messageID'];
+            $componentID = $data['componentID'];
+            $this->componentRepository->adminDeleteComponent($componentID, $messageID);
+            echo json_encode(['success' => true]);
         }
     }
 }

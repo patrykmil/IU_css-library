@@ -50,6 +50,7 @@ class UserRepository extends Repository
         $userObject->setEmail($user['email']);
         $userObject->setId($user['userid']);
         $userObject->setAvatar($user['avatarpath']);
+        $userObject->setAdministrator($user['isadmin']);
         return $userObject;
     }
 

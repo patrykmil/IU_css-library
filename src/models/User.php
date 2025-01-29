@@ -65,6 +65,10 @@ class User
         $this->avatar = $avatar;
     }
 
+    public function setAdministrator(bool $isAdministrator): void
+    {
+        $this->isAdministrator = $isAdministrator;
+    }
     public function isAdministrator(): bool
     {
         return $this->isAdministrator;

@@ -5,6 +5,7 @@ require_once 'UserRepository.php';
 require_once 'src/models/Component.php';
 require_once 'src/models/User.php';
 require_once 'src/models/Tag.php';
+require_once 'src/models/Message.php';
 require_once 'src/utilities/Validator.php';
 
 class ComponentRepository extends Repository
@@ -319,7 +320,7 @@ class ComponentRepository extends Repository
         }
     }
 
-    public function likeComponent($componentID, $userID): void
+    public function likeComponent(int $componentID, int $userID): void
     {
         $query = 'INSERT INTO public."Likes" (componentid, userid) VALUES (:componentid, :userid)';
         $conn = $this->database->connect();
@@ -330,7 +331,7 @@ class ComponentRepository extends Repository
         $this->database->disconnect($conn);
     }
 
-    public function unlikeComponent($componentID, $userID): void
+    public function unlikeComponent(int $componentID, int $userID): void
     {
         $query = 'DELETE FROM public."Likes" WHERE componentid = :componentid AND userid = :userid';
         $conn = $this->database->connect();
@@ -341,7 +342,7 @@ class ComponentRepository extends Repository
         $this->database->disconnect($conn);
     }
 
-    public function isLikedComponent($componentID, $userID): bool
+    public function isLikedComponent(int $componentID, int $userID): bool
     {
         $query = 'SELECT * FROM public."Likes" WHERE componentid = :componentid AND userid = :userid';
         $conn = $this->database->connect();
@@ -366,7 +367,7 @@ class ComponentRepository extends Repository
         return $likes;
     }
 
-    public function getLikedComponents($userID): array
+    public function getLikedComponents(int $userID): array
     {
         $query = 'SELECT componentid FROM public."Likes" WHERE userid = :id';
         $conn = $this->database->connect();
@@ -382,7 +383,7 @@ class ComponentRepository extends Repository
         return $components;
     }
 
-    public function getOwnedComponents($userID): array
+    public function getOwnedComponents(int $userID): array
     {
         $query = 'SELECT setid, name FROM public."Set" WHERE ownerid = :id';
         $conn = $this->database->connect();
@@ -409,7 +410,7 @@ class ComponentRepository extends Repository
         return $components;
     }
 
-    public function deleteComponent($componentID): void
+    public function deleteComponent(int $componentID): void
     {
         $query = 'DELETE FROM public."Component" WHERE componentid = :id';
         $conn = $this->database->connect();
@@ -417,5 +418,31 @@ class ComponentRepository extends Repository
         $stmt->bindParam(':id', $componentID, PDO::PARAM_INT);
         $stmt->execute();
         $this->database->disconnect($conn);
+    }
+
+    public function adminDeleteComponent(int $componentID, int $messageID): void
+    {
+        $query = 'CALL public."admin_delete_component"(:componentid, :messageid)';
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':messageid', $messageID, PDO::PARAM_INT);
+        $stmt->bindParam(':componentid', $componentID, PDO::PARAM_INT);
+        $stmt->execute();
+        $this->database->disconnect($conn);
+    }
+
+    public function getMessages()
+    {
+        $query = 'SELECT * FROM public."Message"';
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
+        $stmt->execute();
+        $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->database->disconnect($conn);
+        $messageObjects = [];
+        foreach ($messages as $message) {
+            $messageObjects[] = new Message($message['messageid'], $message['name'], $message['description']);
+        }
+        return $messageObjects;
     }
 }

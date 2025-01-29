@@ -91,9 +91,37 @@ CREATE TABLE "DeletedComponent"
     name        VARCHAR NOT NULL,
     css         TEXT,
     html        TEXT,
-    authorid    INTEGER,
+    authorid    INT REFERENCES "User" (userID) ON DELETE CASCADE,
     messageid   INTEGER REFERENCES "Message" (messageid) ON DELETE SET NULL
 );
+-------------------------------------------------------------------------------------------------- Triggers
+CREATE OR REPLACE FUNCTION enforce_uppercase_hex()
+    RETURNS TRIGGER AS $$
+BEGIN
+    NEW.hex := UPPER(NEW.hex);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER enforce_uppercase_hex_trigger
+    BEFORE INSERT OR UPDATE ON public."Color"
+    FOR EACH ROW
+EXECUTE FUNCTION enforce_uppercase_hex();
+--------------------------------------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION check_messageid_exists()
+    RETURNS TRIGGER AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM "Message" WHERE messageid = NEW.messageid) THEN
+        NEW.messageid := 1;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_messageid_exists_trigger
+    BEFORE INSERT ON "DeletedComponent"
+    FOR EACH ROW
+EXECUTE FUNCTION check_messageid_exists();
 -------------------------------------------------------------------------------------------------- Avatar inserts
 INSERT INTO public."Avatar" (avatarid, avatarpath)
 VALUES (1, 'basic_green.svg');
@@ -161,6 +189,11 @@ INSERT INTO public."Set" (setid, name, ownerid)
 VALUES (2, 'others', 4);
 INSERT INTO public."Set" (setid, name, ownerid)
 VALUES (3, 'easy', 2);
+--------------------------------------------------------------------------------------------------Message inserts
+INSERT INTO public."Message" (messageid, name, description) VALUES (1, 'Default', 'The component was deleted by moderator.');
+INSERT INTO public."Message" (messageid, name, description) VALUES (2, 'Spam', 'The component is considered spam.');
+INSERT INTO public."Message" (messageid, name, description) VALUES (3, 'Duplicate Submission', 'The component is a duplicate submission.');
+INSERT INTO public."Message" (messageid, name, description) VALUES (4, 'Inappropriate Content', 'The component contains inappropriate content.');
 --------------------------------------------------------------------------------------------------Tag inserts
 INSERT INTO public."Tag" (tagid, name, colorid)
 VALUES (1, 'simple', 1);
@@ -539,17 +572,15 @@ SELECT setval(pg_get_serial_sequence('"Component"', 'componentid'), coalesce(max
 FROM "Component";
 
 -------------------------------------------------------------------------------------------------- Views
-create view "UserDetailsView"(userid, nickname, email, passwordhash, avatarpath) as
+create view "UserDetailsView"(userid, nickname, email, passwordhash, isadmin, avatarpath) as
 SELECT u.userid,
        u.nickname,
        u.email,
        u.passwordhash,
+       u.isadmin,
        a.avatarpath
 FROM "User" u
          LEFT JOIN "Avatar" a ON u.avatarid = a.avatarid;
-
-alter table "UserDetailsView"
-    owner to docker;
 --------------------------------------------------------------------------------------------------
 create view "ComponentTagsView"(componentid, tagid, name, hex) as
 SELECT ct.componentid,
@@ -559,9 +590,6 @@ SELECT ct.componentid,
 FROM "ComponentTag" ct
          JOIN "Tag" t USING (tagid)
          JOIN "Color" c USING (colorid);
-
-alter table "ComponentTagsView"
-    owner to docker;
 --------------------------------------------------------------------------------------------------
 create view "ComponentDetailsView"
             (componentid, name, authorid, nickname, hex, typename, setname, createdat, likes, tags, css, html) as
@@ -587,9 +615,6 @@ FROM "Component" c
          LEFT JOIN "Set" s USING (setid)
          LEFT JOIN "Type" t USING (typeid)
          LEFT JOIN "User" u ON c.authorid = u.userid;
-
-alter table "ComponentDetailsView"
-    owner to docker;
 -------------------------------------------------------------------------------------------------- Routines
 create function add_user(emailn text, nickname text, passwordhash text, OUT success boolean) returns boolean
     language plpgsql
@@ -611,7 +636,6 @@ BEGIN
     success := TRUE;
 END;
 $$;
-alter function add_user(text, text, text, out boolean) owner to docker;
 --------------------------------------------------------------------------------------------------
 create function add_user_session(user_id integer) returns text
     language plpgsql
@@ -633,9 +657,8 @@ BEGIN
     RETURN session_token;
 END;
 $$;
-alter function add_user_session(integer) owner to docker;
 --------------------------------------------------------------------------------------------------
-create procedure admin_delete_component(IN comp_id integer, IN msg_id integer DEFAULT 0)
+create procedure admin_delete_component(IN comp_id integer, IN msg_id integer DEFAULT 1)
     language plpgsql
 as
 $$
@@ -654,7 +677,6 @@ EXCEPTION
         RAISE;
 END;
 $$;
-alter procedure admin_delete_component(integer, integer) owner to docker;
 --------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------
 

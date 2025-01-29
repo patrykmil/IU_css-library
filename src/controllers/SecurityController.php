@@ -28,34 +28,35 @@ class SecurityController extends AppController
             $this->render("login");
             return;
         }
+        if ($this->isPost()) {
+            $email = $_POST['email-input'];
+            $password = $_POST['password-input'];
 
-        $email = $_POST['email-input'];
-        $password = $_POST['password-input'];
+            $email = Validator::verifyEmail($email);
+            if (!$email) {
+                $this->render('login', ['message' => 'Invalid email!!!']);
+                return;
+            }
+            $password = Validator::verifyPassword($password);
+            if (!$password) {
+                $this->render('login', ['message' => 'Invalid password!!!']);
+                return;
+            }
 
-        $email = Validator::verifyEmail($email);
-        if (!$email) {
-            $this->render('login', ['message' => 'Invalid email!!!']);
-            return;
-        }
-        $password = Validator::verifyPassword($password);
-        if (!$password) {
-            $this->render('login', ['message' => 'Invalid password!!!']);
-            return;
-        }
+            $user = $this->repository->getUserByEmail($email);
+            if ($user == null) {
+                $this->render('login', ['message' => 'Wrong email!!!']);
+                return;
+            }
+            if (!password_verify($password, $user->getPassword())) {
+                $this->render('login', ['message' => 'Wrong password!!!']);
+                return;
+            }
 
-        $user = $this->repository->getUserByEmail($email);
-        if ($user == null) {
-            $this->render('login', ['message' => 'Wrong email!!!']);
-            return;
+            $cookieValue = $this->repository->addUserSession($user->getId());
+            setcookie('user_session', $cookieValue, time() + (60 * 60 * 24 * 30), "/", "", true, true);
+            header("Location: /start");
         }
-        if (!password_verify($password, $user->getPassword())) {
-            $this->render('login', ['message' => 'Wrong password!!!']);
-            return;
-        }
-
-        $cookieValue = $this->repository->addUserSession($user->getId());
-        setcookie('user_session', $cookieValue, time() + (60 * 60 * 24 * 30), "/", "", true, true);
-        header("Location: /start");
     }
 
     public function logout(): void
@@ -73,37 +74,38 @@ class SecurityController extends AppController
             $this->render("register");
             return;
         }
+        if ($this->isPost()) {
+            $email = $_POST['email-input'];
+            $nickname = $_POST['nickname-input'];
+            $password = $_POST['password-input'];
 
-        $email = $_POST['email-input'];
-        $nickname = $_POST['nickname-input'];
-        $password = $_POST['password-input'];
+            $email = Validator::verifyEmail($email);
+            if (!$email) {
+                $this->render('register', ['message' => 'Invalid email!!!']);
+                return;
+            }
 
-        $email = Validator::verifyEmail($email);
-        if (!$email) {
-            $this->render('register', ['message' => 'Invalid email!!!']);
-            return;
+            $password = Validator::verifyPassword($password);
+            if (!$password) {
+                $this->render('register', ['message' => 'Invalid password!!!']);
+                return;
+            }
+
+            $nickname = Validator::verifyNickname($nickname);
+            if (!$nickname) {
+                $this->render('register', ['message' => 'Invalid nickname!!!']);
+                return;
+            }
+
+            $user = new User($nickname);
+            $user->setEmail($email);
+            $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
+
+            if ($this->repository->addUser($user)) {
+                $this->render('login', ['message' => 'Successfully registered!!!']);
+                return;
+            }
+            $this->render('register', ['message' => 'User with this email already exists!!!']);
         }
-
-        $password = Validator::verifyPassword($password);
-        if (!$password) {
-            $this->render('register', ['message' => 'Invalid password!!!']);
-            return;
-        }
-
-        $nickname = Validator::verifyNickname($nickname);
-        if (!$nickname) {
-            $this->render('register', ['message' => 'Invalid nickname!!!']);
-            return;
-        }
-
-        $user = new User($nickname);
-        $user->setEmail($email);
-        $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
-
-        if ($this->repository->addUser($user)) {
-            $this->render('login', ['message' => 'Successfully registered!!!']);
-            return;
-        }
-        $this->render('register', ['message' => 'User with this email already exists!!!']);
     }
 }

@@ -19,17 +19,23 @@ class ErrorController extends AppController
 
     public function error401(): void
     {
-        $this->render("error", ["code" => 401, "message" => "Unauthorized Error"]);
+        if ($this->isGet()) {
+            $this->render("error", ["code" => 401, "message" => "Unauthorized Error"]);
+        }
     }
 
     public function error404(): void
     {
-        $this->render("error", ["code" => 404, "message" => "Page not found"]);
+        if ($this->isGet()) {
+            $this->render("error", ["code" => 404, "message" => "Page not found"]);
+        }
     }
 
     public function error500(): void
     {
-        $this->render("error", ["code" => 500, "message" => "Internal server error"]);
+        if ($this->isGet()) {
+            $this->render("error", ["code" => 500, "message" => "Internal server error"]);
+        }
     }
 
 }

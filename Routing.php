@@ -13,6 +13,7 @@ class Routing
         'toggleLike' => ['controller' => 'ComponentController', 'method' => 'toggleLike'],
         'collection' => ['controller' => 'CollectionController', 'method' => 'collection'],
         'deleteComponent' => ['controller' => 'CollectionController', 'method' => 'deleteComponent'],
+        'adminDeleteComponent' => ['controller' => 'ComponentController', 'method' => 'adminDeleteComponent'],
         'start' => ['controller' => 'StartController', 'method' => 'start'],
         '' => ['controller' => 'StartController', 'method' => 'start']
     ];

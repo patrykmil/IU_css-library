@@ -4,6 +4,11 @@ if (!isset($component)) {
     ErrorController::getInstance()->error404();
     exit();
 }
+if (isset($user)) {
+    $isAdmin = $user->isAdministrator();
+} else {
+    $isAdmin = false;
+}
 ?>
 
 <!DOCTYPE html>
@@ -19,9 +24,10 @@ if (!isset($component)) {
     <script src="/public/scripts/copy.js" defer></script>
     <link rel="stylesheet" href="/public/prism/prism.css">
     <script src="/public/prism/prism.js" defer></script>
-    <link rel="stylesheet" href="/public/styles/interaction_buttons.css">
+    <link rel="stylesheet" href="/public/styles/component_site.css">
     <script src="/public/scripts/toggle_like.js" defer></script>
     <script src="/public/scripts/deleteFromComponentPage.js" type="module" defer></script>
+    <script src="/public/scripts/adminDeleteComponent.js" type="module" defer></script>
     <script src="/public/scripts/copyLink.js" type="module" defer></script>
     <style>
         .component-preview * {
@@ -59,6 +65,24 @@ if (!isset($component)) {
                     <img src="/assets/icons/delete.svg" alt="Delete Icon"/>
                 </button>
             <?php endif; ?>
+            <?php if ($isAdmin): ?>
+                <button class="interaction-button ban" data-component-id="<?php echo $component->getId(); ?>">
+                    <img src="/assets/icons/ban.svg" alt="Ban Icon"/>
+                </button>
+            <?php endif; ?>
+        </div>
+        <div class="description">
+            <span class="component-name"
+                  style="color: #<?php echo $component->getColor() ?>"><?php echo $component->getName(); ?></span>
+            <div>
+                <p>by</p>
+                <img class="author-avatar" src="/assets/avatars/<?php echo $component->getAuthor()->getAvatar() ?>"
+                     alt="User Icon"/>
+                <p class="author-name"><?php echo $component->getAuthor()->getNickname(); ?></p>
+            </div>
+            <p>this item is a part of <span class="set-name"
+                                            style="color: #<?php echo $component->getColor() ?>"><?php echo $component->getSet() ?></span>
+                set</p>
         </div>
         <div class="tags-container">
             <div class="tags">
@@ -87,6 +111,25 @@ if (!isset($component)) {
         </div>
     </div>
 </div>
+<?php if ($isAdmin):
+    require_once 'src/repositories/ComponentRepository.php';
+    $messages = ComponentRepository::getInstance()->getMessages();
+    ?>
+    <div id="ban-messages" class="ban-messages">
+            <span class="close">&times;</span>
+            <label for="ban-select">
+                Ban message:
+            </label>
+            <select id="ban-select">
+                <?php
+                foreach ($messages as $message) {
+                    echo '<option value="' . $message->getId() . '">' . $message->getName() . '</option>';
+                }
+                ?>
+            </select>
+            <button id="ban-button">Confirm</button>
+    </div>
+<?php endif; ?>
 </body>
 
 </html>

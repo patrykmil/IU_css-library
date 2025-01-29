@@ -1,0 +1,53 @@
+.interaction-button {
+    background-color: var(--background);
+    display: inline-flex;
+    padding: 0.375rem 0.75rem;
+    justify-content: center;
+    align-items: center;
+    gap: 0.625rem;
+    border: 1px dashed var(--primary);
+    border-radius: 0.4375rem;
+    cursor: pointer;
+}
+
+.interaction-button:hover {
+    background-color: var(--primary-transparent);
+}
+
+.interaction-button > img {
+    height: 2.8125rem;
+}
+
+.interaction-buttons-container {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.component-name {
+    font-size: var(--triple-font);
+}
+
+.description {
+    align-self: center;
+}
+
+.description p {
+    font-size: var(--big-font);
+}
+
+.description img {
+    height: 3em;
+}
+
+.description > div {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+.set-name, .author-name {
+    text-decoration: underline;
+}

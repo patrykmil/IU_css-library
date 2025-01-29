@@ -18,10 +18,10 @@ class DatabaseConnector
 
     private function __construct()
     {
-        $this->username = getenv('USERNAME');
-        $this->password = getenv('PASSWORD');
+        $this->username = getenv('POSTGRES_USER');
+        $this->password = getenv('POSTGRES_PASSWORD');
         $this->host = getenv('HOST');
-        $this->database = getenv('DATABASE');
+        $this->database = getenv('POSTGRES_DB');
         $this->port = getenv('PORT');
     }
 

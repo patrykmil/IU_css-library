@@ -35,7 +35,7 @@ class DefaultRepository extends Repository
         return $types;
     }
 
-    public function getUserSets($authorID): array
+    public function getUserSets(int $authorID): array
     {
         $query = 'SELECT name FROM public."Set" WHERE ownerid = :id';
         $conn = $this->database->connect();
@@ -47,7 +47,7 @@ class DefaultRepository extends Repository
         return $sets;
     }
 
-    public function addSet($authorID, $setName): array
+    public function addSet(int $authorID, int $setName): array
     {
         $query = 'INSERT INTO public."Set" (name, ownerid) VALUES (:name, :ownerid)';
         $conn = $this->database->connect();

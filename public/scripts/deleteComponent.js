@@ -13,8 +13,6 @@ export async function deleteComponent(componentId, componentElement) {
             if (componentElement) {
                 componentElement.style.display = 'none';
             }
-        } else {
-            console.error('Error deleting component');
         }
     } catch (error) {
         console.error('Error:', error);
