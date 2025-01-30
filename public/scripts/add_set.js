@@ -18,26 +18,32 @@ function showPopup() {
     };
 
     const createSetButton = document.querySelector('#createSetButton');
-    createSetButton.onclick = () => {
+    createSetButton.onclick = async () => {
         const newSetName = document.querySelector('#newSetName').value;
         if (newSetName) {
-            createNewSet(newSetName);
+            await createNewSet(newSetName);
         }
     };
 }
 
-function createNewSet(setName) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/createSet', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            const sets = JSON.parse(xhr.responseText);
-            updateSetList(sets);
-            document.querySelector('#popup').style.display = 'none';
+async function createNewSet(setName) {
+    try {
+        const response = await fetch('/createSet', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({setName: setName}),
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    };
-    xhr.send('setName=' + encodeURIComponent(setName));
+        const sets = await response.json();
+        console.log(sets);
+        updateSetList(sets);
+        document.querySelector('#popup').style.display = 'none';
+    }
+    catch (error) {
+        console.error('Error:', error);
+    }
 }
 
 function updateSetList(sets) {

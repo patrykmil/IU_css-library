@@ -1,5 +1,7 @@
 <?php /** @var Component $component */ ?>
-<?php if (!isset($user)) {$user = null;} ?>
+<?php if (!isset($user)) {
+    $user = null;
+} ?>
 
 <a href="/component/<?php echo $component->getId(); ?>" class="browse-item">
     <div class="component no-redirect" id="component-<?php echo $component->getId(); ?>">
@@ -13,10 +15,11 @@
     <div class="description">
         <?php
         $color = '#' . $component->getColor();
-        echo '<p class="title" style="color:' . $color . ';">' . $component->getName() . '</p>';
-        echo '<p class="no-redirect">from <span style="color:' . $color . '; text-decoration: underline;">' . $component->getSet() . '</span> set</p>';
-        echo '<p class="no-redirect">by: ' . $component->getAuthor()->getNickname() . '</p>';
+        $nickname = $component->getAuthor()->getNickname();
         ?>
+        <p class="title" style="color:<?php echo $color ?>;"><?php echo $component->getName(); ?></p>
+        <p>from <span style="color:<?php echo $color ?>;"><?php echo $component->getSet(); ?></span> set</p>
+        <p>by <?php echo $nickname; ?></p>
     </div>
     <div class="buttons">
         <?php if ($component->isLiked() !== null): ?>

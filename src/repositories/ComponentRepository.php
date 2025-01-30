@@ -6,6 +6,7 @@ require_once 'src/models/Component.php';
 require_once 'src/models/User.php';
 require_once 'src/models/Tag.php';
 require_once 'src/models/Message.php';
+require_once 'src/models/DeletedComponent.php';
 require_once 'src/utilities/Validator.php';
 
 class ComponentRepository extends Repository
@@ -431,7 +432,7 @@ class ComponentRepository extends Repository
         $this->database->disconnect($conn);
     }
 
-    public function getMessages()
+    public function getMessages(): array
     {
         $query = 'SELECT * FROM public."Message"';
         $conn = $this->database->connect();
@@ -444,5 +445,31 @@ class ComponentRepository extends Repository
             $messageObjects[] = new Message($message['messageid'], $message['name'], $message['description']);
         }
         return $messageObjects;
+    }
+
+    public function getDeletedComponents(int $userID): array
+    {
+        $query = 'SELECT c.componentid, c.name as comp_name, m.messageid, m.name as mess_name, m.description, c.css, c.html 
+                FROM public."DeletedComponent" c 
+                LEFT JOIN public."Message" m ON c.messageid = m.messageid
+                WHERE c.authorid = :userID';
+        $conn = $this->database->connect();
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
+        $stmt->execute();
+        $components = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->database->disconnect($conn);
+        $deletedComponents = [];
+        foreach ($components as $component) {
+            $deletedComponent = new DeletedComponent(
+                $component['componentid'],
+                $component['comp_name'],
+                new Message($component['messageid'], $component['mess_name'], $component['description']),
+                $component['css'],
+                $component['html']
+            );
+            $deletedComponents[] = $deletedComponent;
+        }
+        return $deletedComponents;
     }
 }

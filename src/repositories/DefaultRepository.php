@@ -47,7 +47,7 @@ class DefaultRepository extends Repository
         return $sets;
     }
 
-    public function addSet(int $authorID, int $setName): array
+    public function addSet(int $authorID, string $setName): array
     {
         $query = 'INSERT INTO public."Set" (name, ownerid) VALUES (:name, :ownerid)';
         $conn = $this->database->connect();

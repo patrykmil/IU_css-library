@@ -18,15 +18,17 @@
 <main>
     <div class="navigation">
         <?php if ($user === null) : ?>
-        <div class="container logo">
-            <img src="/assets/images/logo.svg" alt="Logo"/>
-        </div>
+            <div class="container logo">
+                <img src="/assets/images/logo.svg" alt="Logo"/>
+            </div>
         <?php else: ?>
-        <div class="container user">
-            <img src="/assets/avatars/<?php echo $user->getAvatar()?>" alt="User"/>
-            <p><?php echo $user->getNickname()?></p>
-            <a href="/logout" class="logout">Log out</a>
-        </div>
+            <div class="container user">
+                <a href="/messages">
+                    <img src="/assets/avatars/<?php echo $user->getAvatar() ?>" alt="User"/>
+                    <p><?php echo $user->getNickname() ?></p>
+                </a>
+                <a href="/logout" class="logout">Log out</a>
+            </div>
         <?php endif; ?>
         <a href="/browse" class="browse">
             <div class="container hover">

@@ -35,8 +35,21 @@ a {
     aspect-ratio: 1/1;
 }
 
+.container > a {
+    width: 40%;
+    object-fit: cover;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
-.container img {
+.container > a > img{
+    width: 100%;
+    object-fit: cover;
+}
+
+.container > img {
     width: 40%;
     object-fit: cover;
 }

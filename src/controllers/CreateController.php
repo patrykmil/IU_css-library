@@ -63,11 +63,15 @@ class CreateController extends AppController
     {
         $userSession = Decoder::decodeUserSession();
         if (!$userSession) {
-            echo json_encode(['error' => 'An error occurred while adding a component.']);
+            http_response_code(401);
+            echo json_encode(['error' => 'An error occurred while adding a set.']);
             return;
         }
-        $setName = $_POST['setName'];
-        $sets = $this->defaultRepository->addSet($userSession->getId(), $setName);
-        echo json_encode($sets);
+        if ($this->isPost()) {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $setName = $data['setName'];
+            $sets = $this->defaultRepository->addSet($userSession->getId(), $setName);
+            echo json_encode($sets);
+        }
     }
 }

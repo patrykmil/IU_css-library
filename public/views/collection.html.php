@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <?php
 if (!isset($liked)) {
     $liked = [];
@@ -12,6 +9,9 @@ if (!isset($user)) {
     $user = null;
 }
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8"/>
@@ -45,7 +45,11 @@ if (!isset($user)) {
             </div>
         </div>
         <div class="components owned active">
-            <?php foreach ($owned as $set): ?>
+            <?php foreach ($owned as $set):
+                if (empty($set['components'])) {
+                    continue;
+                }
+                ?>
                 <div class="list">
                     <p class="title"><?php echo $set['name']; ?></p>
                     <div class="group-container">

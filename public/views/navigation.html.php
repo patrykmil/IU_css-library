@@ -69,12 +69,14 @@ if ($cookieData) {
 
     <div class="top_nav_right">
         <?php if (isset($_COOKIE['user_session'])): ?>
-            <img class="right_menu-item"
-                 src="../../assets/avatars/<?php echo $avatarUrl; ?>"
-                 alt="My Avatar"/>
-            <form action="/logout" method="post">
-                <button type="submit" class="right-menu-text">LOG OUT</button>
-            </form>
+            <a href="/messages">
+                <img class="right_menu-item"
+                     src="../../assets/avatars/<?php echo $avatarUrl; ?>"
+                     alt="My Avatar"/>
+                <form action="/logout" method="post">
+                    <button type="submit" class="right-menu-text">LOG OUT</button>
+                </form>
+            </a>
         <?php else: ?>
             <form action="/login" method="get">
                 <button type="submit" class="right-menu-text">LOG IN</button>

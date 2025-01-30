@@ -78,7 +78,8 @@ if (isset($user)) {
                 <p>by</p>
                 <img class="author-avatar" src="/assets/avatars/<?php echo $component->getAuthor()->getAvatar() ?>"
                      alt="User Icon"/>
-                <p class="author-name"><?php echo $component->getAuthor()->getNickname(); ?></p>
+                <?php $nickname = $component->getAuthor()->getNickname(); ?>
+                <a class="author-name" href="/collection/<?php echo $nickname; ?>"><?php echo $nickname; ?></a>
             </div>
             <p>this item is a part of <span class="set-name"
                                             style="color: #<?php echo $component->getColor() ?>"><?php echo $component->getSet() ?></span>

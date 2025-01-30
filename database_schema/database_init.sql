@@ -190,7 +190,7 @@ VALUES (2, 'others', 4);
 INSERT INTO public."Set" (setid, name, ownerid)
 VALUES (3, 'easy', 2);
 --------------------------------------------------------------------------------------------------Message inserts
-INSERT INTO public."Message" (messageid, name, description) VALUES (1, 'Default', 'The component was deleted by moderator.');
+INSERT INTO public."Message" (messageid, name, description) VALUES (1, 'Default', 'The component does not meet community guidelines.');
 INSERT INTO public."Message" (messageid, name, description) VALUES (2, 'Spam', 'The component is considered spam.');
 INSERT INTO public."Message" (messageid, name, description) VALUES (3, 'Duplicate Submission', 'The component is a duplicate submission.');
 INSERT INTO public."Message" (messageid, name, description) VALUES (4, 'Inappropriate Content', 'The component contains inappropriate content.');

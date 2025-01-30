@@ -33,7 +33,7 @@
     align-self: center;
 }
 
-.description p {
+.description p, .description a {
     font-size: var(--big-font);
 }
 
@@ -48,6 +48,6 @@
     align-items: center;
 }
 
-.set-name, .author-name {
+.author-name {
     text-decoration: underline;
 }

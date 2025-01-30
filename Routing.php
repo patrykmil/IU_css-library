@@ -14,6 +14,7 @@ class Routing
         'collection' => ['controller' => 'CollectionController', 'method' => 'collection'],
         'deleteComponent' => ['controller' => 'CollectionController', 'method' => 'deleteComponent'],
         'adminDeleteComponent' => ['controller' => 'ComponentController', 'method' => 'adminDeleteComponent'],
+        'messages' => ['controller' => 'UserMessageController', 'method' => 'bannedComponents'],
         'start' => ['controller' => 'StartController', 'method' => 'start'],
         '' => ['controller' => 'StartController', 'method' => 'start']
     ];

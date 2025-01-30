@@ -1,0 +1,67 @@
+.copy-button {
+    background-color: var(--background);
+    display: inline-flex;
+    padding: 0.375rem 0.75rem;
+    justify-content: center;
+    align-items: center;
+    gap: 0.625rem;
+    cursor: pointer;
+    scale: 1.5;
+    border: none;
+}
+
+.copy-button > img {
+    filter: brightness(0) invert(1);
+}
+
+main {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    justify-self: center;
+    width: 80%;
+}
+
+.copy-button:hover {
+    border: 1px solid var(--accent-orange);
+    border-radius: 0.4375rem;
+}
+
+.deleted-message {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    gap: 0.625rem;
+    padding: 3rem;
+    border: dashed 2px var(--light-background);
+    border-radius: 10px;
+}
+
+.description > p {
+    font-size: var(--big-font);
+
+}
+
+.description {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 1rem;
+}
+
+.colored {
+    color: var(--accent-orange);
+}
+
+@media (max-width: 900px) {
+    .deleted-message {
+        flex-flow: column wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .copy-button {
+        width: 3rem;
+    }
+}

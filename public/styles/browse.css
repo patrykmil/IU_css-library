@@ -232,7 +232,7 @@ main {
     font-size: var(--hover-font);
 }
 
-.description > p {
+.description > p, .description > a {
     width: fit-content;
 }
 

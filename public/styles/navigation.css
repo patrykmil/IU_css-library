@@ -73,10 +73,13 @@ nav .logo:hover {
     font-size: var(--hover-font);
 }
 
-.top_nav_right {
+.top_nav_right, .top_nav_right > a {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+}
+
+.top_nav_right {
     padding-right: 3em;
 }
 
